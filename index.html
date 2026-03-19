@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor de Licitações — GOVBR · Equiplano · IDS · Layers</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --bg3: #efefec;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #8a8a85;
+    --blue-bg: #E6F1FB; --blue-text: #185FA5;
+    --purple-bg: #EEEDFE; --purple-text: #3C3489;
+    --red-bg: #FAECE7; --red-text: #993C1D;
+    --green-bg: #EAF3DE; --green-text: #3B6D11;
+    --amber-bg: #FAEEDA; --amber-text: #854F0B;
+    --success-bg: #EAF3DE; --success-text: #3B6D11;
+    --warn-bg: #FAEEDA; --warn-text: #854F0B;
+    --gray-bg: #F1EFE8; --gray-text: #5F5E5A;
+    --radius: 8px; --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #2e2e2b;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --text: #f0f0ec; --text2: #a0a09a; --text3: #666662;
+      --blue-bg: #0c2a45; --blue-text: #85B7EB;
+      --purple-bg: #1e1b3a; --purple-text: #AFA9EC;
+      --red-bg: #2e1a0f; --red-text: #F0997B;
+      --green-bg: #1a2e10; --green-text: #97C459;
+      --amber-bg: #2e1f08; --amber-text: #EF9F27;
+      --success-bg: #1a2e10; --success-text: #97C459;
+      --warn-bg: #2e1f08; --warn-text: #EF9F27;
+      --gray-bg: #2a2a27; --gray-text: #a0a09a;
+    }
+  }
+  body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* Header */
+  .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 20px 24px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo { width: 40px; height: 40px; border-radius: 10px; background: var(--blue-bg); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--blue-text); flex-shrink: 0; }
+  .header-title { font-size: 17px; font-weight: 600; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 500; }
+  .badge-ok { background: var(--success-bg); color: var(--success-text); }
+  .badge-warn { background: var(--warn-bg); color: var(--warn-text); }
+
+  /* Metrics */
+  .metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+  .metric { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; }
+  .metric-label { font-size: 12px; color: var(--text3); margin-bottom: 5px; }
+  .metric-val { font-size: 24px; font-weight: 600; color: var(--text); }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  /* Section */
+  .section { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* Empresas */
+  .empresas-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .empresa-card { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+  .empresa-card.restrito { border-left: 2px solid #BA7517; }
+  .empresa-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .empresa-inicial { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .ei-govbr { background: var(--blue-bg); color: var(--blue-text); }
+  .ei-equiplano { background: var(--purple-bg); color: var(--purple-text); }
+  .ei-ids { background: var(--red-bg); color: var(--red-text); }
+  .ei-layers { background: var(--green-bg); color: var(--green-text); }
+  .empresa-nome { font-size: 13px; font-weight: 600; color: var(--text); }
+  .empresa-nicho { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .empresa-alerta { font-size: 11px; font-weight: 600; color: var(--amber-text); margin-top: 4px; }
+  .empresa-produtos { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+  .prod-tag { font-size: 10px; padding: 2px 7px; border-radius: 100px; background: var(--bg2); color: var(--text2); }
+  .prod-tag-pr { font-size: 10px; padding: 2px 7px; border-radius: 100px; background: var(--amber-bg); color: var(--amber-text); }
+
+  /* Estados */
+  .estados-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+  .estado-card { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; transition: all 0.15s; position: relative; user-select: none; }
+  .estado-card:hover { border-color: var(--border2); }
+  .estado-card.ativo { border-color: var(--blue-text); background: var(--blue-bg); }
+  .estado-card.ativo .estado-uf, .estado-card.ativo .estado-nome { color: var(--blue-text); }
+  .estado-card.inativo { opacity: 0.4; }
+  .estado-uf { font-size: 16px; font-weight: 700; color: var(--text); }
+  .estado-nome { font-size: 11px; color: var(--text3); margin-top: 1px; }
+  .estado-count { font-size: 11px; font-weight: 500; margin-top: 6px; }
+  .estado-count.high { color: var(--green-text); }
+  .estado-count.med { color: var(--amber-text); }
+  .estado-count.low { color: var(--text3); }
+  .estado-dot { width: 6px; height: 6px; border-radius: 50%; position: absolute; top: 9px; right: 9px; }
+  .dot-on { background: #639922; }
+  .dot-off { background: #888780; }
+
+  /* Portais */
+  .portais-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+  .portal-item { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 9px 12px; display: flex; align-items: center; gap: 9px; }
+  .portal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .pdot-green { background: #639922; }
+  .pdot-amber { background: #BA7517; }
+  .pdot-gray { background: #888780; }
+  .portal-name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .portal-status { font-size: 10px; color: var(--text3); }
+
+  /* Keywords */
+  .kw-group { margin-bottom: 12px; }
+  .kw-group-label { font-size: 10px; font-weight: 600; color: var(--text3); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .kw-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
+  .kw { font-size: 12px; padding: 4px 10px; border-radius: 100px; cursor: pointer; transition: opacity 0.15s; }
+  .kw-blue { background: var(--blue-bg); color: var(--blue-text); }
+  .kw-purple { background: var(--purple-bg); color: var(--purple-text); }
+  .kw-red { background: var(--red-bg); color: var(--red-text); }
+  .kw-green { background: var(--green-bg); color: var(--green-text); }
+  .kw.off { opacity: 0.35; text-decoration: line-through; }
+  .kw-add { display: flex; gap: 8px; margin-top: 12px; }
+  .kw-add input { flex: 1; font-size: 13px; padding: 7px 11px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-family: var(--font); outline: none; }
+  .kw-add input:focus { border-color: var(--blue-text); }
+  .kw-add button { font-size: 12px; padding: 7px 16px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); cursor: pointer; font-family: var(--font); transition: background 0.15s; }
+  .kw-add button:hover { background: var(--bg2); }
+
+  /* Filters */
+  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filter-btn { font-size: 12px; padding: 4px 12px; border-radius: 100px; border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+  .filter-btn:hover { border-color: var(--border2); }
+  .filter-btn.active { border-color: var(--blue-text); background: var(--blue-bg); color: var(--blue-text); }
+
+  /* Editais */
+  .editais { display: flex; flex-direction: column; gap: 8px; }
+  .edital { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 13px 15px; cursor: pointer; transition: border-color 0.15s; }
+  .edital:hover { border-color: var(--border2); }
+  .edital.urgente { border-left: 2px solid #BA7517; }
+  .edital.hidden { display: none; }
+  .edital-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
+  .edital-titulo { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.45; }
+  .score { font-size: 11px; padding: 2px 8px; border-radius: 100px; flex-shrink: 0; font-weight: 500; }
+  .score-high { background: var(--green-bg); color: var(--green-text); }
+  .score-med { background: var(--amber-bg); color: var(--amber-text); }
+  .score-low { background: var(--bg2); color: var(--text3); }
+  .edital-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .edital-meta span { font-size: 11px; color: var(--text3); }
+  .edital-meta strong { color: var(--text2); font-weight: 500; }
+  .edital-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 7px; }
+  .tag { font-size: 10px; padding: 2px 7px; border-radius: 100px; font-weight: 500; }
+  .tag-govbr { background: var(--blue-bg); color: var(--blue-text); }
+  .tag-equiplano { background: var(--purple-bg); color: var(--purple-text); }
+  .tag-ids { background: var(--red-bg); color: var(--red-text); }
+  .tag-layers { background: var(--green-bg); color: var(--green-text); }
+  .tag-tce { background: var(--amber-bg); color: var(--amber-text); }
+  .tag-uf { background: var(--gray-bg); color: var(--gray-text); }
+  .tag-kw { background: var(--bg2); color: var(--text2); }
+  .empty { font-size: 13px; color: var(--text3); text-align: center; padding: 24px 0; display: none; }
+  .edital-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+  .btn-link { font-size: 11px; padding: 4px 10px; border-radius: 100px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; transition: all 0.15s; }
+  .btn-link:hover { background: var(--blue-bg); color: var(--blue-text); border-color: var(--blue-text); }
+  .btn-link-nourl { font-size: 11px; color: var(--text3); font-style: italic; }
+
+  /* AI */
+  .ai-box { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; background: var(--bg); }
+  .ai-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .ai-output { font-size: 13px; color: var(--text2); line-height: 1.65; min-height: 40px; }
+  .ai-output p { margin-bottom: 8px; }
+  .ai-output p:last-child { margin-bottom: 0; }
+  .ai-loading { font-style: italic; color: var(--text3); }
+  .ai-meta { font-size: 11px; font-weight: 500; color: var(--text3); margin-bottom: 8px; }
+  .divider { height: 0.5px; background: var(--border); }
+  .ai-input-row { display: flex; gap: 8px; align-items: flex-end; }
+  .ai-input-row textarea { flex: 1; font-size: 13px; padding: 8px 11px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg2); color: var(--text); resize: vertical; min-height: 62px; font-family: var(--font); outline: none; line-height: 1.5; }
+  .ai-input-row textarea:focus { border-color: var(--blue-text); background: var(--bg); }
+  .btn-ask { font-size: 13px; padding: 8px 18px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); cursor: pointer; font-family: var(--font); white-space: nowrap; transition: background 0.15s; align-self: flex-end; }
+  .btn-ask:hover { background: var(--bg2); }
+
+  /* API key notice */
+  .api-notice { font-size: 12px; padding: 10px 14px; border-radius: var(--radius); background: var(--amber-bg); color: var(--amber-text); display: flex; align-items: center; gap: 8px; }
+  .api-notice input { flex: 1; font-size: 12px; padding: 4px 8px; border: 0.5px solid var(--amber-text); border-radius: 6px; background: transparent; color: var(--amber-text); font-family: var(--font); outline: none; }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 12px; color: var(--text3); padding-top: 8px; }
+
+  @media (max-width: 700px) {
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .empresas-grid { grid-template-columns: 1fr; }
+    .estados-grid { grid-template-columns: repeat(4, 1fr); }
+    .portais-grid { grid-template-columns: repeat(2, 1fr); }
+    .header { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 480px) {
+    .estados-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">ML</div>
+      <div>
+        <div class="header-title">Monitor de Licitações</div>
+        <div class="header-sub">GOVBR · Equiplano (PR) · IDS · Layers — 8 estados · 6 portais</div>
+      </div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-ok" id="badge-estados">8 estados ativos</span>
+      <span class="badge badge-warn" id="badge-urgentes">4 urgentes</span>
+    </div>
+  </div>
+
+  <!-- API Key -->
+  <div class="api-notice" id="api-notice">
+    ⚠️ Para usar análise por IA, insira sua API key da Anthropic:
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." oninput="salvarKey(this.value)">
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Editais hoje</div><div class="metric-val">89</div><div class="metric-sub">8 estados monitorados</div></div>
+    <div class="metric"><div class="metric-label">Alta relevância</div><div class="metric-val" id="m-rel">13</div><div class="metric-sub">score ≥ 70%</div></div>
+    <div class="metric"><div class="metric-label">Prazo &lt; 5 dias</div><div class="metric-val">4</div><div class="metric-sub">atenção imediata</div></div>
+    <div class="metric"><div class="metric-label">Maior valor</div><div class="metric-val">R$1,9M</div><div class="metric-sub">Saúde BH/MG — IDS</div></div>
+  </div>
+
+  <!-- Empresas -->
+  <div class="section">
+    <div class="section-title">Empresas do grupo</div>
+    <div class="empresas-grid">
+      <div class="empresa-card">
+        <div class="empresa-header"><div class="empresa-inicial ei-govbr">GB</div><div><div class="empresa-nome">GOVBR — Governança Brasil</div><div class="empresa-nicho">Gestão municipal integrada · 24 módulos · 700+ prefeituras · nacional</div></div></div>
+        <div class="empresa-produtos"><span class="prod-tag">Finanças/contabilidade</span><span class="prod-tag">Folha/RH</span><span class="prod-tag">Tributário</span><span class="prod-tag">Suprimentos/licitações</span><span class="prod-tag">Serviços digitais</span><span class="prod-tag">Assistência social</span><span class="prod-tag">Saúde</span><span class="prod-tag">Educação</span><span class="prod-tag">Transparência</span><span class="prod-tag">Planejamento/orçamento</span></div>
+      </div>
+      <div class="empresa-card restrito">
+        <div class="empresa-header"><div class="empresa-inicial ei-equiplano">EQ</div><div><div class="empresa-nome">Equiplano</div><div class="empresa-nicho">Gestão municipal · Toledo/Curitiba</div></div></div>
+        <div class="empresa-alerta">⚠ Atuação exclusiva no Paraná · TCE-PR</div>
+        <div class="empresa-produtos"><span class="prod-tag-pr">Somente PR</span><span class="prod-tag">Contabilidade pública</span><span class="prod-tag">Gestão tributária</span><span class="prod-tag">RH/folha</span><span class="prod-tag">Licitações e compras</span><span class="prod-tag">Controle de frotas</span><span class="prod-tag">Tramitação de processos</span><span class="prod-tag">Portal da transparência</span><span class="prod-tag">TCE-PR</span></div>
+      </div>
+      <div class="empresa-card">
+        <div class="empresa-header"><div class="empresa-inicial ei-ids">IDS</div><div><div class="empresa-nome">IDS Software</div><div class="empresa-nicho">Saúde · Educação · Social · Cidadão · Pato Branco/PR · nacional</div></div></div>
+        <div class="empresa-produtos"><span class="prod-tag">IDS Saúde (PEP+IA)</span><span class="prod-tag">Regulação/agendamento</span><span class="prod-tag">Consórcios de saúde</span><span class="prod-tag">IDS Educação</span><span class="prod-tag">IDS Social (CRAS)</span><span class="prod-tag">IDS Cidadão</span><span class="prod-tag">Farmácia básica</span><span class="prod-tag">Vigilância epidemiológica</span></div>
+      </div>
+      <div class="empresa-card">
+        <div class="empresa-header"><div class="empresa-inicial ei-layers">LA</div><div><div class="empresa-nome">Layers Education</div><div class="empresa-nicho">SuperApp educacional · 7.600+ escolas · hub EdTech · nacional</div></div></div>
+        <div class="empresa-produtos"><span class="prod-tag">Comunicação escola-família</span><span class="prod-tag">Notas/frequência</span><span class="prod-tag">Matrícula digital</span><span class="prod-tag">Agenda/eventos</span><span class="prod-tag">Pagamentos</span><span class="prod-tag">Secretaria digital</span><span class="prod-tag">App white label</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estados -->
+  <div class="section">
+    <div class="section-title">Estados monitorados — clique para ativar/desativar</div>
+    <div class="estados-grid" id="estados-grid">
+      <div class="estado-card ativo" data-uf="PR" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">PR</div><div class="estado-nome">Paraná</div><div class="estado-count high">12 · 4 relevantes</div></div>
+      <div class="estado-card ativo" data-uf="RS" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">RS</div><div class="estado-nome">Rio Grande do Sul</div><div class="estado-count high">10 · 2 relevantes</div></div>
+      <div class="estado-card ativo" data-uf="SP" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">SP</div><div class="estado-nome">São Paulo</div><div class="estado-count high">24 · 3 relevantes</div></div>
+      <div class="estado-card ativo" data-uf="MG" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">MG</div><div class="estado-nome">Minas Gerais</div><div class="estado-count high">15 · 2 relevantes</div></div>
+      <div class="estado-card ativo" data-uf="RJ" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">RJ</div><div class="estado-nome">Rio de Janeiro</div><div class="estado-count med">9 · 1 relevante</div></div>
+      <div class="estado-card ativo" data-uf="PE" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">PE</div><div class="estado-nome">Pernambuco</div><div class="estado-count med">8 · 1 relevante</div></div>
+      <div class="estado-card ativo" data-uf="PA" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">PA</div><div class="estado-nome">Pará</div><div class="estado-count med">7 · 1 relevante</div></div>
+      <div class="estado-card ativo" data-uf="AP" onclick="toggleEstado(this)"><div class="estado-dot dot-on"></div><div class="estado-uf">AP</div><div class="estado-nome">Amapá</div><div class="estado-count low">4 · 0 relevantes</div></div>
+    </div>
+  </div>
+
+  <!-- Portais -->
+  <div class="section">
+    <div class="section-title">Portais monitorados</div>
+    <div class="portais-grid">
+      <div class="portal-item"><div class="portal-dot pdot-green"></div><div><div class="portal-name">ComprasNet (federal)</div><div class="portal-status">Ativo · todos os estados</div></div></div>
+      <div class="portal-item"><div class="portal-dot pdot-green"></div><div><div class="portal-name">BEC-SP</div><div class="portal-status">Ativo · SP</div></div></div>
+      <div class="portal-item"><div class="portal-dot pdot-green"></div><div><div class="portal-name">Licitações-e (BB)</div><div class="portal-status">Ativo · todos os estados</div></div></div>
+      <div class="portal-item"><div class="portal-dot pdot-green"></div><div><div class="portal-name">PNCP</div><div class="portal-status">Ativo · todos os estados</div></div></div>
+      <div class="portal-item"><div class="portal-dot pdot-green"></div><div><div class="portal-name">BLL Compras</div><div class="portal-status">Ativo · PR, RS, SC</div></div></div>
+      <div class="portal-item"><div class="portal-dot pdot-amber"></div><div><div class="portal-name">Portais estaduais PA/AP</div><div class="portal-status">Instável · retry ativo</div></div></div>
+    </div>
+  </div>
+
+  <!-- Keywords -->
+  <div class="section">
+    <div class="section-title">Palavras-chave monitoradas</div>
+    <div class="kw-group">
+      <div class="kw-group-label">GOVBR — nacional</div>
+      <div class="kw-wrap" id="kw-govbr">
+        <span class="kw kw-blue" onclick="toggleKw(this)">gestão pública integrada ×</span>
+        <span class="kw kw-blue" onclick="toggleKw(this)">contabilidade pública ×</span>
+        <span class="kw kw-blue" onclick="toggleKw(this)">folha de pagamento ×</span>
+        <span class="kw kw-blue" onclick="toggleKw(this)">planejamento orçamentário ×</span>
+        <span class="kw kw-blue" onclick="toggleKw(this)">serviços digitais ao cidadão ×</span>
+        <span class="kw kw-blue" onclick="toggleKw(this)">assistência social ×</span>
+        <span class="kw kw-blue" onclick="toggleKw(this)">PRONIM ×</span>
+      </div>
+    </div>
+    <div class="kw-group">
+      <div class="kw-group-label">Equiplano — somente Paraná · TCE-PR</div>
+      <div class="kw-wrap" id="kw-equiplano">
+        <span class="kw kw-purple" onclick="toggleKw(this)">gestão tributária ×</span>
+        <span class="kw kw-purple" onclick="toggleKw(this)">licitações e compras ×</span>
+        <span class="kw kw-purple" onclick="toggleKw(this)">controle de frotas municipal ×</span>
+        <span class="kw kw-purple" onclick="toggleKw(this)">portal da transparência ×</span>
+        <span class="kw kw-purple" onclick="toggleKw(this)">Tribunal de Contas PR ×</span>
+        <span class="kw kw-purple" onclick="toggleKw(this)">TCE-PR ×</span>
+        <span class="kw kw-purple" onclick="toggleKw(this)">EServiços 156 ×</span>
+      </div>
+    </div>
+    <div class="kw-group">
+      <div class="kw-group-label">IDS — saúde, educação, social (nacional)</div>
+      <div class="kw-wrap" id="kw-ids">
+        <span class="kw kw-red" onclick="toggleKw(this)">prontuário eletrônico ×</span>
+        <span class="kw kw-red" onclick="toggleKw(this)">regulação de saúde ×</span>
+        <span class="kw kw-red" onclick="toggleKw(this)">consórcio intermunicipal de saúde ×</span>
+        <span class="kw kw-red" onclick="toggleKw(this)">gestão escolar municipal ×</span>
+        <span class="kw kw-red" onclick="toggleKw(this)">CRAS assistência social ×</span>
+        <span class="kw kw-red" onclick="toggleKw(this)">farmácia básica ×</span>
+        <span class="kw kw-red" onclick="toggleKw(this)">vigilância epidemiológica ×</span>
+      </div>
+    </div>
+    <div class="kw-group">
+      <div class="kw-group-label">Layers — plataforma educacional digital (nacional)</div>
+      <div class="kw-wrap" id="kw-layers">
+        <span class="kw kw-green" onclick="toggleKw(this)">aplicativo escola-família ×</span>
+        <span class="kw kw-green" onclick="toggleKw(this)">plataforma digital educacional ×</span>
+        <span class="kw kw-green" onclick="toggleKw(this)">secretaria escolar digital ×</span>
+        <span class="kw kw-green" onclick="toggleKw(this)">comunicação escolar digital ×</span>
+      </div>
+    </div>
+    <div class="kw-add">
+      <input id="kw-in" type="text" placeholder="Nova palavra-chave...">
+      <button onclick="addKw()">+ Adicionar</button>
+    </div>
+  </div>
+
+  <!-- Editais -->
+  <div class="section">
+    <div class="section-title">Editais encontrados</div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filtrar(this,'todos')">Todos</button>
+      <button class="filter-btn" onclick="filtrar(this,'alta')">Alta relevância</button>
+      <button class="filter-btn" onclick="filtrar(this,'urgente')">Urgentes</button>
+      <button class="filter-btn" onclick="filtrar(this,'govbr')">GOVBR</button>
+      <button class="filter-btn" onclick="filtrar(this,'equiplano')">Equiplano</button>
+      <button class="filter-btn" onclick="filtrar(this,'ids')">IDS</button>
+      <button class="filter-btn" onclick="filtrar(this,'layers')">Layers</button>
+      <button class="filter-btn" onclick="filtrar(this,'PR')">PR</button>
+      <button class="filter-btn" onclick="filtrar(this,'SP')">SP</button>
+      <button class="filter-btn" onclick="filtrar(this,'MG')">MG</button>
+      <button class="filter-btn" onclick="filtrar(this,'RS')">RS</button>
+    </div>
+    <div class="editais" id="editais-list">
+
+      <div class="edital urgente" data-uf="SP" data-score="96" data-urgente="1" data-empresa="govbr" data-idx="0">
+        <div class="edital-top" onclick="analisarEdital(0)" style="cursor:pointer"><div class="edital-titulo">Sistema integrado de gestão municipal — contabilidade, RH/folha, tributário, suprimentos e serviços digitais ao cidadão</div><span class="score score-high">96%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> ComprasNet</span><span><strong>Órgão:</strong> Pref. Campinas/SP</span><span><strong>Valor:</strong> R$ 1,4M</span><span><strong>Prazo:</strong> 3 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">SP</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">contabilidade pública</span><span class="tag tag-kw">folha de pagamento</span></div>
+          <a class="btn-link" href="https://www.comprasnet.gov.br/seguro/indexportal.asp" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital urgente" data-uf="PR" data-score="94" data-urgente="1" data-empresa="equiplano govbr" data-idx="1">
+        <div class="edital-top" onclick="analisarEdital(1)" style="cursor:pointer"><div class="edital-titulo">Sistema de gestão municipal — contabilidade pública, tributário, licitações e compras, portal da transparência</div><span class="score score-high">94%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> BLL Compras</span><span><strong>Órgão:</strong> Pref. Ponta Grossa/PR</span><span><strong>Valor:</strong> R$ 620k</span><span><strong>Prazo:</strong> 3 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">PR</span><span class="tag tag-equiplano">Equiplano</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">licitações e compras</span></div>
+          <a class="btn-link" href="https://bllcompras.com/Compra/ListaCompras" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital urgente" data-uf="PR" data-score="93" data-urgente="1" data-empresa="ids" data-idx="2">
+        <div class="edital-top" onclick="analisarEdital(2)" style="cursor:pointer"><div class="edital-titulo">Sistema de gestão de saúde municipal — prontuário eletrônico, regulação, atenção primária e farmácia básica</div><span class="score score-high">93%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> BLL Compras</span><span><strong>Órgão:</strong> Consórcio CONIMS/PR</span><span><strong>Valor:</strong> R$ 980k</span><span><strong>Prazo:</strong> 4 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">PR</span><span class="tag tag-ids">IDS</span><span class="tag tag-kw">prontuário eletrônico</span><span class="tag tag-kw">consórcio intermunicipal</span></div>
+          <a class="btn-link" href="https://bllcompras.com/Compra/ListaCompras" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital urgente" data-uf="MG" data-score="88" data-urgente="1" data-empresa="govbr" data-idx="3">
+        <div class="edital-top" onclick="analisarEdital(3)" style="cursor:pointer"><div class="edital-titulo">Software de contabilidade pública e execução orçamentária — PCASP, SICONFI e LRF</div><span class="score score-high">88%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> ComprasNet</span><span><strong>Órgão:</strong> Pref. Uberlândia/MG</span><span><strong>Valor:</strong> R$ 680k</span><span><strong>Prazo:</strong> 5 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">MG</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">contabilidade pública</span></div>
+          <a class="btn-link" href="https://www.comprasnet.gov.br/seguro/indexportal.asp" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="PR" data-score="87" data-urgente="0" data-empresa="equiplano" data-idx="4">
+        <div class="edital-top" onclick="analisarEdital(4)" style="cursor:pointer"><div class="edital-titulo">TCE-PR — sistema de controle de processos administrativos e tramitação de documentos para tribunal</div><span class="score score-high">87%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> BLL Compras</span><span><strong>Órgão:</strong> Tribunal de Contas do Estado/PR</span><span><strong>Valor:</strong> R$ 560k</span><span><strong>Prazo:</strong> 8 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">PR</span><span class="tag tag-equiplano">Equiplano</span><span class="tag tag-tce">TCE-PR</span><span class="tag tag-kw">tramitação de processos</span></div>
+          <a class="btn-link" href="https://bllcompras.com/Compra/ListaCompras" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="SP" data-score="86" data-urgente="0" data-empresa="govbr" data-idx="5">
+        <div class="edital-top" onclick="analisarEdital(5)" style="cursor:pointer"><div class="edital-titulo">Folha de pagamento, gestão de pessoas e controle de ponto para câmara municipal</div><span class="score score-high">86%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> BEC-SP</span><span><strong>Órgão:</strong> Câmara Sorocaba/SP</span><span><strong>Valor:</strong> R$ 480k</span><span><strong>Prazo:</strong> 7 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">SP</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">folha de pagamento</span></div>
+          <a class="btn-link" href="https://www.bec.sp.gov.br/BEC_Pregao_UI/ui/compradores/BEC_OC_SolicitacaoPregaoEletronico_ui.aspx" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="MG" data-score="85" data-urgente="0" data-empresa="ids" data-idx="6">
+        <div class="edital-top" onclick="analisarEdital(6)" style="cursor:pointer"><div class="edital-titulo">Sistema de saúde municipal — prontuário PEP, regulação, agendamento e vigilância epidemiológica</div><span class="score score-high">85%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> ComprasNet</span><span><strong>Órgão:</strong> Sec. Saúde — Belo Horizonte/MG</span><span><strong>Valor:</strong> R$ 1,9M</span><span><strong>Prazo:</strong> 10 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">MG</span><span class="tag tag-ids">IDS</span><span class="tag tag-kw">prontuário eletrônico</span></div>
+          <a class="btn-link" href="https://www.comprasnet.gov.br/seguro/indexportal.asp" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="PR" data-score="84" data-urgente="0" data-empresa="equiplano" data-idx="7">
+        <div class="edital-top" onclick="analisarEdital(7)" style="cursor:pointer"><div class="edital-titulo">Sistema de controle de frotas, manutenção preventiva e rastreamento GPS para frota municipal</div><span class="score score-high">84%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> BLL Compras</span><span><strong>Órgão:</strong> Pref. Curitiba/PR</span><span><strong>Valor:</strong> R$ 310k</span><span><strong>Prazo:</strong> 12 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">PR</span><span class="tag tag-equiplano">Equiplano</span><span class="tag tag-kw">controle de frotas municipal</span></div>
+          <a class="btn-link" href="https://bllcompras.com/Compra/ListaCompras" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="RS" data-score="83" data-urgente="0" data-empresa="ids govbr" data-idx="8">
+        <div class="edital-top" onclick="analisarEdital(8)" style="cursor:pointer"><div class="edital-titulo">Plataforma de gestão escolar municipal — matrículas, frequência, notas, merenda e transporte escolar</div><span class="score score-high">83%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> Licitações-e</span><span><strong>Órgão:</strong> Pref. Caxias do Sul/RS</span><span><strong>Valor:</strong> R$ 390k</span><span><strong>Prazo:</strong> 9 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">RS</span><span class="tag tag-ids">IDS</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">gestão escolar municipal</span></div>
+          <a class="btn-link" href="https://www.licitacoes-e.com.br/aop/pesquisar-licitacao.aop" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="SP" data-score="82" data-urgente="0" data-empresa="layers" data-idx="9">
+        <div class="edital-top" onclick="analisarEdital(9)" style="cursor:pointer"><div class="edital-titulo">Plataforma digital de comunicação escola-família com app, comunicados, agenda e secretaria digital</div><span class="score score-high">82%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> BEC-SP</span><span><strong>Órgão:</strong> Sec. Educação — Ribeirão Preto/SP</span><span><strong>Valor:</strong> R$ 420k</span><span><strong>Prazo:</strong> 11 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">SP</span><span class="tag tag-layers">Layers</span><span class="tag tag-kw">aplicativo escola-família</span></div>
+          <a class="btn-link" href="https://www.bec.sp.gov.br/BEC_Pregao_UI/ui/compradores/BEC_OC_SolicitacaoPregaoEletronico_ui.aspx" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="RJ" data-score="78" data-urgente="0" data-empresa="govbr" data-idx="10">
+        <div class="edital-top" onclick="analisarEdital(10)" style="cursor:pointer"><div class="edital-titulo">Software de arrecadação tributária, IPTU/ISS/ITBI e integração bancária — emissão DAM</div><span class="score score-med">78%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> ComprasNet</span><span><strong>Órgão:</strong> Pref. Niterói/RJ</span><span><strong>Valor:</strong> R$ 450k</span><span><strong>Prazo:</strong> 14 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">RJ</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">gestão tributária</span></div>
+          <a class="btn-link" href="https://www.comprasnet.gov.br/seguro/indexportal.asp" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="PA" data-score="76" data-urgente="0" data-empresa="ids" data-idx="11">
+        <div class="edital-top" onclick="analisarEdital(11)" style="cursor:pointer"><div class="edital-titulo">Sistema de saúde e assistência social municipal — prontuário, CRAS e cadastro único integrado</div><span class="score score-med">76%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> PNCP</span><span><strong>Órgão:</strong> Sec. Saúde/Social — Belém/PA</span><span><strong>Valor:</strong> R$ 1,2M</span><span><strong>Prazo:</strong> 17 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">PA</span><span class="tag tag-ids">IDS</span><span class="tag tag-kw">prontuário eletrônico</span></div>
+          <a class="btn-link" href="https://pncp.gov.br/app/editais" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="PE" data-score="74" data-urgente="0" data-empresa="govbr" data-idx="12">
+        <div class="edital-top" onclick="analisarEdital(12)" style="cursor:pointer"><div class="edital-titulo">Plataforma de gestão pública integrada — financeiro, folha, tributário e assistência social</div><span class="score score-med">74%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> PNCP</span><span><strong>Órgão:</strong> Pref. Caruaru/PE</span><span><strong>Valor:</strong> R$ 310k</span><span><strong>Prazo:</strong> 16 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">PE</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">gestão pública integrada</span></div>
+          <a class="btn-link" href="https://pncp.gov.br/app/editais" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="RS" data-score="71" data-urgente="0" data-empresa="govbr" data-idx="13">
+        <div class="edital-top" onclick="analisarEdital(13)" style="cursor:pointer"><div class="edital-titulo">Sistema de contabilidade pública, LRF e planejamento orçamentário para câmara municipal</div><span class="score score-med">71%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> PNCP</span><span><strong>Órgão:</strong> Câmara Porto Alegre/RS</span><span><strong>Valor:</strong> R$ 280k</span><span><strong>Prazo:</strong> 20 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">RS</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">contabilidade pública</span></div>
+          <a class="btn-link" href="https://pncp.gov.br/app/editais" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+      <div class="edital" data-uf="AP" data-score="55" data-urgente="0" data-empresa="govbr" data-idx="14">
+        <div class="edital-top" onclick="analisarEdital(14)" style="cursor:pointer"><div class="edital-titulo">Sistema informatizado de gestão administrativa municipal — módulos financeiro e RH básicos</div><span class="score score-low">55%</span></div>
+        <div class="edital-meta"><span><strong>Portal:</strong> PNCP</span><span><strong>Órgão:</strong> Pref. Macapá/AP</span><span><strong>Valor:</strong> R$ 120k</span><span><strong>Prazo:</strong> 23 dias</span></div>
+        <div class="edital-actions">
+          <div class="edital-tags"><span class="tag tag-uf">AP</span><span class="tag tag-govbr">GOVBR</span><span class="tag tag-kw">gestão pública integrada</span></div>
+          <a class="btn-link" href="https://pncp.gov.br/app/editais" target="_blank" onclick="event.stopPropagation()">Abrir edital ↗</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="empty" id="empty-msg">Nenhum edital encontrado para os filtros selecionados.</div>
+  </div>
+
+  <!-- AI Box -->
+  <div class="ai-box">
+    <div class="ai-title">Análise por IA (Claude)</div>
+    <div class="divider"></div>
+    <div class="ai-output" id="ai-output">Clique em um edital para análise automática de fit, riscos e recomendação — ou faça uma pergunta livre abaixo.</div>
+    <div class="divider"></div>
+    <div class="ai-input-row">
+      <textarea id="user-q" placeholder="Ex: Quais editais são mais estratégicos esta semana? / O edital do CONIMS/PR tem concorrência forte para o IDS? / Quais os 3 melhores para o GOVBR?"></textarea>
+      <button class="btn-ask" onclick="perguntarIA()">Perguntar ↗</button>
+    </div>
+  </div>
+
+  <div class="footer">Monitor de Licitações · GOVBR · Equiplano (PR) · IDS · Layers · Volaris Group</div>
+
+</div>
+
+<script>
+const PERFIS = {
+  govbr: "GOVBR (Governança Brasil): plataforma de governança municipal nacional com 24 módulos — finanças, contabilidade pública, folha/RH, receitas/tributário, suprimentos/licitações, serviços digitais ao cidadão, assistência social, saúde, educação, planejamento/orçamento, transparência. Presente em 13 estados, 700+ prefeituras. Infraestrutura AWS.",
+  equiplano: "Equiplano: gestão municipal com atuação EXCLUSIVA no estado do Paraná. Módulos: contabilidade pública, gestão tributária, RH/folha, licitações e compras, controle de frotas, tramitação de processos, portal da transparência, EServiços 156, BI. Adequada para TCE-PR (Tribunal de Contas do Estado do Paraná). NUNCA participar de licitações fora do Paraná.",
+  ids: "IDS Software: especialista em gestão pública municipal — Saúde (prontuário PEP com IA, regulação, atenção primária, farmácia básica, consórcios intermunicipais de saúde — líder no PR), Educação (gestão escolar municipal), Assistência Social (CRAS, CREAS, SUAS), IDS Cidadão (cadastro único integrado). Fundada em Pato Branco/PR, atua nacionalmente.",
+  layers: "Layers Education: SuperApp educacional white label — comunicação escola-família, notas, frequência, matrícula digital, agenda, pagamentos, secretaria digital, hub com 4.000+ EdTechs. Atende 7.600+ escolas. Foco em editais de plataforma digital/app escolar e secretaria escolar digital."
+};
+
+const EDITAIS = [
+  {titulo:"Sistema integrado de gestão municipal — contabilidade, RH/folha, tributário, suprimentos e serviços digitais",orgao:"Pref. Campinas/SP",uf:"SP",valor:"R$ 1,4M",prazo:"3 dias",portal:"ComprasNet",score:"96%",empresas:"GOVBR",tags:"contabilidade pública, folha de pagamento, gestão tributária"},
+  {titulo:"Sistema de gestão municipal — contabilidade pública, tributário, licitações e compras, portal da transparência",orgao:"Pref. Ponta Grossa/PR",uf:"PR",valor:"R$ 620k",prazo:"3 dias",portal:"BLL Compras",score:"94%",empresas:"Equiplano, GOVBR",tags:"contabilidade pública, licitações e compras"},
+  {titulo:"Sistema de gestão de saúde municipal — prontuário eletrônico, regulação, atenção primária e farmácia básica",orgao:"Consórcio CONIMS/PR",uf:"PR",valor:"R$ 980k",prazo:"4 dias",portal:"BLL Compras",score:"93%",empresas:"IDS",tags:"prontuário eletrônico, consórcio intermunicipal de saúde"},
+  {titulo:"Software de contabilidade pública e execução orçamentária — PCASP, SICONFI e LRF",orgao:"Pref. Uberlândia/MG",uf:"MG",valor:"R$ 680k",prazo:"5 dias",portal:"ComprasNet",score:"88%",empresas:"GOVBR",tags:"contabilidade pública"},
+  {titulo:"TCE-PR — sistema de controle de processos administrativos e tramitação de documentos para tribunal",orgao:"Tribunal de Contas do Estado/PR",uf:"PR",valor:"R$ 560k",prazo:"8 dias",portal:"BLL Compras",score:"87%",empresas:"Equiplano",tags:"TCE-PR, tramitação de processos, Tribunal de Contas PR"},
+  {titulo:"Folha de pagamento, gestão de pessoas e controle de ponto para câmara municipal",orgao:"Câmara Sorocaba/SP",uf:"SP",valor:"R$ 480k",prazo:"7 dias",portal:"BEC-SP",score:"86%",empresas:"GOVBR",tags:"folha de pagamento"},
+  {titulo:"Sistema de saúde municipal — prontuário PEP, regulação, agendamento e vigilância epidemiológica",orgao:"Sec. Saúde — Belo Horizonte/MG",uf:"MG",valor:"R$ 1,9M",prazo:"10 dias",portal:"ComprasNet",score:"85%",empresas:"IDS",tags:"prontuário eletrônico, vigilância epidemiológica"},
+  {titulo:"Sistema de controle de frotas, manutenção preventiva e rastreamento GPS para frota municipal",orgao:"Pref. Curitiba/PR",uf:"PR",valor:"R$ 310k",prazo:"12 dias",portal:"BLL Compras",score:"84%",empresas:"Equiplano",tags:"controle de frotas municipal"},
+  {titulo:"Plataforma de gestão escolar municipal — matrículas, frequência, notas, merenda e transporte",orgao:"Pref. Caxias do Sul/RS",uf:"RS",valor:"R$ 390k",prazo:"9 dias",portal:"Licitações-e",score:"83%",empresas:"IDS, GOVBR",tags:"gestão escolar municipal"},
+  {titulo:"Plataforma digital de comunicação escola-família com app, comunicados, agenda e secretaria digital",orgao:"Sec. Educação — Ribeirão Preto/SP",uf:"SP",valor:"R$ 420k",prazo:"11 dias",portal:"BEC-SP",score:"82%",empresas:"Layers",tags:"aplicativo escola-família, secretaria escolar digital"},
+  {titulo:"Software de arrecadação tributária, IPTU/ISS/ITBI e integração bancária — emissão DAM",orgao:"Pref. Niterói/RJ",uf:"RJ",valor:"R$ 450k",prazo:"14 dias",portal:"ComprasNet",score:"78%",empresas:"GOVBR",tags:"gestão tributária"},
+  {titulo:"Sistema de saúde e assistência social municipal — prontuário, CRAS e cadastro único integrado",orgao:"Sec. Saúde/Social — Belém/PA",uf:"PA",valor:"R$ 1,2M",prazo:"17 dias",portal:"PNCP",score:"76%",empresas:"IDS",tags:"prontuário eletrônico, CRAS assistência social"},
+  {titulo:"Plataforma de gestão pública integrada — financeiro, folha, tributário e assistência social",orgao:"Pref. Caruaru/PE",uf:"PE",valor:"R$ 310k",prazo:"16 dias",portal:"PNCP",score:"74%",empresas:"GOVBR",tags:"gestão pública integrada"},
+  {titulo:"Sistema de contabilidade pública, LRF e planejamento orçamentário para câmara municipal",orgao:"Câmara Porto Alegre/RS",uf:"RS",valor:"R$ 280k",prazo:"20 dias",portal:"PNCP",score:"71%",empresas:"GOVBR",tags:"contabilidade pública"},
+  {titulo:"Sistema informatizado de gestão administrativa municipal — módulos financeiro e RH básicos",orgao:"Pref. Macapá/AP",uf:"AP",valor:"R$ 120k",prazo:"23 dias",portal:"PNCP",score:"55%",empresas:"GOVBR",tags:"gestão pública integrada"}
+];
+
+let estadosAtivos = new Set(['PR','RS','SP','MG','RJ','PE','PA','AP']);
+let filtroAtual = 'todos';
+let apiKey = localStorage.getItem('ml_api_key') || '';
+if (apiKey) { document.getElementById('api-key-input').value = apiKey; document.getElementById('api-notice').style.display = 'none'; }
+
+function salvarKey(v) { apiKey = v.trim(); localStorage.setItem('ml_api_key', apiKey); if (apiKey) document.getElementById('api-notice').style.display = 'none'; }
+function toggleEstado(card) {
+  const uf = card.dataset.uf;
+  if (estadosAtivos.has(uf)) { if (estadosAtivos.size === 1) return; estadosAtivos.delete(uf); card.classList.remove('ativo'); card.classList.add('inativo'); card.querySelector('.estado-dot').className = 'estado-dot dot-off'; }
+  else { estadosAtivos.add(uf); card.classList.add('ativo'); card.classList.remove('inativo'); card.querySelector('.estado-dot').className = 'estado-dot dot-on'; }
+  aplicarFiltros();
+}
+function filtrar(btn, f) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filtroAtual = f; aplicarFiltros(); }
+function aplicarFiltros() {
+  const items = document.querySelectorAll('#editais-list .edital');
+  let v = 0;
+  items.forEach(el => {
+    const uf = el.dataset.uf, score = parseInt(el.dataset.score), urgente = el.dataset.urgente === '1', empresa = el.dataset.empresa || '';
+    const ufOk = estadosAtivos.has(uf);
+    let fOk = true;
+    if (filtroAtual === 'alta') fOk = score >= 80;
+    else if (filtroAtual === 'urgente') fOk = urgente;
+    else if (['govbr','equiplano','ids','layers'].includes(filtroAtual)) fOk = empresa.includes(filtroAtual);
+    else if (['PR','RS','SP','MG','RJ','PE','PA','AP'].includes(filtroAtual)) fOk = uf === filtroAtual;
+    const show = ufOk && fOk;
+    el.classList.toggle('hidden', !show);
+    if (show) v++;
+  });
+  document.getElementById('empty-msg').style.display = v === 0 ? 'block' : 'none';
+  document.getElementById('badge-estados').textContent = estadosAtivos.size + ' estados ativos';
+}
+function toggleKw(el) { el.classList.toggle('off'); }
+function addKw() {
+  const i = document.getElementById('kw-in');
+  if (!i.value.trim()) return;
+  const wrap = document.getElementById('kw-govbr');
+  const s = document.createElement('span'); s.className = 'kw kw-blue'; s.textContent = i.value.trim() + ' ×'; s.onclick = function() { toggleKw(this); }; wrap.appendChild(s); i.value = '';
+}
+function setOutput(html) { document.getElementById('ai-output').innerHTML = html; }
+
+async function analisarEdital(idx) {
+  if (!apiKey) { setOutput('<span style="color:var(--amber-text)">Insira a API key da Anthropic no campo acima para usar a análise por IA.</span>'); return; }
+  const e = EDITAIS[idx];
+  setOutput('<span class="ai-loading">Analisando edital com IA...</span>');
+  const prompt = `Você é um analista de licitações para setor público brasileiro. Perfis das empresas:\n\n${PERFIS.govbr}\n${PERFIS.equiplano}\n${PERFIS.ids}\n${PERFIS.layers}\n\nREGRA CRÍTICA: Equiplano atua EXCLUSIVAMENTE no Paraná. Se o edital for fora do PR, descarte a Equiplano.\n\nEdital:\nTítulo: ${e.titulo}\nÓrgão: ${e.orgao} (${e.uf})\nValor: ${e.valor} | Prazo: ${e.prazo} | Portal: ${e.portal} | Score: ${e.score}\nEmpresas mapeadas: ${e.empresas}\nKeywords: ${e.tags}\n\nResponda em 3 blocos:\n1. FIT: qual empresa tem melhor aderência e por quê\n2. RISCOS: pontos de atenção antes de participar\n3. RECOMENDAÇÃO: participar / avaliar / descartar — 1 frase direta.`;
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" }, body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] }) });
+    const d = await r.json();
+    if (d.error) { setOutput(`<span style="color:var(--amber-text)">Erro: ${d.error.message}</span>`); return; }
+    const txt = d.content?.[0]?.text || "Sem resposta.";
+    setOutput(`<div class="ai-meta">${e.orgao} (${e.uf}) · ${e.valor} · prazo ${e.prazo}</div>` + txt.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join(''));
+  } catch(err) { setOutput('<span style="color:var(--amber-text)">Erro de conexão. Verifique a API key e tente novamente.</span>'); }
+}
+
+async function perguntarIA() {
+  const q = document.getElementById('user-q').value.trim();
+  if (!q) return;
+  if (!apiKey) { setOutput('<span style="color:var(--amber-text)">Insira a API key da Anthropic no campo acima.</span>'); return; }
+  setOutput('<span class="ai-loading">Processando...</span>');
+  const visiveis = EDITAIS.filter((_, i) => { const el = document.querySelectorAll('#editais-list .edital')[i]; return el && !el.classList.contains('hidden'); });
+  const ctx = visiveis.map((e,i) => `[${i+1}] ${e.titulo} | ${e.orgao} (${e.uf}) | ${e.valor} | prazo: ${e.prazo} | score: ${e.score} | empresas: ${e.empresas}`).join('\n');
+  const prompt = `Assistente de inteligência comercial para grupo de software de gestão pública.\n\nPerfis:\n${PERFIS.govbr}\n${PERFIS.equiplano}\n${PERFIS.ids}\n${PERFIS.layers}\n\nREGRA CRÍTICA: Equiplano atua EXCLUSIVAMENTE no Paraná.\n\nEditais visíveis:\n${ctx}\n\nPergunta: ${q}\n\nResposta direta e prática.`;
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" }, body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] }) });
+    const d = await r.json();
+    if (d.error) { setOutput(`<span style="color:var(--amber-text)">Erro: ${d.error.message}</span>`); return; }
+    const txt = d.content?.[0]?.text || "Sem resposta.";
+    setOutput(`<div class="ai-meta">"${q}"</div>` + txt.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join(''));
+    document.getElementById('user-q').value = '';
+  } catch(err) { setOutput('<span style="color:var(--amber-text)">Erro de conexão.</span>'); }
+}
+</script>
+</body>
+</html>
