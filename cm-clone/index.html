@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liga Manager — MVP</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="home" class="home" style="display:none;">
+  <div class="home-card">
+    <h1>Liga Manager</h1>
+    <p class="muted">Escolha um clube para começar a temporada.</p>
+    <div id="team-list" class="team-list"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <header id="topbar" class="topbar"></header>
+  <nav id="tabs" class="tabs"></nav>
+  <main id="view" class="view"></main>
+  <button id="new-game-btn" class="new-game">Novo jogo</button>
+  <div id="flash" class="flash"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/season.js"></script>
+<script src="js/transfers.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
