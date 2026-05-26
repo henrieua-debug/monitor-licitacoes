@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Painel Custos IA</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #efefec;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18; --text2: #5a5a56; --text3: #8a8a85;
+    --blue-bg: #E6F1FB; --blue-text: #185FA5;
+    --purple-bg: #EEEDFE; --purple-text: #3C3489;
+    --red-bg: #FAECE7; --red-text: #993C1D;
+    --green-bg: #EAF3DE; --green-text: #3B6D11;
+    --amber-bg: #FAEEDA; --amber-text: #854F0B;
+    --radius: 8px; --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #2e2e2b;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --text: #f0f0ec; --text2: #a0a09a; --text3: #666662;
+      --blue-bg: #0c2a45; --blue-text: #85B7EB;
+      --purple-bg: #1e1b3a; --purple-text: #AFA9EC;
+      --red-bg: #2e1a0f; --red-text: #F0997B;
+      --green-bg: #1a2e10; --green-text: #97C459;
+      --amber-bg: #2e1f08; --amber-text: #EF9F27;
+    }
+  }
+  body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .page { max-width: 720px; margin: 0 auto; padding: 32px 16px 48px; display: flex; flex-direction: column; gap: 16px; }
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+  .header { display: flex; align-items: center; gap: 14px; padding: 20px 24px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
+  .logo { width: 40px; height: 40px; border-radius: 10px; background: var(--purple-bg); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--purple-text); }
+  .title { font-size: 16px; font-weight: 600; }
+  .subtitle { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  h2 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  p, label { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  label { display: block; margin-bottom: 6px; color: var(--text); font-weight: 500; }
+  input[type=password], input[type=file] { width: 100%; padding: 10px 12px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--bg2); color: var(--text); font-size: 14px; font-family: inherit; }
+  input[type=file] { padding: 24px; border: 2px dashed var(--border2); cursor: pointer; }
+  input[type=file]::file-selector-button { background: var(--purple-bg); color: var(--purple-text); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 500; cursor: pointer; margin-right: 12px; }
+  button { width: 100%; padding: 10px 16px; border-radius: var(--radius); border: 0.5px solid var(--border2); background: var(--text); color: var(--bg); font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+  button.secondary { background: var(--bg2); color: var(--text); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  .status { padding: 10px 14px; border-radius: var(--radius); font-size: 13px; margin-top: 8px; }
+  .status.ok { background: var(--green-bg); color: var(--green-text); }
+  .status.err { background: var(--red-bg); color: var(--red-text); }
+  .status.info { background: var(--blue-bg); color: var(--blue-text); }
+  .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
+  .summary div { background: var(--bg2); padding: 10px 12px; border-radius: var(--radius); }
+  .summary .lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; }
+  .summary .val { font-size: 16px; font-weight: 600; margin-top: 2px; }
+  .hidden { display: none; }
+  a.link { color: var(--purple-text); text-decoration: none; font-weight: 500; }
+  a.link:hover { text-decoration: underline; }
+  .hint { font-size: 12px; color: var(--text3); margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="logo">IA</div>
+    <div>
+      <div class="title">Admin · Painel Custos IA</div>
+      <div class="subtitle">Upload do consolidado mensal · uso interno</div>
+    </div>
+  </div>
+
+  <!-- Login -->
+  <div class="card" id="login">
+    <h2>Acesso restrito</h2>
+    <p>Apenas a equipe responsável pelo painel deve subir novos dados.</p>
+    <div style="margin-top: 16px;">
+      <label for="pwd">Senha</label>
+      <input type="password" id="pwd" autocomplete="current-password" placeholder="••••••••" />
+      <button style="margin-top: 12px;" onclick="login()">Entrar</button>
+      <div id="loginStatus"></div>
+      <p class="hint">Senha padrão: <code>ia2026</code> — alterar no topo do arquivo <code>admin.html</code> (constante <code>ADMIN_PWD</code>).</p>
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div class="card hidden" id="uploadCard">
+    <h2>Subir nova planilha (.xlsx)</h2>
+    <p>Espera-se o layout do consolidado <em>Custos IA C-Level</em> (abas: Resumo Executivo, Custo por Área, Custo por Área 2, Usuários por Ferramenta).</p>
+    <div style="margin-top: 16px;">
+      <input type="file" id="file" accept=".xlsx,.xls" />
+      <div id="parseStatus"></div>
+      <div id="preview" class="hidden">
+        <h2 style="margin-top: 20px;">Preview</h2>
+        <div class="summary" id="previewGrid"></div>
+        <div class="row" style="margin-top: 16px;">
+          <button class="secondary" onclick="resetUpload()">Cancelar</button>
+          <button onclick="publish()">Publicar para o painel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status atual -->
+  <div class="card hidden" id="currentCard">
+    <h2>Dados atualmente publicados</h2>
+    <div class="summary" id="currentGrid"></div>
+    <div class="row" style="margin-top: 16px;">
+      <a class="link" href="painel.html" target="_blank" style="align-self: center;">→ Abrir painel</a>
+      <button class="secondary" onclick="clearData()" style="max-width: 200px;">Limpar dados</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================
+// CONFIG — altere a senha aqui (uso interno, não é auth real)
+// ============================================
+const ADMIN_PWD = 'ia2026';
+const STORAGE_KEY = 'iaCostsData_v1';
+
+let parsed = null;
+
+function login() {
+  const v = document.getElementById('pwd').value;
+  const s = document.getElementById('loginStatus');
+  if (v === ADMIN_PWD) {
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('uploadCard').classList.remove('hidden');
+    showCurrent();
+  } else {
+    s.className = 'status err';
+    s.textContent = 'Senha incorreta.';
+  }
+}
+
+document.getElementById('pwd')?.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+document.getElementById('file').addEventListener('change', async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const s = document.getElementById('parseStatus');
+  s.className = 'status info';
+  s.textContent = 'Processando…';
+  try {
+    const buf = await f.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    parsed = parseWorkbook(wb);
+    parsed.meta.fileName = f.name;
+    parsed.meta.uploadedAt = new Date().toISOString();
+    s.className = 'status ok';
+    s.textContent = `Planilha lida: ${parsed.ferramentas.length} ferramentas · ${parsed.areas.length} áreas · ${parsed.multiTool.length} usuários multi-ferramenta · ${parsed.usuarios.length} usuários totais.`;
+    showPreview(parsed);
+  } catch (err) {
+    console.error(err);
+    s.className = 'status err';
+    s.textContent = 'Erro ao ler: ' + err.message;
+  }
+});
+
+function showPreview(d) {
+  document.getElementById('preview').classList.remove('hidden');
+  const g = document.getElementById('previewGrid');
+  const fmt = n => 'R$ ' + (n||0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+  g.innerHTML = `
+    <div><div class="lbl">Custo mensal</div><div class="val">${fmt(d.summary.custoMensal)}</div></div>
+    <div><div class="lbl">Custo anual</div><div class="val">${fmt(d.summary.custoAnual)}</div></div>
+    <div><div class="lbl">Ferramentas</div><div class="val">${d.summary.numFerramentas}</div></div>
+    <div><div class="lbl">Usuários impactados</div><div class="val">${d.summary.totalUsuarios}</div></div>
+  `;
+}
+
+function publish() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+  const s = document.getElementById('parseStatus');
+  s.className = 'status ok';
+  s.textContent = 'Publicado. O painel já reflete os novos dados.';
+  showCurrent();
+  resetUpload();
+}
+
+function resetUpload() {
+  document.getElementById('file').value = '';
+  document.getElementById('preview').classList.add('hidden');
+  parsed = null;
+}
+
+function showCurrent() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) { document.getElementById('currentCard').classList.add('hidden'); return; }
+  const d = JSON.parse(raw);
+  document.getElementById('currentCard').classList.remove('hidden');
+  const g = document.getElementById('currentGrid');
+  const fmt = n => 'R$ ' + (n||0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+  const dt = new Date(d.meta.uploadedAt);
+  g.innerHTML = `
+    <div><div class="lbl">Arquivo</div><div class="val" style="font-size:13px;">${d.meta.fileName||'—'}</div></div>
+    <div><div class="lbl">Publicado em</div><div class="val" style="font-size:13px;">${dt.toLocaleString('pt-BR')}</div></div>
+    <div><div class="lbl">Custo mensal</div><div class="val">${fmt(d.summary.custoMensal)}</div></div>
+    <div><div class="lbl">Usuários</div><div class="val">${d.summary.totalUsuarios}</div></div>
+  `;
+}
+
+function clearData() {
+  if (!confirm('Apagar os dados publicados? O painel ficará sem conteúdo até o próximo upload.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  showCurrent();
+}
+
+// ============================================
+// PARSER — espera o layout do "Custos_IA_C_Level.xlsx"
+// ============================================
+function parseWorkbook(wb) {
+  const data = { meta: {}, summary: {}, ferramentas: [], areas: [], areasSemRD: [], multiTool: [], usuarios: [], detalhamento: [] };
+
+  // ---- Resumo Executivo ----
+  const resumo = sheetRows(wb, 'Resumo Executivo');
+  if (resumo) {
+    data.meta.reference = (resumo[1]?.[0] || '').toString().replace('Consolidado mensal e projeção anual | Referência:', '').trim() || 'Maio/2026';
+    // Linhas de ferramentas: a partir do header em linha idx 3, até linha "TOTAL"
+    const headerIdx = resumo.findIndex(r => r[0] === 'Ferramenta');
+    let totalRow = null;
+    for (let i = headerIdx + 1; i < resumo.length; i++) {
+      const r = resumo[i];
+      if (!r || !r[0]) break;
+      if (r[0] === 'TOTAL') { totalRow = r; break; }
+      data.ferramentas.push({
+        nome: r[0], categoria: r[1], usuarios: r[2],
+        custoMensal: Number(r[3])||0, custoAnual: Number(r[4])||0, pctTotal: Number(r[5])||0,
+      });
+    }
+    if (totalRow) {
+      data.summary.custoMensal = Number(totalRow[3])||0;
+      data.summary.custoAnual = Number(totalRow[4])||0;
+      data.summary.totalUsuarios = Number(totalRow[2])||0;
+    }
+    // Indicadores chave
+    const indicators = {
+      'Número de Ferramentas': 'numFerramentas',
+      'Ferramentas Pagas': 'ferramentasPagas',
+      'Ferramentas Gratuitas': 'ferramentasGratuitas',
+      'Maior gasto mensal (R$)': 'maiorGastoMensal',
+      'Ticket médio por ferramenta paga (R$)': 'ticketMedio',
+    };
+    resumo.forEach(r => {
+      if (!r) return;
+      const key = indicators[r[0]];
+      if (key) data.summary[key] = Number(r[4])||0;
+    });
+    // Multi-ferramenta (#, Nome, Área, Cargo, Ferramentas, Qtd, Mensal, Anual)
+    const mtHeaderIdx = resumo.findIndex(r => r && r[0] === '#' && r[1] === 'Nome');
+    if (mtHeaderIdx > 0) {
+      for (let i = mtHeaderIdx + 1; i < resumo.length; i++) {
+        const r = resumo[i];
+        if (!r || typeof r[0] !== 'number') break;
+        data.multiTool.push({
+          ordem: r[0], nome: r[1], area: r[2], cargo: r[3],
+          ferramentas: r[4], qtd: Number(r[5])||0,
+          custoMensal: Number(r[6])||0, custoAnual: Number(r[7])||0,
+        });
+      }
+    }
+  }
+
+  // ---- IA Operacional (sem R&D) ----
+  const op = sheetRows(wb, 'IA Operacional (sem produt R&D)');
+  if (op) {
+    const totalIdx = op.findIndex(r => r && r[0] === 'TOTAL');
+    if (totalIdx > -1) {
+      data.summary.iaOperacionalMensal = Number(op[totalIdx][3])||0;
+      data.summary.iaOperacionalAnual = Number(op[totalIdx][4])||0;
+    }
+    op.forEach(r => {
+      if (!r) return;
+      if (r[0] === 'Contratos R&D Mensal') data.summary.contratosRDMensal = Number(r[4])||0;
+      if (r[0] === 'Contratos R&D Anual') data.summary.contratosRDAnual = Number(r[4])||0;
+      if (r[0] === '% R&D no total') data.summary.contratosRDPct = Number(r[4])||0;
+    });
+  }
+
+  // ---- Custo por Área (com R&D) ----
+  const area = sheetRows(wb, 'Custo por Área');
+  if (area) {
+    const hdr = area.findIndex(r => r && r[0] === 'Área' && r[1] === 'Descrição');
+    if (hdr > -1) {
+      for (let i = hdr + 1; i < area.length; i++) {
+        const r = area[i];
+        if (!r || !r[0] || r[0] === 'TOTAL' || (r[0]||'').toString().startsWith('Observação')) break;
+        data.areas.push({
+          area: r[0], descricao: r[1], usuarios: Number(r[2])||0,
+          custoMensal: Number(r[3])||0, custoAnual: Number(r[4])||0, pctTotal: Number(r[5])||0,
+        });
+      }
+    }
+  }
+
+  // ---- Custo por Área 2 (sem R&D) ----
+  const area2 = sheetRows(wb, 'Custo por Área 2');
+  if (area2) {
+    const hdr = area2.findIndex(r => r && r[0] === 'Área' && r[1] === 'Descrição');
+    if (hdr > -1) {
+      for (let i = hdr + 1; i < area2.length; i++) {
+        const r = area2[i];
+        if (!r || !r[0] || r[0] === 'TOTAL') break;
+        data.areasSemRD.push({
+          area: r[0], descricao: r[1], usuarios: Number(r[2])||0,
+          custoMensal: Number(r[3])||0, custoAnual: Number(r[4])||0, pctTotal: Number(r[5])||0,
+        });
+      }
+    }
+  }
+
+  // ---- Usuários por Ferramenta ----
+  const us = sheetRows(wb, 'Usuários por Ferramenta');
+  if (us) {
+    let currentTool = null;
+    us.forEach(r => {
+      if (!r || !r[0]) return;
+      const txt = r[0].toString();
+      // Section header pattern: "Claude  (128 listados / 128 licenças) ..."
+      const m = txt.match(/^([A-Za-zÀ-ú0-9 .&]+?)\s*\(/);
+      if (m && typeof r[0] === 'string' && /\d+ listados/.test(txt)) {
+        currentTool = m[1].trim();
+        return;
+      }
+      if (typeof r[0] === 'number' && r[1] && currentTool) {
+        data.usuarios.push({
+          ferramenta: currentTool,
+          nome: r[1], email: r[2], cargo: r[3], area: r[4], gestor: r[5],
+          tier: r[6], custoMensal: Number(r[7])||0,
+        });
+      }
+    });
+  }
+
+  // ---- Detalhamento por Ferramenta ----
+  const det = sheetRows(wb, 'Detalhamento por Ferramenta');
+  if (det) {
+    const hdr = det.findIndex(r => r && r[0] === 'Ferramenta');
+    if (hdr > -1) {
+      for (let i = hdr + 1; i < det.length; i++) {
+        const r = det[i];
+        if (!r || !r[0]) break;
+        if ((r[0]||'').toString().startsWith('Observa')) break;
+        data.detalhamento.push({
+          ferramenta: r[0],
+          usuarios: r[1],
+          custoMensal: Number(r[2])||0,
+          custoPorUsuarioMes: typeof r[3] === 'number' ? r[3] : null,
+          custoPorUsuarioAno: typeof r[4] === 'number' ? r[4] : null,
+          obs: typeof r[3] === 'string' ? r[3] : null,
+        });
+      }
+    }
+  }
+
+  return data;
+}
+
+function sheetRows(wb, name) {
+  const ws = wb.Sheets[name];
+  if (!ws) return null;
+  return XLSX.utils.sheet_to_json(ws, { header: 1, defval: null, raw: true });
+}
+
+// Init
+showCurrent();
+if (localStorage.getItem(STORAGE_KEY)) {
+  // já tem dados — login obrigatório mesmo assim
+}
+</script>
+</body>
+</html>
