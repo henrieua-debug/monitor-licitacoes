@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custos de IA · Painel Executivo</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f7f7f5; --bg3: #efefec;
+    --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
+    --text: #1a1a18; --text2: #5a5a56; --text3: #8a8a85;
+    --blue-bg: #E6F1FB; --blue-text: #185FA5; --blue: #2B7BCF;
+    --purple-bg: #EEEDFE; --purple-text: #3C3489; --purple: #6B5FD4;
+    --red-bg: #FAECE7; --red-text: #993C1D; --red: #C9522B;
+    --green-bg: #EAF3DE; --green-text: #3B6D11; --green: #5C9221;
+    --amber-bg: #FAEEDA; --amber-text: #854F0B; --amber: #C58B1F;
+    --teal: #2A9D9B; --pink: #C8669A; --slate: #5E6B7A;
+    --radius: 10px; --radius-lg: 14px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #181816;
+      --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.20);
+      --text: #f0f0ec; --text2: #a0a09a; --text3: #66665f;
+      --blue-bg: #0c2a45; --blue-text: #85B7EB;
+      --purple-bg: #1e1b3a; --purple-text: #AFA9EC;
+      --red-bg: #2e1a0f; --red-text: #F0997B;
+      --green-bg: #1a2e10; --green-text: #97C459;
+      --amber-bg: #2e1f08; --amber-text: #EF9F27;
+      --shadow: 0 1px 2px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.2);
+    }
+  }
+  body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; line-height: 1.4; }
+  .page { max-width: 1280px; margin: 0 auto; padding: 24px 20px 60px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* Header */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 18px 22px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .logo { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: 700; }
+  .t1 { font-size: 17px; font-weight: 600; }
+  .t2 { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .topbar-meta { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--text3); }
+  .pill { padding: 4px 10px; background: var(--bg2); border-radius: 999px; border: 0.5px solid var(--border); }
+  .print-btn { padding: 6px 12px; border-radius: 8px; border: 0.5px solid var(--border2); background: var(--bg2); color: var(--text); font-size: 12px; cursor: pointer; font-family: inherit; }
+  .print-btn:hover { background: var(--bg3); }
+
+  /* TL;DR ribbon */
+  .tldr { padding: 14px 22px; background: linear-gradient(90deg, var(--purple-bg), var(--blue-bg)); border: 0.5px solid var(--border); border-radius: var(--radius-lg); font-size: 14px; color: var(--text); display: flex; gap: 12px; align-items: flex-start; }
+  .tldr b { color: var(--purple-text); }
+  .tldr-icon { flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+  /* KPI grid */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi { padding: 18px 20px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+  .kpi-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .kpi-val { font-size: 26px; font-weight: 700; margin-top: 6px; letter-spacing: -0.02em; }
+  .kpi-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .kpi-delta { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .kpi-delta.neg { background: var(--red-bg); color: var(--red-text); }
+  .kpi-delta.pos { background: var(--green-bg); color: var(--green-text); }
+  .kpi-delta.neu { background: var(--amber-bg); color: var(--amber-text); }
+
+  /* Section card */
+  .section { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px 22px; box-shadow: var(--shadow); }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+  .sec-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .sec-sub { font-size: 12px; color: var(--text2); }
+  .sec-insight { font-size: 13px; color: var(--text); background: var(--bg2); padding: 10px 14px; border-radius: 10px; border-left: 3px solid var(--purple); margin-bottom: 14px; }
+
+  /* Grid layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+  /* Charts */
+  .chart-box { position: relative; height: 260px; }
+  .chart-box.tall { height: 320px; }
+  .chart-box.short { height: 200px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { text-align: left; font-weight: 600; color: var(--text2); padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; }
+  .tag.rd { background: var(--purple-bg); color: var(--purple-text); }
+  .tag.cc { background: var(--amber-bg); color: var(--amber-text); }
+  .tag.ga { background: var(--blue-bg); color: var(--blue-text); }
+  .tag.ps { background: var(--green-bg); color: var(--green-text); }
+  .tag.sm { background: var(--red-bg); color: var(--red-text); }
+  .tag.prem { background: var(--purple-bg); color: var(--purple-text); }
+  .tag.std { background: var(--bg3); color: var(--text2); }
+
+  /* Insight cards */
+  .insight { padding: 14px 16px; border-radius: 12px; border: 0.5px solid var(--border); display: flex; flex-direction: column; gap: 6px; min-height: 100%; }
+  .insight.warn { background: var(--amber-bg); border-color: var(--amber); }
+  .insight.crit { background: var(--red-bg); border-color: var(--red); }
+  .insight.ok { background: var(--green-bg); border-color: var(--green); }
+  .insight.info { background: var(--blue-bg); border-color: var(--blue); }
+  .insight-head { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .insight.warn .insight-head { color: var(--amber-text); }
+  .insight.crit .insight-head { color: var(--red-text); }
+  .insight.ok .insight-head { color: var(--green-text); }
+  .insight.info .insight-head { color: var(--blue-text); }
+  .insight-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .insight-val { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+  .insight-desc { font-size: 12px; color: var(--text2); line-height: 1.4; }
+  .insight-foot { font-size: 11px; color: var(--text3); margin-top: auto; padding-top: 6px; border-top: 1px dashed var(--border2); }
+
+  /* Recommendations */
+  .recos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .reco-col h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; }
+  .reco-col.short h4 { background: var(--red-bg); color: var(--red-text); }
+  .reco-col.med h4 { background: var(--amber-bg); color: var(--amber-text); }
+  .reco-col.long h4 { background: var(--blue-bg); color: var(--blue-text); }
+  .reco-item { padding: 10px 12px; background: var(--bg2); border-radius: 8px; margin-bottom: 6px; font-size: 12.5px; }
+  .reco-item b { display: block; font-size: 13px; margin-bottom: 2px; }
+  .reco-item small { color: var(--text3); }
+
+  /* Multi-tool bar (custom mini-viz) */
+  .multitool-row { display: grid; grid-template-columns: 1fr 60px 100px; gap: 8px; padding: 6px 0; border-bottom: 1px dashed var(--border); font-size: 12.5px; align-items: center; }
+  .multitool-row .name { display: flex; flex-direction: column; }
+  .multitool-row .name b { font-size: 13px; }
+  .multitool-row .name small { color: var(--text3); font-size: 11px; }
+  .qty-dots { display: flex; gap: 3px; }
+  .qty-dot { width: 10px; height: 10px; border-radius: 3px; background: var(--bg3); }
+  .qty-dot.on.q2 { background: var(--amber); }
+  .qty-dot.on.q3 { background: var(--red); }
+  .qty-dot.on.q4 { background: #8B1E1E; }
+
+  /* Footer / empty */
+  .empty { text-align: center; padding: 60px 20px; color: var(--text2); }
+  .empty a { color: var(--purple-text); }
+
+  /* Print */
+  @media print {
+    body { background: white; }
+    .page { padding: 0; max-width: none; gap: 8px; }
+    .section, .topbar, .kpi, .tldr { box-shadow: none; border: 0.5px solid #ccc; page-break-inside: avoid; }
+    .print-btn { display: none; }
+  }
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .grid-2-1, .grid-3, .recos { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page" id="root">
+  <div class="empty" id="empty">
+    <h2 style="margin-bottom: 12px;">Sem dados publicados</h2>
+    <p>Peça ao responsável publicar a planilha em <a href="admin.html">admin.html</a>.</p>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'iaCostsData_v1';
+const fmtBRL = n => 'R$ ' + (Math.abs(n||0) >= 1e6 ? ((n||0)/1e6).toLocaleString('pt-BR', {maximumFractionDigits:2}) + ' mi' : (n||0).toLocaleString('pt-BR', {maximumFractionDigits:0}));
+const fmtBRLfull = n => 'R$ ' + (n||0).toLocaleString('pt-BR', {maximumFractionDigits:0});
+const fmtPct = n => ((n||0) * 100).toFixed(1) + '%';
+const areaSlug = a => ({'R&D':'rd','CC':'cc','G&A':'ga','PS':'ps','S&M':'sm'})[a] || 'std';
+
+const data = {"meta":{"reference":"Maio/2026","fileName":"Custos_IA_C_Level.xlsx","uploadedAt":"2026-05-26T15:11:08.908Z"},"summary":{"custoMensal":199772,"custoAnual":2397264,"totalUsuarios":693,"numFerramentas":10,"ferramentasPagas":9,"ferramentasGratuitas":1,"maiorGastoMensal":104166.66666666667,"ticketMedio":22196.88888888889,"iaOperacionalMensal":56022,"iaOperacionalAnual":672264,"contratosRDMensal":143750,"contratosRDAnual":1725000,"contratosRDPct":0.7195703101535751},"ferramentas":[{"nome":"Builder360 R&D","categoria":"Contrato anual - Plataforma de IA para P&D","usuarios":"N/A (contrato anual)","custoMensal":104166.66666666667,"custoAnual":1250000,"pctTotal":0.5214277609808515},{"nome":"Assistente Inteligente R&D","categoria":"Contrato anual - Plataforma de IA para P&D","usuarios":"N/A (contrato anual)","custoMensal":39583.333333333336,"custoAnual":475000,"pctTotal":0.1981425491727236},{"nome":"Claude","categoria":"Anthropic - Assistente IA generalista","usuarios":128,"custoMensal":37000,"custoAnual":444000,"pctTotal":0.18521114070039846},{"nome":"Fortics","categoria":"Plataforma de atendimento IA (SZ.chat)","usuarios":"N/A (plataforma)","custoMensal":7758,"custoAnual":93096,"pctTotal":0.03883427106901868},{"nome":"GitHub Copilot","categoria":"GitHub - Assistente de código com IA","usuarios":23,"custoMensal":5152,"custoAnual":61824,"pctTotal":0.02578939991590413},{"nome":"ChatGPT","categoria":"OpenAI - Assistente IA generalista","usuarios":10,"custoMensal":5100,"custoAnual":61200,"pctTotal":0.02552910317762249},{"nome":"Adobe IA","categoria":"Adobe - Recursos de IA generativa (Firefly/Acrobat)","usuarios":5,"custoMensal":640,"custoAnual":7680,"pctTotal":0.0032036521634663515},{"nome":"Google NotebookLM","categoria":"Google - Pesquisa e síntese","usuarios":5,"custoMensal":232,"custoAnual":2784,"pctTotal":0.0011613239092565526},{"nome":"Gamma","categoria":"Geração de apresentações com IA","usuarios":2,"custoMensal":140,"custoAnual":1680,"pctTotal":0.0007007989107582645},{"nome":"Chat Copilot","categoria":"Microsoft - Copilot Chat (gratuito)","usuarios":520,"custoMensal":0,"custoAnual":0,"pctTotal":0}],"areas":[{"area":"R&D","descricao":"Research & Development","usuarios":51,"custoMensal":166520,"custoAnual":1998240,"pctTotal":0.8358783147504513},{"area":"CC","descricao":"Customer Care","usuarios":17,"custoMensal":15553.6,"custoAnual":186643.2,"pctTotal":0.07807420704001092},{"area":"G&A","descricao":"General & Administrative","usuarios":48,"custoMensal":13222,"custoAnual":158664,"pctTotal":0.06637030433359636},{"area":"PS","descricao":"Professional Services","usuarios":20,"custoMensal":2800,"custoAnual":33600,"pctTotal":0.01405512419710103},{"area":"S&M","descricao":"Sales & Marketing","usuarios":8,"custoMensal":1120,"custoAnual":13440,"pctTotal":0.005622049678840412}],"areasSemRD":[{"area":"R&D","descricao":"Research & Development","usuarios":51,"custoMensal":22770,"custoAnual":273240,"pctTotal":0.4105247216292621},{"area":"CC","descricao":"Customer Care","usuarios":17,"custoMensal":15553.6,"custoAnual":186643.2,"pctTotal":0.2804188542087348},{"area":"G&A","descricao":"General & Administrative","usuarios":48,"custoMensal":13222,"custoAnual":158664,"pctTotal":0.23838198811515607},{"area":"PS","descricao":"Professional Services","usuarios":20,"custoMensal":2800,"custoAnual":33600,"pctTotal":0.05048174003346218},{"area":"S&M","descricao":"Sales & Marketing","usuarios":8,"custoMensal":1120,"custoAnual":13440,"pctTotal":0.020192696013384873}],"multiTool":[{"ordem":1,"nome":"Rodrigo da Rosa Walter","area":"CC","cargo":"Especialista em Inovação e Atendimento Digital","ferramentas":"Adobe IA + ChatGPT + Claude (Standard) + NotebookLM","qtd":4,"custoMensal":824.4,"custoAnual":9892.8},{"ordem":2,"nome":"Rodrigo Franco Nunes","area":"CC","cargo":"Especialista em Inovação e Atendimento Digital","ferramentas":"Adobe IA + ChatGPT + Claude (Standard) + NotebookLM","qtd":4,"custoMensal":824.4,"custoAnual":9892.8},{"ordem":3,"nome":"Luis Fernando Garuti","area":"CC","cargo":"Especialista em Inovação e Atendimento Digital","ferramentas":"Adobe IA + ChatGPT + Claude (Standard) + NotebookLM","qtd":4,"custoMensal":824.4,"custoAnual":9892.8},{"ordem":4,"nome":"Manuela Bolsonaro Ferreira Lima Miziara","area":"CC","cargo":"Coordenador(a) em Sucesso do Cliente","ferramentas":"ChatGPT + Claude (Standard) + Gamma + NotebookLM","qtd":4,"custoMensal":766.4,"custoAnual":9196.8},{"ordem":5,"nome":"Luiz Augusto Ribeiro Ferro","area":"CC","cargo":"Especialista em Inovação e Atendimento Digital","ferramentas":"Adobe IA + ChatGPT + Claude (Standard)","qtd":3,"custoMensal":778,"custoAnual":9336},{"ordem":6,"nome":"Rodolfo Americo Rodrigues Martins","area":"CC","cargo":"Especialista em Inovação e Atendimento Digital","ferramentas":"Adobe IA + ChatGPT + Claude (Standard)","qtd":3,"custoMensal":778,"custoAnual":9336},{"ordem":7,"nome":"Livia Piovesan e Sa Zepponi","area":"CC","cargo":"Vice-Presidente","ferramentas":"ChatGPT + Claude (Standard) + Gamma","qtd":3,"custoMensal":720,"custoAnual":8640},{"ordem":8,"nome":"Gean Marcelo Vailatti","area":"R&D","cargo":"Arquiteto(a) de Software","ferramentas":"Claude (Premium) + GitHub Copilot","qtd":2,"custoMensal":894,"custoAnual":10728},{"ordem":9,"nome":"Edison Henrique Andreassy","area":"R&D","cargo":"Arquiteto(a) de Software","ferramentas":"Claude (Premium) + GitHub Copilot","qtd":2,"custoMensal":894,"custoAnual":10728},{"ordem":10,"nome":"Joao Guilherme Rossanesi Matos","area":"R&D","cargo":"Analista DEVOPS Pl","ferramentas":"Claude (Premium) + GitHub Copilot","qtd":2,"custoMensal":894,"custoAnual":10728},{"ordem":11,"nome":"Andre Carlos Dias Silva","area":"CC","cargo":"Especialista em Inovação e Atendimento Digital","ferramentas":"ChatGPT + Claude (Standard)","qtd":2,"custoMensal":650,"custoAnual":7800},{"ordem":12,"nome":"Thais Karoline Bernaski","area":"G&A","cargo":"Desenvolvedor(a) Jr","ferramentas":"Claude (Standard) + GitHub Copilot","qtd":2,"custoMensal":364,"custoAnual":4368},{"ordem":13,"nome":"Paulo Ricardo de Oliveira Freitas Rodrigues","area":"G&A","cargo":"Desenvolvedor(a) Jr","ferramentas":"Claude (Standard) + GitHub Copilot","qtd":2,"custoMensal":364,"custoAnual":4368},{"ordem":14,"nome":"Washington Borges Rosa","area":"G&A","cargo":"Desenvolvedor(a) Sr","ferramentas":"Claude (Standard) + GitHub Copilot","qtd":2,"custoMensal":364,"custoAnual":4368},{"ordem":15,"nome":"Fernando Dias Rozas","area":"R&D","cargo":"Analista de Sistemas Sr","ferramentas":"Claude (Standard) + GitHub Copilot","qtd":2,"custoMensal":364,"custoAnual":4368},{"ordem":16,"nome":"Henrique Bespalhuk Facci","area":"R&D","cargo":"Analista de Sistemas Sr","ferramentas":"Claude (Standard) + GitHub Copilot","qtd":2,"custoMensal":364,"custoAnual":4368}],"usuarios":[{"ferramenta":"Claude","nome":"Alcenir Vergilio Negri","email":"alcenir.negri@governancabrasil.com.br","cargo":"Analista de Negocios Pl","area":"R&D","gestor":"Jader Elias Franz","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Alessandro Cesar Torido","email":"alessandro.torido@governancabrasil.com.br","cargo":"Gerente de Operacoes de TI","area":"G&A","gestor":"Rafael Goncalves Denardi","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Andre Vieira da Costa","email":"andre.costa@governancabrasil.com.br","cargo":"Analista de Negocios Pl","area":"R&D","gestor":"Jader Elias Franz","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Christian Rita de Moura","email":"christian.moura@governancabrasil.com.br","cargo":"Gerente de Gente e Cultura","area":"G&A","gestor":"Marcelo Ferreira Chaves de Oliveira Lima","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Cleber Nardelli","email":"cleber.nardelli@governancabrasil.com.br","cargo":"Gerente de Tecnologia e Pesquisa","area":"R&D","gestor":"Ivan Correia Filagrana","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Davi Marin Rodrigues Silva","email":"davi.silva@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Cleber Nardelli","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Debora Cristina Leira Ramos","email":"debora.ramos@governancabrasil.com.br","cargo":"Gerente de Desenvolvimento","area":"R&D","gestor":"Saulo Reschke Parizotto","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Denis Augusto Vicentainer","email":"denis.vicentainer@governancabrasil.com.br","cargo":"Engenheiro(a) de Inteligência Artificial (IA)","area":"R&D","gestor":"Joao Vitor Miguel","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Djeferson Preis","email":"djeferson.preis@governancabrasil.com.br","cargo":"Desenvolvedor(a) Sr","area":"R&D","gestor":"Joao Vitor Miguel","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Edison Henrique Andreassy","email":"henrique.andreassy@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Cleber Nardelli","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Flavio Luiz Junior da Silva","email":"flavio.silva@governancabrasil.com.br","cargo":"Gerente de Desenvolvimento","area":"R&D","gestor":"Saulo Reschke Parizotto","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Frederico Marques Lourente","email":"frederico.lourente@governancabrasil.com.br","cargo":"Gerente de Produto","area":"R&D","gestor":"Ivan Correia Filagrana","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Gabriel Theiss","email":"gabriel.theiss@governancabrasil.com.br","cargo":"Gerente de Desenvolvimento","area":"R&D","gestor":"Saulo Reschke Parizotto","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Gean Marcelo Vailatti","email":"gean.vailatti@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Sulema Munoz Montesino Andreassy","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Guilherme Serafin de Carvalho","email":"guilherme.carvalho@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Ionara de Cassia Maggi Bemfica Sachet","email":"ionara.sachet@governancabrasil.com.br","cargo":"Analista de Negocios Pl","area":"R&D","gestor":"Jader Elias Franz","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Isabela Piardi","email":"isabela.piardi@governancabrasil.com.br","cargo":"Desenvolvedor(a) Sr","area":"R&D","gestor":"Joao Vitor Miguel","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Ivan Alexandre Bazzilli Caliari","email":"ivan.caliari@governancabrasil.com.br","cargo":"Gerente de Planejamento Financeiro","area":"G&A","gestor":"Rafael Goncalves Denardi","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Ivan Correia Filagrana","email":"ivan.filagrana@governancabrasil.com.br","cargo":"Vice-Presidente","area":"R&D","gestor":"Tiago Padilha Serpa","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Jader Elias Franz","email":"jader.franz@governancabrasil.com.br","cargo":"Gerente de Produto","area":"R&D","gestor":"Ivan Correia Filagrana","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Jeferson Penz","email":"jeferson.penz@governancabrasil.com.br","cargo":"Desenvolvedor(a) Sr","area":"R&D","gestor":"Sulema Munoz Montesino Andreassy","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Joao Guilherme Rossanesi Matos","email":"joao.matos@governancabrasil.com.br","cargo":"Analista DEVOPS Pl","area":"R&D","gestor":"Cleber Nardelli","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Johann Sebastian Chacorowski Klemann","email":"johann.klemann@governancabrasil.com.br","cargo":"Aprendiz (Administrativo(a))","area":"G&A","gestor":"Christian Rita de Moura","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Juliana Alves dos Santos","email":"juliana.alves@governancabrasil.com.br","cargo":"Lider de Gente e Cultura","area":"G&A","gestor":"Christian Rita de Moura","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Larissa Constantino","email":"larissa.constantino@governancabrasil.com.br","cargo":"Analista de Gente e Cultura Sr","area":"G&A","gestor":"Priscila Carine Budag Nunes","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Leirson Helio Schiestl","email":"leirson.schiestl@governancabrasil.com.br","cargo":"Gerente de Desenvolvimento","area":"R&D","gestor":"Saulo Reschke Parizotto","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Lucas Manerich","email":"lucas.manerich@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Sulema Munoz Montesino Andreassy","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Nemuel Ruan Ferreira de Sousa","email":"nemuel.sousa@governancabrasil.com.br","cargo":"Analista DEVOPS Sr","area":"R&D","gestor":"Sulema Munoz Montesino Andreassy","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Pietro Costa Giuliani","email":"pietro.giuliani@governancabrasil.com.br","cargo":"Analista de Negocios Jr","area":"R&D","gestor":"Jader Elias Franz","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Priscila Carine Budag Nunes","email":"priscila.budag@governancabrasil.com.br","cargo":"Lider de Departamento Pessoal","area":"G&A","gestor":"Christian Rita de Moura","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Ricardo Miranda Ianni","email":"ricardo.ianni@governancabrasil.com.br","cargo":"Analista de Sistemas Pl","area":"R&D","gestor":"Joao Vitor Miguel","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Rodrigo Soares","email":"rodrigo.soares@governancabrasil.com.br","cargo":"Analista de Negocios Pl","area":"R&D","gestor":"Jader Elias Franz","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Saulo Reschke Parizotto","email":"saulo.parizotto@governancabrasil.com.br","cargo":"Gerente Senior de Desenvolvimento","area":"R&D","gestor":"Ivan Correia Filagrana","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Sofia Nogueira Flores","email":"sofia.flores@governancabrasil.com.br","cargo":"Analista de Gente e Cultura Jr","area":"G&A","gestor":"Juliana Alves dos Santos","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Thalles Lopes de Oliveira","email":"thalles.oliveira@governancabrasil.com.br","cargo":"Especialista em People Analytics","area":"G&A","gestor":"Christian Rita de Moura","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Willian Filipe da Silva","email":"willian.silva@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Premium","custoMensal":670},{"ferramenta":"Claude","nome":"Ademir Vieira da Silva Endlich","email":"ademir.vieira@governancabrasil.com.br","cargo":"Gerente de Servicos","area":"PS","gestor":"Thiago Roberto Nogueira","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Adenor Reiter Neto","email":"adenor.neto@governancabrasil.com.br","cargo":"Analista Contabil Pl","area":"G&A","gestor":"Alexandre do Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Alexandre do Nascimento","email":"alexandre.nascimento@governancabrasil.com.br","cargo":"Coordenador(a) Contabil","area":"G&A","gestor":"Flavio de Freitas","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Alexandre Gaklik","email":"alexandre.gaklik@governancabrasil.com.br","cargo":"Consultor(a) de Produto Sr","area":"PS","gestor":"Gabriel Bosi Polli","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Amanda Louise Vieira","email":"amanda.vieira@governancabrasil.com.br","cargo":"Analista de Gente e Cultura Jr","area":"G&A","gestor":"Juliana Alves dos Santos","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Andre Carlos Dias Silva","email":"andre.silva@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Andressa Micheluzzi","email":"andressa.micheluzzi@governancabrasil.com.br","cargo":"Analista Contabil Pl","area":"G&A","gestor":"Alexandre do Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Assis de Barros Nascimento","email":"assis.nascimento@governancabrasil.com.br","cargo":"Coordenador(a) de TI","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Bruna da Silveira Ojeda","email":"bruna.ojeda@governancabrasil.com.br","cargo":"Coordenador(a) de Suporte","area":"CC","gestor":"Yansen Martins Poco","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Bruno Hott de Freitas","email":"bruno.freitas@governancabrasil.com.br","cargo":"Consultor(a) de Produto Sr","area":"PS","gestor":"Ademir Vieira da Silva Endlich","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Camila Vanessa Sevegnani","email":"camila.sevegnani@governancabrasil.com.br","cargo":"Analista de Gente e Cultura Pl","area":"G&A","gestor":"Priscila Carine Budag Nunes","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Camila Vargas de Campos","email":"camila.campos@governancabrasil.com.br","cargo":"Consultor(a) de Produto Sr","area":"PS","gestor":"Sheila Cristina Basotti","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Danilo Aparecido Dellaspora","email":"danilo.dellaspora@governancabrasil.com.br","cargo":"Coordenador(a) de Servicos","area":"PS","gestor":"Carlos Alberto Frequete de Macedo","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Dilvani Correa de Oliveira","email":"dilvani.correa@governancabrasil.com.br","cargo":"Coordenador(a) Planejamento de Produto","area":"R&D","gestor":"Ivan Correia Filagrana","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Equipe de Marketing","email":"marketing@governancabrasil.com.br","cargo":"Marketing","area":"S&M","gestor":"Miguel","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Evandro Paris","email":"evandro.paris@governancabrasil.com.br","cargo":"Consultor(a) de Negocios Jr","area":"PS","gestor":"Luiz Carlos Biazi Junior","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Fernanda Bubniak Schramm","email":"fernanda.schramm@governancabrasil.com.br","cargo":"Analista Adm Despesas Jr","area":"G&A","gestor":"Vanessa Bittencourt Bandeira dos Reis","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Fernando Dias Rozas","email":"fernando.rozas@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Flavio Luiz Junior da Silva","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Fillipi Garcia Madrid","email":"Fillipi.Madrid@governancabrasil.com.br","cargo":"Gerente de Servicos","area":"PS","gestor":"Thiago Roberto Nogueira","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Flavio de Freitas","email":"flavio.freitas@governancabrasil.com.br","cargo":"Gerente Contábil","area":"G&A","gestor":"Rafael Goncalves Denardi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Gabriel Alves Pinto","email":"gabriel.pinto@governancabrasil.com.br","cargo":"Tecnico(a) de Produto Nacional Jr","area":"CC","gestor":"Gabrielle Dellagostin Walker","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Gabriel Bosi Polli","email":"gabriel.polli@governancabrasil.com.br","cargo":"Coordenador(a) de Servicos","area":"PS","gestor":"Fillipi Garcia Madrid","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Gabrielle Dellagostin Walker","email":"gabrielle.walker@governancabrasil.com.br","cargo":"Coordenador(a) de Suporte","area":"CC","gestor":"Yansen Martins Poco","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Gestão Infra","email":"gestao.infra@governancabrasil.com.br","cargo":"Técnico de Infraestrutura","area":"G&A","gestor":"Assis Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Giovani Kemper","email":"giovani.kemper@governancabrasil.com.br","cargo":"Coordenador(a) de Operacoes","area":"R&D","gestor":"Marcos Vinicius dos Santos Pereira","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Grace Kelly Schmitt Cortes Vasquez","email":"grace.vasquez@governancabrasil.com.br","cargo":"Analista de Gente e Cultura Pl","area":"G&A","gestor":"Juliana Alves dos Santos","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Graciele Meire Ferreira","email":"graciele.ferreira@governancabrasil.com.br","cargo":"Assistente de Gente e Cultura","area":"G&A","gestor":"Priscila Carine Budag Nunes","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Guilherme Ambrosio Antunes","email":"guilherme.antunes@governancabrasil.com.br","cargo":"Consultor(a) de Produto Pl","area":"PS","gestor":"Danilo Aparecido Dellaspora","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Guilherme Craco Silva","email":"guilherme.silva@governancabrasil.com.br","cargo":"Coordenador(a) de Suporte","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Gustavo Felipe Soares","email":"gustavo.soares@governancabrasil.com.br","cargo":"Analista de Dados Pl","area":"G&A","gestor":"Ivan Alexandre Bazzilli Caliari","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Henrique Bespalhuk Facci","email":"henrique.facci@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Gabriel Theiss","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Igor Thiago Balsanelli Martins","email":"igor.martins@governancabrasil.com.br","cargo":"Analista SRE","area":"R&D","gestor":"Marcos Vinicius dos Santos Pereira","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Ingrid Hinkeldey","email":"ingrid.hinkeldey@governancabrasil.com.br","cargo":"Assistente Contabil","area":"G&A","gestor":"Alexandre do Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Iober Henrique da Cruz","email":"iober.cruz@governancabrasil.com.br","cargo":"Administrador(a) de Dados Pl","area":"PS","gestor":"Paulo Diego Lemke Nunes","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Jaqueline Aparecida Michalack","email":"jaqueline.michalack@governancabrasil.com.br","cargo":"Coordenador(a) de Suporte","area":"CC","gestor":"Yansen Martins Poco","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Jarom Sambrana da Rosa","email":"jarom.Rosa@governancabrasil.com.br","cargo":"Consultor(a) de Produto Pl","area":"PS","gestor":"Gabriel Bosi Polli","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Jean Fernando Sassi","email":"jean.sassi@governancabrasil.com.br","cargo":"Consultor(a) de Produto Sr","area":"PS","gestor":"Sheila Cristina Basotti","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Jessica Cristina Fortunato da Costa","email":"jessica.fortunato@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Jessica Tamara Silva","email":"jessica.silva@governancabrasil.com.br","cargo":"Assistente Administrativo(a) II","area":"G&A","gestor":"Katia Regina Steil","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Joao Guilherme Koehler Filho","email":"joao.guilherme@governancabrasil.com.br","cargo":"Especialista em Estratégia de Vendas","area":"S&M","gestor":"Miguel Oliveira Moreira Junior","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Joaquim Batista Junior","email":"joaquim.junior@governancabrasil.com.br","cargo":"Consultor(a) de Produto Sr","area":"PS","gestor":"Danilo Aparecido Dellaspora","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Jorge Lucas Martins","email":"jorge.martins@governancabrasil.com.br","cargo":"Analista de Infraestrutura Cloud Sr","area":"R&D","gestor":"Giovani Kemper","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Kamila Santos Silveira","email":"kamila.silveira@governancabrasil.com.br","cargo":"Especialista de Operacoes de Vendas","area":"S&M","gestor":"Rodrigo Gomes Braga","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Katia Regina Steil","email":"katia.steil@governancabrasil.com.br","cargo":"Gerente Financeiro(a)","area":"G&A","gestor":"Rafael Goncalves Denardi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Kaua Garcez Buchweitz","email":"kaua.buchweitz@governancabrasil.com.br","cargo":"Analista de Dados Jr","area":"G&A","gestor":"Ivan Alexandre Bazzilli Caliari","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Larissa Dutra","email":"larissa.dutra@governancabrasil.com.br","cargo":"Analista de Gente e Cultura Pl","area":"G&A","gestor":"Juliana Alves dos Santos","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Leonardo Severino Rosa","email":"leonardo.rosa@governancabrasil.com.br","cargo":"Gerente de Grandes Contas","area":"S&M","gestor":"Miguel Oliveira Moreira Junior","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Livia Piovesan e Sa Zepponi","email":"livia.sa@governancabrasil.com.br","cargo":"Vice-Presidente","area":"CC","gestor":"Tiago Padilha Serpa","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Luana Lemes Ferreira Novaes","email":"luana.novaes@governancabrasil.com.br","cargo":"Coordenador(a) de Suporte","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Lucas Bittencourt Ferreira","email":"Lucas.Ferreira@governancabrasil.com.br","cargo":"Administrador(a) de Dados Pl","area":"PS","gestor":"Paulo Diego Lemke Nunes","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Luis Fernando Garuti","email":"luiz.garuti@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Luis Guilherme Furlan Buck de Oliveira","email":"luis.oliveira@governancabrasil.com.br","cargo":"Coordenador(a) de Licitacoes e Contratos","area":"S&M","gestor":"Roberlei Cesar Fernandes","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Luiz Antonio Fontana Pagani","email":"luiz.pagani@governancabrasil.com.br","cargo":"Analista de Infraestrutura TI Jr","area":"G&A","gestor":"Assis de Barros Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Luiz Augusto Ribeiro Ferro","email":"luiz.ferro@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Luiz Gustavo de Avila Giusto","email":"luiz.giusto@governancabrasil.com.br","cargo":"Analista de Infraestrutura Cloud Sr","area":"R&D","gestor":"Giovani Kemper","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Madeleine Tais Moura de Souza","email":"madeleine.souza@governancabrasil.com.br","cargo":"Coordenador(a) de Suporte","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Manuela Bolsonaro Ferreira Lima Miziara","email":"manuela.miziara@governancabrasil.com.br","cargo":"Coordenador(a) em Sucesso do Cliente","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Mara Serafin","email":"mara.serafin@governancabrasil.com.br","cargo":"Analista Adm Receitas Jr","area":"S&M","gestor":"Miguel Oliveira Moreira Junior","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Marcelo Camacho Nunes","email":"marcelo.nunes@governancabrasil.com.br","cargo":"Analista de Processos Sr","area":"G&A","gestor":"Ivan Alexandre Bazzilli Caliari","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Marcelo Ferreira Chaves de Oliveira Lima","email":"marcelo.lima@governancabrasil.com.br","cargo":"CHRO & CCO","area":"G&A","gestor":"Henrique Barreto","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Marcelo Rodrigues","email":"marcelo.rodrigues@governancabrasil.com.br","cargo":"Especialista de Inteligencia Comercial","area":"G&A","gestor":"Ivan Alexandre Bazzilli Caliari","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Marcos Vinicius dos Santos Pereira","email":"marcos.pereira@governancabrasil.com.br","cargo":"Gerente de Tecnologia e Pesquisa","area":"R&D","gestor":"Ivan Correia Filagrana","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Matheus Davies Guerra","email":"matheus.guerra@governancabrasil.com.br","cargo":"Analista de Infraestrutura Cloud Sr","area":"R&D","gestor":"Giovani Kemper","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Patricia Correia de Araujo","email":"Patricia.Araujo@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Patrick Jean dos Santos Vieira","email":"patrick.vieira@governancabrasil.com.br","cargo":"Analista de Inteligencia de Mercado Jr","area":"G&A","gestor":"Ivan Alexandre Bazzilli Caliari","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Paulo Alberto Correia Goncalves","email":"paulo.goncalves@governancabrasil.com.br","cargo":"Analista de Infraestrutura Pl","area":"G&A","gestor":"Assis de Barros Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Paulo Cesar Siquiero Filho","email":"paulo.siquiero@governancabrasil.com.br","cargo":"Desenvolvedor(a) Sr","area":"PS","gestor":"Carlos Alberto Frequete de Macedo","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Paulo Ricardo de Oliveira Freitas Rodrigues","email":"paulo.rodrigues@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rafael Goncalves Denardi","email":"RAFAEL.DENARDI@governancabrasil.com.br","cargo":"CFO","area":"G&A","gestor":"Henrique Barreto","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rafael Radunz","email":"rafael.radunz@governancabrasil.com.br","cargo":"Desenvolvedor(a) Pl","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rafael Ruiz Zanim","email":"rafael.zanim@governancabrasil.com.br","cargo":"Administrador(a) de Dados Pl","area":"PS","gestor":"Paulo Diego Lemke Nunes","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Roberlei","email":"roberlei.fernandes@governancabrasil.com.br","cargo":"Diretor","area":"S&M","gestor":"Miguel","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rodolfo Americo Rodrigues Martins","email":"rodolfo.martins@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rodrigo da Rosa Walter","email":"Rodrigo.Walter@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rodrigo Franco Nunes","email":"rodrigo.franco@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rodrigo Gomes Braga","email":"rodrigo.braga@governancabrasil.com.br","cargo":"Diretor(a)","area":"S&M","gestor":"Miguel Oliveira Moreira Junior","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Rose Marli Frehner Cardouzo","email":"ROSE.CARDOUZO@governancabrasil.com.br","cargo":"Analista Financeiro Sr","area":"G&A","gestor":"Katia Regina Steil","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Sheila Cristina Basotti","email":"sheila.Basotti@governancabrasil.com.br","cargo":"Coordenador(a) de Servicos","area":"PS","gestor":"Fillipi Garcia Madrid","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Tatiane Resquiti Paulino","email":"tatiane.paulino@governancabrasil.com.br","cargo":"Assistente Adm Receitas I","area":"G&A","gestor":"Katia Regina Steil","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Thais Karoline Bernaski","email":"thais.bernaski@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Thaisa Regina Kruger Dupim","email":"thaisa.dupim@governancabrasil.com.br","cargo":"Analista de Processos Jr","area":"G&A","gestor":"Ivan Alexandre Bazzilli Caliari","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Thiago Roberto Nogueira","email":"thiago.nogueira@governancabrasil.com.br","cargo":"Gerente Nacional de Servicos Profissionais","area":"PS","gestor":"Tiago Padilha Serpa","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Tiago Bertoncello Pagliosa","email":"tiago.pagliosa@governancabrasil.com.br","cargo":"Analista de Infraestrutura TI Pl","area":"G&A","gestor":"Assis de Barros Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Tiago Padilha Serpa","email":"tiago.serpa@governancabrasil.com.br","cargo":"COO","area":"PS","gestor":"Henrique Barreto","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Valeria Patricia Dias","email":"valeria.dias@governancabrasil.com.br","cargo":"Analista DEVOPS Jr","area":"R&D","gestor":"Giovani Kemper","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Vanessa Bittencourt Bandeira dos Reis","email":"vanessa.reis@governancabrasil.com.br","cargo":"Gerente Administrativo","area":"G&A","gestor":"Rafael Goncalves Denardi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Vanessa Karoliny Martins Marcal Alves","email":"vanessa.alves@governancabrasil.com.br","cargo":"Analista de Infraestrutura Cloud Jr","area":"R&D","gestor":"Giovani Kemper","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Vitor Hugo Ferreira Conceicao","email":"Vitor.Conceicao@governancabrasil.com.br","cargo":"Consultor(a) de Negocios Pl","area":"PS","gestor":"Carlos Alberto Frequete de Macedo","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Washington Borges Rosa","email":"washington.rosa@governancabrasil.com.br","cargo":"Desenvolvedor(a) Sr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"William Rosa","email":"william.rosa@governancabrasil.com.br","cargo":"Assistente Contabil","area":"G&A","gestor":"Alexandre do Nascimento","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Yansen Martins Poco","email":"yansen.martins@governancabrasil.com.br","cargo":"Gerente de Customer Sucess","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":"Standard","custoMensal":140},{"ferramenta":"Claude","nome":"Yasmine Lima de Oliveira","email":"yasmine.oliveira@governancabrasil.com.br","cargo":"Analista Adm Despesas Jr","area":"G&A","gestor":"Vanessa Bittencourt Bandeira dos Reis","tier":"Standard","custoMensal":140},{"ferramenta":"GitHub Copilot","nome":"Edison Henrique Andreassy","email":"henrique.andreassy@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Cleber Nardelli","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Bruno Oliveira Lucindo","email":"bruno.lucindo@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Gabriel Theiss","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Washington Borges Rosa","email":"washington.rosa@governancabrasil.com.br","cargo":"Desenvolvedor(a) Sr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Alex Fernandes Gregio","email":"alex.gregio@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Leirson Helio Schiestl","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Jean Marcello Matias do Amaral","email":"jean.amaral@governancabrasil.com.br","cargo":"Analista de Testes Pl","area":"R&D","gestor":"Gabriel Theiss","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Marcelino Rogerio Barbosa Junior","email":"marcelino.junior@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Leirson Helio Schiestl","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Fernando Dias Rozas","email":"fernando.rozas@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Flavio Luiz Junior da Silva","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Gean Marcelo Vailatti","email":"gean.vailatti@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Sulema Munoz Montesino Andreassy","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Paulo Ricardo de Oliveira Freitas Rodrigues","email":"paulo.rodrigues@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Henrique Bespalhuk Facci","email":"henrique.facci@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Gabriel Theiss","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Joao Guilherme Rossanesi Matos","email":"joao.matos@governancabrasil.com.br","cargo":"Analista DEVOPS Pl","area":"R&D","gestor":"Cleber Nardelli","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Felipe Raphael Mareco Lamarao","email":"felipe.lamarao@governancabrasil.com.br","cargo":"Analista de Testes Pl","area":"R&D","gestor":"Debora Cristina Leira Ramos","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Israel Moreira","email":"israel.moreira@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Debora Cristina Leira Ramos","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Juana da Silva Pedreira","email":"juana.pedreira@governancabrasil.com.br","cargo":"Analista de Testes Pl","area":"R&D","gestor":"Debora Cristina Leira Ramos","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Paulo Augusto Bredlau","email":"paulo.bredlau@governancabrasil.com.br","cargo":"Analista de Sistemas Sr","area":"R&D","gestor":"Flavio Luiz Junior da Silva","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Rodrigo Depine Dalpiaz","email":"rodrigo.dalpiaz@governancabrasil.com.br","cargo":"Arquiteto(a) de Software","area":"R&D","gestor":"Debora Cristina Leira Ramos","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Eliane da Luz Felicio Adriano","email":"eliane.luz@governancabrasil.com.br","cargo":"Analista de Testes Pl","area":"R&D","gestor":"Flavio Luiz Junior da Silva","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Raul Luciano Morais dos Santos","email":"raul.santos@governancabrasil.com.br","cargo":"Analista de Testes Jr","area":"R&D","gestor":"Leirson Helio Schiestl","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Thais Karoline Bernaski","email":"thais.bernaski@governancabrasil.com.br","cargo":"Desenvolvedor(a) Jr","area":"G&A","gestor":"Alessandro Cesar Torido","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Amanda Palmas","email":"amanda.palmas@governancabrasil.com.br","cargo":"Analista QA Pl","area":"R&D","gestor":"Gabriel Theiss","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Lucas Henrique Duarte","email":"lucas.duarte@governancabrasil.com.br","cargo":"Analista QA","area":"R&D","gestor":"Flavio Luiz Junior da Silva","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Patricia Haase","email":"patricia.haase@governancabrasil.com.br","cargo":"Analista QA Pl","area":"R&D","gestor":"Debora Cristina Leira Ramos","tier":null,"custoMensal":224},{"ferramenta":"GitHub Copilot","nome":"Ricardo Cordeiro Silva","email":"ricardo.silva@governancabrasil.com.br","cargo":"Analista de Testes Pl","area":"R&D","gestor":"Debora Cristina Leira Ramos","tier":null,"custoMensal":224},{"ferramenta":"ChatGPT","nome":"Luis Fernando Garuti","email":"luiz.garuti@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Andrews Fernando da Silva","email":"andrews.silva@governancabrasil.com.br","cargo":"Consultor(a) de Produto Pl","area":"PS","gestor":"Sheila Cristina Basotti","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Livia Piovesan e Sa Zepponi","email":"livia.sa@governancabrasil.com.br","cargo":"Vice-Presidente","area":"CC","gestor":"Tiago Padilha Serpa","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Rodrigo Franco Nunes","email":"rodrigo.franco@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Rodrigo da Rosa Walter","email":"rodrigo.walter@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Luiz Augusto Ribeiro Ferro","email":"luiz.ferro@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Rodolfo Americo Rodrigues Martins","email":"rodolfo.martins@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Manuela Bolsonaro Ferreira Lima Miziara","email":"manuela.miziara@governancabrasil.com.br","cargo":"Coordenador(a) em Sucesso do Cliente","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":null,"custoMensal":510},{"ferramenta":"ChatGPT","nome":"Camila Ferreira Guedes","email":"camila.guedes@governancabrasil.com.br","cargo":"Analista de Inovacao e Atendimento Digital Jr","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":510},{"ferramenta":"Adobe IA","nome":"Luis Fernando Garuti","email":"luiz.garuti@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":128},{"ferramenta":"Adobe IA","nome":"Luiz Augusto Ribeiro Ferro","email":"luiz.ferro@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":128},{"ferramenta":"Adobe IA","nome":"Rodolfo Americo Rodrigues Martins","email":"rodolfo.martins@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":128},{"ferramenta":"Adobe IA","nome":"Rodrigo Franco Nunes","email":"rodrigo.franco@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":128},{"ferramenta":"Adobe IA","nome":"Rodrigo da Rosa Walter","email":"rodrigo.walter@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":128},{"ferramenta":"Google NotebookLM","nome":"Rodrigo Franco Nunes","email":"rodrigo.franco@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":46.4},{"ferramenta":"Google NotebookLM","nome":"Luis Fernando Garuti","email":"luiz.garuti@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":46.4},{"ferramenta":"Google NotebookLM","nome":"Rodrigo da Rosa Walter","email":"rodrigo.walter@governancabrasil.com.br","cargo":"Especialista em Inovação e Atendimento Digital","area":"CC","gestor":"Manuela Bolsonaro Ferreira Lima Miziara","tier":null,"custoMensal":46.4},{"ferramenta":"Google NotebookLM","nome":"Manuela Bolsonaro Ferreira Lima Miziara","email":"manuela.miziara@governancabrasil.com.br","cargo":"Coordenador(a) em Sucesso do Cliente","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":null,"custoMensal":46.4},{"ferramenta":"Gamma","nome":"Manuela Bolsonaro Ferreira Lima Miziara","email":"manuela.miziara@governancabrasil.com.br","cargo":"Coordenador(a) em Sucesso do Cliente","area":"CC","gestor":"Livia Piovesan e Sa Zepponi","tier":null,"custoMensal":70},{"ferramenta":"Gamma","nome":"Livia Piovesan e Sa Zepponi","email":"livia.sa@governancabrasil.com.br","cargo":"Vice-Presidente","area":"CC","gestor":"Tiago Padilha Serpa","tier":null,"custoMensal":70}],"detalhamento":[{"ferramenta":"Claude","usuarios":128,"custoMensal":37000,"custoPorUsuarioMes":289.0625,"custoPorUsuarioAno":3468.75,"obs":null},{"ferramenta":"ChatGPT","usuarios":10,"custoMensal":5100,"custoPorUsuarioMes":510,"custoPorUsuarioAno":6120,"obs":null},{"ferramenta":"GitHub Copilot","usuarios":23,"custoMensal":5152,"custoPorUsuarioMes":224,"custoPorUsuarioAno":2688,"obs":null},{"ferramenta":"Adobe IA","usuarios":5,"custoMensal":640,"custoPorUsuarioMes":128,"custoPorUsuarioAno":1536,"obs":null},{"ferramenta":"Google NotebookLM","usuarios":5,"custoMensal":232,"custoPorUsuarioMes":46.4,"custoPorUsuarioAno":556.8,"obs":null},{"ferramenta":"Gamma","usuarios":2,"custoMensal":140,"custoPorUsuarioMes":70,"custoPorUsuarioAno":840,"obs":null},{"ferramenta":"Builder360 R&D","usuarios":"N/A","custoMensal":104166.666666667,"custoPorUsuarioMes":null,"custoPorUsuarioAno":null,"obs":"Contrato anual de R$ 1.250.000 (mensal = anual/12)"},{"ferramenta":"Assistente Inteligente R&D","usuarios":"N/A","custoMensal":39583.3333333333,"custoPorUsuarioMes":null,"custoPorUsuarioAno":null,"obs":"Contrato anual de R$ 475.000 (mensal = anual/12)"},{"ferramenta":"Fortics","usuarios":"N/A","custoMensal":7758,"custoPorUsuarioMes":null,"custoPorUsuarioAno":null,"obs":"Plataforma (sem licenciamento por usuário)"},{"ferramenta":"Chat Copilot","usuarios":520,"custoMensal":0,"custoPorUsuarioMes":null,"custoPorUsuarioAno":null,"obs":"Disponível sem custo para a empresa"}]};
+
+const PALETTE = ['#6B5FD4','#2B7BCF','#2A9D9B','#5C9221','#C58B1F','#C9522B','#C8669A','#5E6B7A','#7A6B5E','#9B9B9B'];
+
+function isDark() { return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
+function gridColor() { return isDark() ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'; }
+function textColor() { return isDark() ? '#a0a09a' : '#5a5a56'; }
+
+if (!data) {
+  // já mostra o empty acima
+} else {
+  render(data);
+}
+
+function render(d) {
+  // ============================================
+  // 1. DERIVAR INSIGHTS GERENCIAIS
+  // ============================================
+  const top3 = d.ferramentas.slice().sort((a,b)=>b.custoAnual-a.custoAnual).slice(0,3);
+  const top3Pct = top3.reduce((s,x)=>s+x.pctTotal,0);
+
+  // Licenças ociosas: comparar usuarios listados vs licenças contratadas
+  // (Detalhamento por Ferramenta tem o nº de licenças; lista de usuários tem listados)
+  const userCountByTool = {};
+  d.usuarios.forEach(u => { userCountByTool[u.ferramenta] = (userCountByTool[u.ferramenta]||0) + 1; });
+  const ociosas = [];
+  d.ferramentas.forEach(f => {
+    const listados = userCountByTool[f.nome === 'Google NotebookLM' ? 'Google NotebookLM' : f.nome] || 0;
+    const lic = typeof f.usuarios === 'number' ? f.usuarios : null;
+    if (lic && listados && lic > listados) {
+      const diff = lic - listados;
+      const custoPorUser = f.custoMensal / lic;
+      ociosas.push({ ferramenta: f.nome, ociosas: diff, perdaMensal: diff * custoPorUser, perdaAnual: diff * custoPorUser * 12 });
+    }
+  });
+  const ociosasTotal = ociosas.reduce((s,x)=>s+x.perdaAnual, 0);
+
+  // Premium Claude
+  const claudeUsers = d.usuarios.filter(u => u.ferramenta === 'Claude');
+  const premiumUsers = claudeUsers.filter(u => u.tier === 'Premium');
+  const standardUsers = claudeUsers.filter(u => u.tier === 'Standard');
+  const premiumCusto = premiumUsers.reduce((s,u)=>s+(u.custoMensal||0), 0);
+  // Cenário: se 30% dos Premium fossem rebaixados → economia
+  const premium30Saving = premiumUsers.length * 0.3 * (670 - 140) * 12;
+
+  // Sobreposição: usuários multi-tool
+  const multiTotalMensal = d.multiTool.reduce((s,x)=>s+x.custoMensal, 0);
+  const multi3plus = d.multiTool.filter(u => u.qtd >= 3);
+  const multi3plusAnual = multi3plus.reduce((s,x)=>s+x.custoAnual, 0);
+  // Economia consolidação: se cada 3+ fosse reduzido a 2 ferramentas
+  const consolEconomy = multi3plus.reduce((s,u) => {
+    // estimativa: economia média de 1.5 licenças × R$280/mês × 12
+    return s + ((u.qtd - 2) * 200 * 12);
+  }, 0);
+
+  // Eficiência por área (R$/usuário/ano, sem R&D para comparar maçãs com maçãs)
+  const eficiencia = d.areasSemRD.map(a => ({
+    area: a.area,
+    custoPorUser: a.usuarios > 0 ? a.custoAnual / a.usuarios : 0,
+    custoAnual: a.custoAnual,
+    usuarios: a.usuarios,
+  })).sort((a,b)=>b.custoPorUser - a.custoPorUser);
+
+  // Composição do portfolio
+  const compRD = d.summary.contratosRDAnual || 0;
+  const compOp = d.summary.iaOperacionalAnual || 0;
+  const compTotal = compRD + compOp;
+
+  // Economia total identificada (quick wins)
+  const economiaTotal = ociosasTotal + Math.round(premium30Saving) + consolEconomy;
+
+  // ============================================
+  // 2. RENDER HTML
+  // ============================================
+  document.getElementById('empty').remove();
+  const root = document.getElementById('root');
+
+  root.innerHTML = `
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">IA</div>
+        <div>
+          <div class="t1">Custos com IA — Painel Executivo</div>
+          <div class="t2">Consolidado mensal · projeção anual · oportunidades de otimização</div>
+        </div>
+      </div>
+      <div class="topbar-meta">
+        <span class="pill">📅 ${d.meta.reference || 'Maio/2026'}</span>
+        <span class="pill">📊 ${d.ferramentas.length} ferramentas</span>
+        <span class="pill">👥 ${d.summary.totalUsuarios} usuários</span>
+        <button class="print-btn" onclick="window.print()">🖨 Imprimir / PDF</button>
+      </div>
+    </div>
+
+    <!-- TL;DR -->
+    <div class="tldr">
+      <div class="tldr-icon">💡</div>
+      <div>
+        <b>TL;DR executivo —</b> A empresa investe <b>${fmtBRL(d.summary.custoAnual)}/ano</b> em IA, dos quais
+        <b>${fmtPct(d.summary.contratosRDPct)}</b> são contratos estratégicos de P&D.
+        Identificamos <b>${fmtBRL(economiaTotal)}/ano</b> em oportunidades de otimização sem perda de produtividade
+        (licenças ociosas, revisão de tier Premium e consolidação de multi-uso em Customer Care).
+        Top 3 ferramentas concentram <b>${fmtPct(top3Pct)}</b> — exigem governança contratual reforçada.
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-lbl">Custo Anual Projetado</div>
+        <div class="kpi-val">${fmtBRL(d.summary.custoAnual)}</div>
+        <div class="kpi-sub">${fmtBRLfull(d.summary.custoMensal)} / mês</div>
+        <span class="kpi-delta neu">${fmtPct(d.summary.contratosRDPct)} em contratos R&D</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">IA Operacional (sem R&D)</div>
+        <div class="kpi-val">${fmtBRL(d.summary.iaOperacionalAnual)}</div>
+        <div class="kpi-sub">${fmtBRLfull(d.summary.iaOperacionalMensal)} / mês</div>
+        <span class="kpi-delta pos">${fmtPct(1 - (d.summary.contratosRDPct||0))} do total</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Economia Identificada</div>
+        <div class="kpi-val" style="color: var(--green-text);">${fmtBRL(economiaTotal)}</div>
+        <div class="kpi-sub">${(economiaTotal / d.summary.custoAnual * 100).toFixed(1)}% do total · em 3 alavancas</div>
+        <span class="kpi-delta pos">↓ ${fmtBRL(economiaTotal/12)}/mês potencial</span>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Custo por Usuário Ativo</div>
+        <div class="kpi-val">${fmtBRLfull(d.summary.iaOperacionalAnual / (d.summary.totalUsuarios - 520))}</div>
+        <div class="kpi-sub">excl. Chat Copilot (gratuito) — base 173</div>
+        <span class="kpi-delta neu">${d.usuarios.length} licenças pagas mapeadas</span>
+      </div>
+    </div>
+
+    <!-- ROW: Composição + Top ferramentas -->
+    <div class="grid-2">
+      <div class="section">
+        <div class="sec-head">
+          <div>
+            <div class="sec-title">Composição do Portfolio IA</div>
+            <div class="sec-sub">Estratégico vs operacional vs gratuito · base anual</div>
+          </div>
+        </div>
+        <div class="sec-insight">
+          <b>${fmtPct(compRD/compTotal)}</b> do orçamento está em <b>2 contratos R&D estratégicos</b>.
+          Sem eles, IA operacional consome ${fmtBRL(compOp)}/ano distribuídos entre 173 usuários ativos.
+        </div>
+        <div class="chart-box short"><canvas id="chartComp"></canvas></div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head">
+          <div>
+            <div class="sec-title">Top Ferramentas por Gasto Anual</div>
+            <div class="sec-sub">Concentração e risco de fornecedor</div>
+          </div>
+        </div>
+        <div class="sec-insight">
+          <b>Top 3 = ${fmtPct(top3Pct)}</b> do orçamento. Concentração alta exige cláusulas de SLA, benchmarking semestral e plano de contingência por fornecedor.
+        </div>
+        <div class="chart-box short"><canvas id="chartTop"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ROW: Áreas (absoluto) + Eficiência (custo/user) -->
+    <div class="grid-2">
+      <div class="section">
+        <div class="sec-head">
+          <div>
+            <div class="sec-title">Investimento por Área (anual)</div>
+            <div class="sec-sub">Inclui contratos estratégicos R&D</div>
+          </div>
+        </div>
+        <div class="chart-box"><canvas id="chartArea"></canvas></div>
+      </div>
+
+      <div class="section">
+        <div class="sec-head">
+          <div>
+            <div class="sec-title">Eficiência: R$ por Usuário (anual, IA operacional)</div>
+            <div class="sec-sub">Exclui contratos R&D · destaca sobre-investimento</div>
+          </div>
+        </div>
+        <div class="sec-insight">
+          <b>${eficiencia[0]?.area}</b> tem o maior custo por usuário (<b>${fmtBRLfull(eficiencia[0]?.custoPorUser)}/ano</b>) —
+          ${(eficiencia[0]?.custoPorUser / (eficiencia[eficiencia.length-1]?.custoPorUser || 1)).toFixed(1)}× mais que <b>${eficiencia[eficiencia.length-1]?.area}</b>.
+          Reflete sobreposição de ferramentas — ver simulação abaixo.
+        </div>
+        <div class="chart-box"><canvas id="chartEf"></canvas></div>
+      </div>
+    </div>
+
+    <!-- INSIGHTS AUTOMÁTICOS -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">5 Insights Acionáveis</div>
+          <div class="sec-sub">Análise automática do consolidado · cada card = uma alavanca de valor</div>
+        </div>
+      </div>
+      <div class="grid-3" id="insightsGrid"></div>
+    </div>
+
+    <!-- SOBREPOSIÇÃO MULTI-TOOL -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Sobreposição de Ferramentas (Multi-Uso)</div>
+          <div class="sec-sub">${d.multiTool.length} colaboradores com 2+ ferramentas · ${fmtBRLfull(multiTotalMensal)}/mês · ${fmtBRLfull(multiTotalMensal*12)}/ano</div>
+        </div>
+      </div>
+      <div class="sec-insight">
+        <b>${multi3plus.length} pessoas</b> usam <b>3+ ferramentas de IA simultaneamente</b> (${fmtBRL(multi3plusAnual)}/ano).
+        Maior cluster: time de <b>Customer Care / Inovação</b> — definir ferramenta primária por função pode liberar
+        <b>${fmtBRL(consolEconomy)}/ano</b> sem queda de output.
+      </div>
+      <div class="grid-2-1">
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Área</th>
+                <th>Cargo</th>
+                <th>Stack IA</th>
+                <th>Qtd</th>
+                <th class="num">R$/mês</th>
+              </tr>
+            </thead>
+            <tbody id="multiTbl"></tbody>
+          </table>
+        </div>
+        <div>
+          <h4 style="font-size: 12px; text-transform: uppercase; color: var(--text2); margin-bottom: 10px;">Distribuição</h4>
+          <div class="chart-box short"><canvas id="chartMulti"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECOMENDAÇÕES -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Plano de Ação — 3 Horizontes</div>
+          <div class="sec-sub">Recomendações priorizadas por impacto financeiro e esforço</div>
+        </div>
+      </div>
+      <div class="recos" id="recos"></div>
+    </div>
+
+    <!-- DETALHAMENTO POR FERRAMENTA -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">Apêndice · Custo Unitário por Ferramenta</div>
+          <div class="sec-sub">Para decisões de consolidação de licenças</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Ferramenta</th>
+            <th>Usuários / Licenças</th>
+            <th class="num">Mensal Total</th>
+            <th class="num">R$/Usuário/Mês</th>
+            <th class="num">R$/Usuário/Ano</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody id="detalheTbl"></tbody>
+      </table>
+    </div>
+
+    <div style="text-align: center; padding: 16px; color: var(--text3); font-size: 11px;">
+      Painel gerado a partir de <code>${d.meta.fileName || 'planilha consolidada'}</code> · publicado em
+      ${new Date(d.meta.uploadedAt).toLocaleString('pt-BR')} · uso interno C-Level
+    </div>
+  `;
+
+  // ============================================
+  // 3. POPULAR INSIGHTS
+  // ============================================
+  const insights = [
+    {
+      cls: 'crit',
+      head: '💰 Quick Win',
+      title: 'Licenças Ociosas',
+      val: fmtBRL(ociosasTotal) + '/ano',
+      desc: ociosas.map(o => `${o.ferramenta}: ${o.ociosas} licença(s) sem usuário ativo`).join(' · ') || 'Nenhuma licença ociosa detectada.',
+      foot: 'Ação: cancelar ou realocar em 30 dias',
+    },
+    {
+      cls: 'warn',
+      head: '⚠️ Auditoria',
+      title: 'Tier Premium Concentrado',
+      val: fmtBRL(premium30Saving) + '/ano',
+      desc: `${premiumUsers.length} licenças Premium Claude (4,8× preço do Standard) consomem ${fmtBRLfull(premiumCusto)}/mês. Cenário: rebaixar 30% sem uso intensivo.`,
+      foot: 'Ação: medir uso real via API logs em 60 dias',
+    },
+    {
+      cls: 'warn',
+      head: '🔄 Consolidação',
+      title: `Sobreposição em ${multi3plus.length} pessoas`,
+      val: fmtBRL(consolEconomy) + '/ano',
+      desc: `${multi3plus.length} colaboradores com 3+ ferramentas. Concentrado no time Customer Care / Inovação. Reduzir para 2 ferramentas-primárias por função.`,
+      foot: 'Ação: política de "ferramenta primária por função"',
+    },
+    {
+      cls: 'info',
+      head: '📊 Concentração',
+      title: `Top 3 = ${fmtPct(top3Pct)} do gasto`,
+      val: fmtBRL(top3.reduce((s,x)=>s+x.custoAnual,0)),
+      desc: `${top3.map(t=>t.nome).join(' · ')} concentram ${fmtPct(top3Pct)} do orçamento anual. Risco contratual elevado.`,
+      foot: 'Ação: benchmark anual + cláusulas de SLA',
+    },
+    {
+      cls: 'ok',
+      head: '🚀 Alavancagem',
+      title: 'Chat Copilot — 520 usuários a custo zero',
+      val: 'R$ 0',
+      desc: 'Microsoft Chat Copilot já disponível para 520 usuários sem custo adicional. Camada base de IA para tarefas comuns antes de licenciar premium.',
+      foot: 'Ação: programa de adoção + treinamentos',
+    },
+    {
+      cls: 'info',
+      head: '📋 Governança',
+      title: 'Cadastro QL desatualizado',
+      val: '—',
+      desc: 'Diretoria S&M não consta no QL 05/2026. Revisar processo de inclusão de diretoria para evitar gaps de mapeamento de licenças.',
+      foot: 'Ação: revisão trimestral do QL',
+    },
+  ];
+  document.getElementById('insightsGrid').innerHTML = insights.map(i => `
+    <div class="insight ${i.cls}">
+      <div class="insight-head">${i.head}</div>
+      <div class="insight-title">${i.title}</div>
+      <div class="insight-val">${i.val}</div>
+      <div class="insight-desc">${i.desc}</div>
+      <div class="insight-foot">${i.foot}</div>
+    </div>
+  `).join('');
+
+  // ============================================
+  // 4. POPULAR TABELAS
+  // ============================================
+  document.getElementById('multiTbl').innerHTML = d.multiTool.map(u => `
+    <tr>
+      <td>${u.nome}</td>
+      <td><span class="tag ${areaSlug(u.area)}">${u.area}</span></td>
+      <td style="font-size: 11px; color: var(--text2);">${u.cargo}</td>
+      <td style="font-size: 11px;">${u.ferramentas}</td>
+      <td><div class="qty-dots">${[1,2,3,4].map(i => `<div class="qty-dot ${i<=u.qtd?'on':''} q${u.qtd}"></div>`).join('')}</div></td>
+      <td class="num">${fmtBRLfull(u.custoMensal)}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('detalheTbl').innerHTML = d.detalhamento.map(f => `
+    <tr>
+      <td><b>${f.ferramenta}</b></td>
+      <td>${f.usuarios}</td>
+      <td class="num">${fmtBRLfull(f.custoMensal)}</td>
+      <td class="num">${typeof f.custoPorUsuarioMes === 'number' ? fmtBRLfull(f.custoPorUsuarioMes) : '—'}</td>
+      <td class="num">${typeof f.custoPorUsuarioAno === 'number' ? fmtBRLfull(f.custoPorUsuarioAno) : '—'}</td>
+      <td style="font-size: 11px; color: var(--text2);">${f.obs || ''}</td>
+    </tr>
+  `).join('');
+
+  // ============================================
+  // 5. RECOMENDAÇÕES
+  // ============================================
+  document.getElementById('recos').innerHTML = `
+    <div class="reco-col short">
+      <h4>Curto prazo · 30 dias</h4>
+      <div class="reco-item"><b>Cancelar licenças ociosas</b>ChatGPT (1) e NotebookLM (1)<br><small>Economia: ${fmtBRL(ociosasTotal)}/ano · Esforço: baixo</small></div>
+      <div class="reco-item"><b>Definir owner por ferramenta</b>Cada IA com 1 gestor responsável por uso/custo<br><small>Esforço: baixo · Governança</small></div>
+      <div class="reco-item"><b>Auditar Tier Premium Claude</b>${premiumUsers.length} licenças · validar via logs de uso<br><small>Cenário 30%: ${fmtBRL(premium30Saving)}/ano</small></div>
+    </div>
+    <div class="reco-col med">
+      <h4>Médio prazo · 60-90 dias</h4>
+      <div class="reco-item"><b>Política de ferramenta primária</b>Time CC: definir 1 IA principal por função<br><small>Potencial: ${fmtBRL(consolEconomy)}/ano</small></div>
+      <div class="reco-item"><b>Validar ROI dos contratos R&D</b>${fmtBRL(d.summary.contratosRDAnual)}/ano = ${fmtPct(d.summary.contratosRDPct)} do total<br><small>Decisão estratégica</small></div>
+      <div class="reco-item"><b>Programa de adoção Chat Copilot</b>Alavancar 520 licenças gratuitas existentes<br><small>Esforço: médio · Capacity building</small></div>
+    </div>
+    <div class="reco-col long">
+      <h4>Longo prazo · 6 meses</h4>
+      <div class="reco-item"><b>Consolidação de stack IA</b>Reduzir multi-uso ${multi3plus.length} → meta ${Math.ceil(multi3plus.length/3)} pessoas<br><small>Redução estrutural de custo</small></div>
+      <div class="reco-item"><b>Benchmark anual de mercado</b>Renegociar Top 3 com referenciais externos<br><small>Concentração ${fmtPct(top3Pct)} → poder de barganha</small></div>
+      <div class="reco-item"><b>Dashboard de uso real</b>Métricas de adoção/produtividade por usuário<br><small>Base para ROI de IA</small></div>
+    </div>
+  `;
+
+  // ============================================
+  // 6. CHARTS
+  // ============================================
+  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif";
+  Chart.defaults.color = textColor();
+  Chart.defaults.borderColor = gridColor();
+  Chart.defaults.plugins.legend.labels.boxWidth = 10;
+  Chart.defaults.plugins.legend.labels.boxHeight = 10;
+  Chart.defaults.plugins.legend.labels.font = { size: 11 };
+
+  // 6.1 Composição (donut)
+  new Chart(document.getElementById('chartComp'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Contratos R&D (estratégico)', 'IA Operacional (uso diário)', 'Ferramentas Gratuitas'],
+      datasets: [{
+        data: [compRD, compOp, 0.01], // 0.01 só para renderizar a fatia "gratuita" como sliver
+        backgroundColor: ['#6B5FD4', '#2B7BCF', '#5C9221'],
+        borderWidth: 2,
+        borderColor: isDark() ? '#1c1c1a' : '#fff',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '60%',
+      plugins: {
+        legend: { position: 'right', labels: { padding: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.label}: ${fmtBRL(ctx.parsed)} (${(ctx.parsed/compTotal*100).toFixed(1)}%)`
+          }
+        }
+      }
+    }
+  });
+
+  // 6.2 Top ferramentas (horizontal bar)
+  const ordTop = d.ferramentas.slice().sort((a,b)=>b.custoAnual - a.custoAnual);
+  new Chart(document.getElementById('chartTop'), {
+    type: 'bar',
+    data: {
+      labels: ordTop.map(f=>f.nome),
+      datasets: [{
+        label: 'Custo Anual',
+        data: ordTop.map(f=>f.custoAnual),
+        backgroundColor: ordTop.map((_,i)=>PALETTE[i % PALETTE.length]),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${fmtBRL(ctx.parsed.x)} (${fmtPct(ordTop[ctx.dataIndex].pctTotal)})` } }
+      },
+      scales: {
+        x: { ticks: { callback: v => fmtBRL(v) }, grid: { color: gridColor() } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+
+  // 6.3 Áreas (bar com gradient by area)
+  const ordArea = d.areas.slice().sort((a,b)=>b.custoAnual - a.custoAnual);
+  new Chart(document.getElementById('chartArea'), {
+    type: 'bar',
+    data: {
+      labels: ordArea.map(a=>`${a.area} (${a.usuarios} users)`),
+      datasets: [{
+        label: 'Custo Anual',
+        data: ordArea.map(a=>a.custoAnual),
+        backgroundColor: ['#6B5FD4','#C58B1F','#2B7BCF','#5C9221','#C9522B'],
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${fmtBRL(ctx.parsed.y)} (${fmtPct(ordArea[ctx.dataIndex].pctTotal)})` } }
+      },
+      scales: {
+        y: { ticks: { callback: v => fmtBRL(v) }, grid: { color: gridColor() } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // 6.4 Eficiência por área (custo/user)
+  new Chart(document.getElementById('chartEf'), {
+    type: 'bar',
+    data: {
+      labels: eficiencia.map(e=>e.area),
+      datasets: [{
+        label: 'R$/Usuário/Ano',
+        data: eficiencia.map(e=>e.custoPorUser),
+        backgroundColor: eficiencia.map(e => {
+          const max = Math.max(...eficiencia.map(x=>x.custoPorUser));
+          const r = e.custoPorUser / max;
+          if (r > 0.7) return '#C9522B';
+          if (r > 0.4) return '#C58B1F';
+          return '#5C9221';
+        }),
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${fmtBRLfull(ctx.parsed.y)}/ano · ${eficiencia[ctx.dataIndex].usuarios} usuários` } }
+      },
+      scales: {
+        y: { ticks: { callback: v => fmtBRL(v) }, grid: { color: gridColor() } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  // 6.5 Distribuição multi-tool (pie)
+  const distr = {};
+  d.multiTool.forEach(u => { distr[u.qtd] = (distr[u.qtd]||0) + 1; });
+  const distrLabels = Object.keys(distr).sort();
+  new Chart(document.getElementById('chartMulti'), {
+    type: 'doughnut',
+    data: {
+      labels: distrLabels.map(q => `${q} ferramentas (${distr[q]} pessoa${distr[q]>1?'s':''})`),
+      datasets: [{
+        data: distrLabels.map(q => distr[q]),
+        backgroundColor: ['#5C9221','#C58B1F','#C9522B','#8B1E1E'],
+        borderWidth: 2,
+        borderColor: isDark() ? '#1c1c1a' : '#fff',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '55%',
+      plugins: { legend: { position: 'bottom', labels: { padding: 8, font: { size: 10 } } } }
+    }
+  });
+}
+</script>
+</body>
+</html>
