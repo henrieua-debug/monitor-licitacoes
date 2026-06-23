@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Painel de Conformidade TCE · Governança Brasil</title>
+<title>Painel de Conformidade TCE-RS · Viamão · Governança Brasil</title>
 <style>
   :root{
     --gb-navy:#0b2e4f;
@@ -200,6 +200,14 @@
   .demo-tag{position:fixed;top:68px;right:14px;background:#fff3cd;color:#8a6d00;border:1px solid #f0d98a;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;z-index:50;box-shadow:var(--shadow)}
   .spin{display:inline-block;animation:sp 1s linear infinite}
   @keyframes sp{to{transform:rotate(360deg)}}
+  /* município strip */
+  .muni-strip{display:flex;flex-wrap:wrap;gap:0;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
+  .ms-item{flex:1;min-width:150px;padding:13px 18px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+  .ms-item:last-child{border-right:none}
+  .ms-k{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-soft);font-weight:600}
+  .ms-v{font-size:15px;font-weight:700}
+  .ms-v small{font-weight:600;color:var(--ink-soft)}
+  @media(max-width:680px){.ms-item{min-width:50%;border-bottom:1px solid var(--line)}}
 </style>
 </head>
 <body>
@@ -210,7 +218,7 @@
     <div>Governança Brasil<small>Gestão Pública Municipal</small></div>
   </div>
   <div class="muni" onclick="toast('Troca de município disponível na versão completa')">
-    <span>🏛️ Prefeitura de Uberaba · MG</span><span class="chev">▾</span>
+    <span>🏛️ Prefeitura de Viamão · RS</span><span class="chev">▾</span>
   </div>
   <div class="spacer"></div>
   <nav class="nav">
@@ -220,8 +228,8 @@
     <a href="#" onclick="toast('Módulo Compras/PNCP — fora deste protótipo');return false">Compras</a>
   </nav>
   <div class="user" onclick="toast('Logado como Secretário de Fazenda')">
-    <div class="meta" style="text-align:right"><b>Carlos Menezes</b><span>Sec. de Fazenda</span></div>
-    <div class="avatar">CM</div>
+    <div class="meta" style="text-align:right"><b>Igor Felipe de Souza</b><span>Sec. de Fazenda</span></div>
+    <div class="avatar">IS</div>
   </div>
 </div>
 
@@ -231,13 +239,23 @@
 
   <div class="page-head">
     <div>
-      <h1>Painel de Conformidade TCE</h1>
-      <p class="sub">Última verificação automática <b id="lastcheck">hoje às 09:15</b> · <span class="dot">●</span> dados sincronizados com SIAFIC e PNCP</p>
+      <h1>Painel de Conformidade TCE-RS</h1>
+      <p class="sub">Prefeitura de Viamão · RS &nbsp;|&nbsp; Última verificação automática <b id="lastcheck">hoje às 09:15</b> · <span class="dot">●</span> dados sincronizados com SIAFIC e PNCP</p>
     </div>
     <div class="head-actions">
       <button class="btn ghost" id="refreshBtn" onclick="refresh()"><span class="ic">⟳</span> Atualizar agora</button>
       <button class="btn primary" onclick="toast('Gerando relatório PDF imprimível…')"><span class="ic">⤓</span> Baixar relatório PDF</button>
     </div>
+  </div>
+
+  <!-- município data strip (dados reais Viamão) -->
+  <div class="muni-strip">
+    <div class="ms-item"><span class="ms-k">População (Censo 2022)</span><span class="ms-v">224.112 hab.</span></div>
+    <div class="ms-item"><span class="ms-k">Posição no RS</span><span class="ms-v">6º maior município</span></div>
+    <div class="ms-item"><span class="ms-k">PIB per capita (2023)</span><span class="ms-v">R$ 24.741</span></div>
+    <div class="ms-item"><span class="ms-k">Arrecadação própria</span><span class="ms-v">R$ 103,2 mi <small>(17,1%)</small></span></div>
+    <div class="ms-item"><span class="ms-k">Transferências</span><span class="ms-v">72,2% da receita</span></div>
+    <div class="ms-item"><span class="ms-k">Tribunal de Contas</span><span class="ms-v">TCE-RS</span></div>
   </div>
 
   <!-- score + first two cards -->
@@ -311,7 +329,7 @@
       <div class="cb">
         <div class="kv"><span class="k">Despesa com pessoal</span><span class="v">52% <span style="color:var(--ink-soft);font-weight:400">/ limite 54%</span></span></div>
         <div class="meter"><i style="width:96%"></i></div>
-        <div class="kv" style="margin-top:4px"><span class="k">Arrecadação própria (meta)</span><span class="v">85%</span></div>
+        <div class="kv" style="margin-top:4px"><span class="k">Arrecadação própria (meta)</span><span class="v">85% <span style="color:var(--ink-soft);font-weight:400">· R$ 103,2 mi</span></span></div>
         <div class="meter"><i style="width:85%"></i></div>
       </div>
       <div class="cf"><button class="linkbtn" onclick="toast('Abrindo detalhamento de execução orçamentária…')">Detalhes da LRF →</button></div>
@@ -392,8 +410,8 @@
   </div>
 
   <div class="footer">
-    <b>Governança Brasil</b> · Painel de Conformidade TCE — protótipo de validação<br>
-    Confidencial · Interno. Dados ilustrativos para fins de demonstração.
+    <b>Governança Brasil</b> · Painel de Conformidade TCE-RS — protótipo de validação · Prefeitura de Viamão/RS<br>
+    Ficha do município com dados reais (IBGE Censo 2022 e Portal da Transparência de Viamão). Indicadores de conformidade ilustrativos para demonstração.
   </div>
 </div>
 
