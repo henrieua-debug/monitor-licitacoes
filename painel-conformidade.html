@@ -215,6 +215,77 @@
   .ms-v{font-size:15px;font-weight:700}
   .ms-v small{font-weight:600;color:var(--ink-soft)}
   @media(max-width:680px){.ms-item{min-width:50%;border-bottom:1px solid var(--line)}}
+
+  /* executive strip (Prefeito) */
+  .exec{border-radius:var(--radius);padding:15px 20px;margin-bottom:18px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .exec.alert{background:linear-gradient(180deg,#fff8ec,#fff);border-left:5px solid var(--gb-accent)}
+  .exec.ok{background:linear-gradient(180deg,#eef8f0,#fff);border-left:5px solid var(--ok)}
+  .exec .ex-ic{font-size:26px;flex:none}
+  .exec .ex-txt{flex:1}
+  .exec .ex-txt b{font-size:15.5px}
+  .exec .ex-txt p{margin:3px 0 0;font-size:13.5px;color:var(--ink-soft)}
+  @media(max-width:640px){.exec{flex-wrap:wrap}.exec .btn{width:100%;justify-content:center}}
+
+  .section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 2px 14px}
+  .section-title h2{margin:0;font-size:18px}
+  .section-title .st-sub{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+  .section-title .tag{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--gb-navy);color:#fff;letter-spacing:.4px}
+
+  /* repasse grid */
+  .rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:14px}
+  .rcard{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:6px;transition:.15s}
+  .rcard:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,40,70,.1)}
+  .rcard .rh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .rcard .rname{font-weight:700;font-size:14px;display:flex;align-items:center;gap:7px}
+  .rcard .rsrc{font-size:11px;color:var(--ink-soft);line-height:1.3}
+  .rcard .rval{font-size:21px;font-weight:800;margin:2px 0}
+  .rcard .rmeta{font-size:11.5px;color:var(--ink-soft);display:flex;justify-content:space-between;gap:6px}
+  .dot-s{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .dot-s.ok{background:var(--ok)}.dot-s.warn{background:#e8a400}.dot-s.err{background:var(--err)}
+  .mini-badge{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+  .mini-badge.ok{background:var(--ok-bg);color:var(--ok)}
+  .mini-badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .mini-badge.err{background:var(--err-bg);color:var(--err)}
+
+  /* constitutional minimums */
+  .minrow{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:760px){.minrow{grid-template-columns:1fr 1fr}}
+  .mincard{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:16px}
+  .mincard.danger{border:1px solid #f0bcbc;background:linear-gradient(180deg,#fdf1f1,#fff)}
+  .mincard h4{margin:0 0 4px;font-size:15px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .gaugebar{height:14px;border-radius:8px;background:#eef2f6;position:relative;margin:20px 0 8px;overflow:visible}
+  .gaugebar > i{position:absolute;left:0;top:0;height:100%;border-radius:8px}
+  .gaugebar .lim{position:absolute;top:-5px;bottom:-5px;width:2px;background:#0e2a47}
+  .gaugebar .lim::after{content:attr(data-l);position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:10px;color:#0e2a47;font-weight:700;white-space:nowrap}
+
+  /* ghost / gap cards */
+  .ghost{background:repeating-linear-gradient(135deg,#fff,#fff 11px,#fafcff 11px,#fafcff 22px);border:1.5px dashed #bcccdb;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:9px}
+  .ghost .gh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .ghost .gname{font-weight:700;font-size:14px;color:var(--ink)}
+  .ghost .lock{font-size:10.5px;font-weight:700;color:#8a98a8;background:#eef2f6;padding:2px 9px;border-radius:20px;white-space:nowrap}
+  .ghost p{margin:0;font-size:12.5px;color:var(--ink-soft);flex:1;line-height:1.4}
+  .ghost .btn{align-self:flex-start;padding:7px 12px;font-size:12.5px}
+
+  /* CTA */
+  .cta{margin-top:30px;background:linear-gradient(135deg,var(--gb-navy),#16517f);color:#fff;border-radius:var(--radius);padding:26px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;box-shadow:var(--shadow)}
+  .cta .ct-txt{flex:1;min-width:260px}
+  .cta h3{margin:0 0 6px;font-size:20px}
+  .cta p{margin:0;opacity:.88;font-size:14px;line-height:1.5}
+  .cta .btn{background:var(--gb-accent);border-color:var(--gb-accent);color:#3a2a00;font-size:15px;padding:13px 18px}
+  .cta .btn:hover{background:#ffce2e}
+
+  /* how-to & score modals */
+  .howsec{margin:14px 0}
+  .howsec .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-soft);font-weight:700;margin-bottom:5px}
+  .howsec .val{font-size:14px;line-height:1.5}
+  .src-pill{display:inline-block;font-size:11.5px;background:#eef4fb;color:var(--gb-blue);border:1px solid #d3e3f5;padding:3px 10px;border-radius:20px;margin:2px 5px 2px 0;font-weight:600}
+  .gb-hook{background:var(--warn-bg);border:1px solid #f0d98a;border-radius:10px;padding:11px 13px;font-size:13px;margin-top:12px;line-height:1.5}
+  .gb-hook b{color:#8a6d00}
+  .brk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .brk:last-child{border-bottom:none}
+  .brk .bw{margin-left:auto;font-weight:700}
+  .feed{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;color:var(--ink-soft)}
+  .feed b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -243,6 +314,16 @@
 <div class="demo-tag">● PROTÓTIPO — dados ilustrativos</div>
 
 <div class="wrap">
+
+  <!-- ===== FAIXA EXECUTIVA (Prefeito) ===== -->
+  <div class="exec alert">
+    <div class="ex-ic">⚠️</div>
+    <div class="ex-txt">
+      <b>Prefeito, 1 ponto exige sua decisão nos próximos 60 dias.</b>
+      <p>Aplicação mínima em <b>Saúde</b> projetada em <b>14,2%</b> (mínimo constitucional 15% · LC 141/2012) — risco de rejeição de contas no TCE-RS. SIAFIC, PNCP e LRF estão <b>em dia</b>; RGF vence em 38 dias.</p>
+    </div>
+    <button class="btn primary" onclick="openModal('modalSaude')">Ver o que fazer →</button>
+  </div>
 
   <div class="page-head">
     <div class="title-wrap">
@@ -298,6 +379,7 @@
       </div>
     </div>
     <div class="head-actions">
+      <a class="btn" href="vendas-servicos.html"><span class="ic">🧭</span> Serviços GB</a>
       <button class="btn ghost" id="refreshBtn" onclick="refresh()"><span class="ic">⟳</span> Atualizar agora</button>
       <button class="btn primary" onclick="toast('Gerando relatório PDF imprimível…')"><span class="ic">⤓</span> Baixar relatório PDF</button>
     </div>
@@ -319,11 +401,12 @@
       <h3>Score de Conformidade</h3>
       <div class="when">Verificado hoje às 09:15</div>
       <div class="gauge">
-        <div class="ring" id="ring"><div class="val" id="ringVal">95<small>%</small></div></div>
+        <div class="ring" id="ring" onclick="openModal('modalScore')" style="cursor:pointer" title="Clique para entender o cálculo"><div class="val" id="ringVal">86<small>%</small></div></div>
         <div class="score-legend">
-          <div><span class="pill ok"></span> <b>4</b>&nbsp;itens em dia</div>
-          <div><span class="pill warn"></span> <b>1</b>&nbsp;item com atenção</div>
-          <div><span class="pill err"></span> <b>0</b>&nbsp;itens atrasados</div>
+          <div><span class="pill ok"></span> <b>3</b>&nbsp;itens em dia</div>
+          <div><span class="pill warn"></span> <b>1</b>&nbsp;em atenção (RGF)</div>
+          <div><span class="pill err"></span> <b>1</b>&nbsp;em risco (Saúde)</div>
+          <button class="linkbtn" style="color:#cfe0ee;margin-top:5px;font-size:12.5px" onclick="openModal('modalScore')">Como calculamos? →</button>
         </div>
       </div>
     </div>
@@ -464,6 +547,163 @@
     <button class="btn ghost" onclick="toast('Gerando relatório PDF imprimível…')"><span class="ic">⤓</span> Baixar relatório PDF</button>
   </div>
 
+  <!-- ===== APLICAÇÃO MÍNIMA CONSTITUCIONAL (estado de RISCO) ===== -->
+  <div class="section-title">
+    <div><h2>Aplicação mínima constitucional</h2><div class="st-sub">Saúde (mín. 15% · ASPS · LC 141/2012) e Educação (mín. 25% · MDE · CF art. 212) — maior causa de rejeição no TCE-RS</div></div>
+    <span class="tag" style="background:var(--vm-red)">CRÍTICO</span>
+  </div>
+  <div class="minrow">
+    <div class="mincard danger">
+      <h4>🏥 Saúde — ASPS <span class="mini-badge err">● Abaixo do mínimo</span></h4>
+      <div class="gaugebar"><i style="width:56.8%;background:var(--err)"></i><span class="lim" style="left:60%" data-l="mín. 15%"></span></div>
+      <div class="rmeta"><span>Aplicado (projeção 2026): <b style="color:var(--err)">14,2%</b></span><span>Fonte: SIOPS</span></div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin:10px 0 12px">Faltam ~<b>R$ 4,1 mi</b> para atingir o mínimo até o encerramento do exercício. Decisão recomendada em até 60 dias.</p>
+      <button class="btn primary" onclick="openModal('modalSaude')">Como corrigir →</button>
+    </div>
+    <div class="mincard">
+      <h4>🎓 Educação — MDE <span class="mini-badge ok">● Acima do mínimo</span></h4>
+      <div class="gaugebar"><i style="width:73%;background:var(--ok)"></i><span class="lim" style="left:62.5%" data-l="mín. 25%"></span></div>
+      <div class="rmeta"><span>Aplicado (projeção 2026): <b>29,2%</b></span><span>Fonte: SIOPE</span></div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin:10px 0 12px">Folga de 4,2 p.p. sobre o mínimo. FUNDEB — 70% para profissionais do magistério: <b>cumprido</b>.</p>
+      <button class="btn" onclick="openHow('fundeb70')">Ver detalhe FUNDEB →</button>
+    </div>
+  </div>
+
+  <!-- ===== VERBAS DE REPASSE ===== -->
+  <div class="section-title">
+    <div><h2>Verbas de repasse — visão consolidada</h2><div class="st-sub">Todos os repasses constitucionais, legais e voluntários recebidos pelo município · valores previstos 2026 (ilustrativos)</div></div>
+    <span class="st-sub">Fontes: SICONFI / FNS / FNDE / FNAS / Transfere.gov / SEFAZ-RS</span>
+  </div>
+  <div class="rgrid">
+
+    <div class="rcard"><div class="rh"><div class="rname">🪙 FPM</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Federal · 22,5% de IR+IPI · crédito por decêndios</div>
+      <div class="rval">R$ 78,4 mi</div>
+      <div class="rmeta"><span>Próx. crédito: 30/jun</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: STN / Banco do Brasil · SICONFI</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">🏭 ICMS cota-parte</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Estadual · 25% (75% VAF + 25% lei estadual) · IPM-RS</div>
+      <div class="rval">R$ 132,0 mi</div>
+      <div class="rmeta"><span>Próx. crédito: semanal</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: SEFAZ-RS (IPM)</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">🚗 IPVA cota-parte</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Estadual · 50% do IPVA dos veículos do município</div>
+      <div class="rval">R$ 21,3 mi</div>
+      <div class="rmeta"><span>Pico: jan–mar</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: SEFAZ-RS</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">🎓 FUNDEB</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Redistribuição · 20% de impostos + complementação VAAF/VAAT</div>
+      <div class="rval">R$ 96,5 mi</div>
+      <div class="rmeta"><span>70% magistério: ok</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: FNDE / STN · SIOPE</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">🏥 SUS (fundo a fundo)</div><span class="mini-badge warn">Verificar</span></div>
+      <div class="rsrc">Federal · Fundo Nacional → Fundo Municipal de Saúde</div>
+      <div class="rval">R$ 41,2 mi</div>
+      <div class="rmeta"><span>Blocos: Custeio/Invest.</span><span><span class="dot-s warn"></span> SIOPS 6d atraso</span></div>
+      <div class="rsrc">Fonte: FNS / SIOPS</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">🍎 FNDE</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">PNAE + PNATE + Salário-Educação + PDDE</div>
+      <div class="rval">R$ 9,8 mi</div>
+      <div class="rmeta"><span>Prest. contas: PDDE out</span><span><span class="dot-s ok"></span> Em dia</span></div>
+      <div class="rsrc">Fonte: FNDE / SIGPC</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">🤝 SUAS / FNAS</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Federal · assistência social fundo a fundo · IGD</div>
+      <div class="rval">R$ 6,4 mi</div>
+      <div class="rmeta"><span>IGD-SUAS/PBF</span><span><span class="dot-s ok"></span> Em dia</span></div>
+      <div class="rsrc">Fonte: FNAS / SUASweb</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">🌾 ITR</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Federal · 50% (ou 100% se convênio de fiscalização)</div>
+      <div class="rval">R$ 1,1 mi</div>
+      <div class="rmeta"><span>Crédito mensal</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: STN / RFB</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">⛽ CIDE-Combustíveis</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Federal · vinculada a infraestrutura de transporte</div>
+      <div class="rval">R$ 0,9 mi</div>
+      <div class="rmeta"><span>Uso vinculado</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: STN</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">⚡ Royalties / CFURH / CFEM</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Compensação financeira (hídrica/mineral) · ANEEL/ANM</div>
+      <div class="rval">R$ 2,3 mi</div>
+      <div class="rmeta"><span>Crédito mensal</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: ANEEL / ANM / STN</div></div>
+
+    <div class="rcard"><div class="rh"><div class="rname">⚖️ Lei Kandir / LC 87</div><span class="mini-badge ok">Em dia</span></div>
+      <div class="rsrc">Compensação de desoneração de exportações (FEX)</div>
+      <div class="rval">R$ 3,6 mi</div>
+      <div class="rmeta"><span>Conforme repasse</span><span><span class="dot-s ok"></span> Conciliado</span></div>
+      <div class="rsrc">Fonte: STN / SEFAZ-RS</div></div>
+
+    <div class="rcard" style="border-color:#f0d98a"><div class="rh"><div class="rname">🏛️ Emendas parlamentares</div><span class="mini-badge warn">2 a empenhar</span></div>
+      <div class="rsrc">Voluntárias · especiais ("Pix"), de bancada e individuais</div>
+      <div class="rval">R$ 7,5 mi</div>
+      <div class="rmeta"><span>12 emendas · 2 vencendo</span><span><span class="dot-s warn"></span> Ação</span></div>
+      <div class="rsrc">Fonte: Transfere.gov / Portal Transparência</div></div>
+
+    <div class="rcard" style="border-color:#f0d98a"><div class="rh"><div class="rname">📜 Convênios voluntários</div><span class="mini-badge warn">1 a prestar contas</span></div>
+      <div class="rsrc">Transferências voluntárias com objeto e plano de trabalho</div>
+      <div class="rval">R$ 12,0 mi</div>
+      <div class="rmeta"><span>5 vigentes · 1 vence 15/ago</span><span><span class="dot-s warn"></span> Ação</span></div>
+      <div class="rsrc">Fonte: Transfere.gov / convenentes</div></div>
+
+  </div>
+
+  <!-- ===== PAINÉIS QUE VOCÊ AINDA NÃO TEM ===== -->
+  <div class="section-title">
+    <div><h2>Painéis que você ainda não tem</h2><div class="st-sub">Lacunas de gestão com alto retorno — clique em "Como fazer" para ver a fonte de dados e o caminho de implantação</div></div>
+    <span class="tag" style="background:var(--gb-accent);color:#3a2a00">OPORTUNIDADE</span>
+  </div>
+  <div class="rgrid">
+    <div class="ghost"><div class="gh"><span class="gname">🏛️ Emendas parlamentares</span><span class="lock">🔒 não implantado</span></div>
+      <p>Acompanhe cada emenda (Pix/especial/bancada) do empenho à prestação de contas, com alertas de prazo.</p>
+      <button class="btn" onclick="openHow('emendas')">Como fazer →</button></div>
+
+    <div class="ghost"><div class="gh"><span class="gname">📜 Convênios & prestação de contas</span><span class="lock">🔒 não implantado</span></div>
+      <p>Saldo, vigência e pendências de prestação de contas de cada convênio — evita devolução de recurso.</p>
+      <button class="btn" onclick="openHow('convenios')">Como fazer →</button></div>
+
+    <div class="ghost"><div class="gh"><span class="gname">💳 Capacidade de pagamento (CAPAG)</span><span class="lock">🔒 não implantado</span></div>
+      <p>Nota A/B/C do Tesouro e limites de endividamento — pré-requisito para crédito e garantias da União.</p>
+      <button class="btn" onclick="openHow('capag')">Como fazer →</button></div>
+
+    <div class="ghost"><div class="gh"><span class="gname">🧾 Restos a Pagar & caixa</span><span class="lock">🔒 não implantado</span></div>
+      <p>RP processados/não processados x disponibilidade de caixa por fonte — risco de inscrição irregular (LRF art. 42).</p>
+      <button class="btn" onclick="openHow('restos')">Como fazer →</button></div>
+
+    <div class="ghost"><div class="gh"><span class="gname">📈 Projeção preditiva de mínimos</span><span class="lock">🔒 não implantado</span></div>
+      <p>IA projeta Saúde/Educação até dez/2026 e alerta aos 60/30/15 dias — exatamente o que disparou o alerta de hoje.</p>
+      <button class="btn" onclick="openHow('minimos')">Como fazer →</button></div>
+
+    <div class="ghost"><div class="gh"><span class="gname">💰 Dívida ativa & recuperação</span><span class="lock">🔒 não implantado</span></div>
+      <p>Estoque, priorização por chance de recuperação e cobrança automatizada — "arrecadar mais sem subir imposto".</p>
+      <button class="btn" onclick="openHow('divida')">Como fazer →</button></div>
+
+    <div class="ghost"><div class="gh"><span class="gname">🔎 Transparência ativa & e-SIC</span><span class="lock">🔒 não implantado</span></div>
+      <p>Cobertura da LAI, prazos de e-SIC e itens obrigatórios faltantes no portal — reduz risco de notificação.</p>
+      <button class="btn" onclick="openHow('transp')">Como fazer →</button></div>
+
+    <div class="ghost"><div class="gh"><span class="gname">🏗️ Obras & contratos (execução)</span><span class="lock">🔒 não implantado</span></div>
+      <p>Cronograma físico-financeiro de obras x medições x PNCP — atrasos que viram apontamento no TCE.</p>
+      <button class="btn" onclick="openHow('obras')">Como fazer →</button></div>
+  </div>
+
+  <!-- ===== CTA VENDAS ===== -->
+  <div class="cta">
+    <div class="ct-txt">
+      <h3>Transforme estes painéis em tranquilidade no TCE-RS</h3>
+      <p>A Governança Brasil implanta os painéis que faltam, integra suas fontes (SICONFI, FNS, FNDE, FNAS, Transfere.gov, SEFAZ-RS) e monitora prazos, repasses e mínimos constitucionais — para você nunca mais ser pego de surpresa.</p>
+    </div>
+    <a class="btn" href="vendas-servicos.html">Ver serviços e planos →</a>
+  </div>
+
   <div class="footer">
     <b>Governança Brasil</b> · Painel de Conformidade TCE-RS — protótipo de validação · Prefeitura de Viamão/RS<br>
     Ficha do município com dados reais (IBGE Censo 2022 e Portal da Transparência de Viamão). Indicadores de conformidade ilustrativos para demonstração.
@@ -505,6 +745,59 @@
       <button class="btn primary" onclick="startRgf()">Começar preenchimento</button>
     </div>
   </div>
+
+  <!-- score explicável -->
+  <div class="modal" id="modalScore" style="display:none">
+    <div class="mh"><h3>📊 Como o score de 86% é calculado</h3><button class="x" onclick="closeModal()">×</button></div>
+    <div class="mb">
+      <p style="margin-top:0;color:var(--ink-soft)">O score pondera 5 dimensões de conformidade. Cada item perdido reduz o total — sem caixa-preta.</p>
+      <div class="brk"><span class="dot-s ok"></span> SIAFIC — envio contínuo ao Tesouro <span class="bw">25 / 25</span></div>
+      <div class="brk"><span class="dot-s ok"></span> PNCP — publicação de contratos <span class="bw">20 / 20</span></div>
+      <div class="brk"><span class="dot-s warn"></span> RGF/RREO — prazo a vencer (38 dias) <span class="bw" style="color:var(--warn)">14 / 20</span></div>
+      <div class="brk"><span class="dot-s ok"></span> LRF — limite de pessoal (52%/54%) <span class="bw">20 / 20</span></div>
+      <div class="brk"><span class="dot-s err"></span> Aplicação mínima Saúde (14,2% &lt; 15%) <span class="bw" style="color:var(--err)">7 / 15</span></div>
+      <div style="text-align:right;font-weight:800;margin-top:10px;font-size:16px">Total: 86 / 100</div>
+      <div class="howsec" style="margin-top:18px"><div class="lbl">Frescor dos dados por fonte</div>
+        <div class="feed"><span>SIAFIC (Tesouro)</span><b>hoje 01:10</b></div>
+        <div class="feed"><span>PNCP (Portal Nacional)</span><b>hoje 02:05</b></div>
+        <div class="feed"><span>SIOPS / SIOPE (Saúde/Educação)</span><b style="color:var(--warn)">há 6 dias ⚠</b></div>
+        <div class="feed"><span>Execução orçamentária (LRF)</span><b>tempo real</b></div>
+      </div>
+      <p style="font-size:12.5px;color:var(--warn);margin-bottom:0">⚠ O feed do SIOPS está com 6 dias de defasagem — atualize antes de decisões de fechamento.</p>
+    </div>
+    <div class="mf"><button class="btn primary" onclick="closeModal()">Entendi</button></div>
+  </div>
+
+  <!-- como corrigir Saúde (estado vermelho) -->
+  <div class="modal" id="modalSaude" style="display:none">
+    <div class="mh"><h3>🏥 Saúde abaixo do mínimo — como corrigir</h3><button class="x" onclick="closeModal()">×</button></div>
+    <div class="mb">
+      <p style="margin-top:0"><b>Situação:</b> aplicação projetada em <b style="color:var(--err)">14,2%</b> da receita de impostos (mínimo 15% · art. 6º LC 141/2012). Gap estimado: <b>R$ 4,1 mi</b> até 31/12.</p>
+      <div class="howsec"><div class="lbl">Risco se não corrigir</div><div class="val">Rejeição de contas no TCE-RS, glosa/devolução ao Fundo Municipal de Saúde e possível responsabilização do gestor.</div></div>
+      <div class="howsec"><div class="lbl">Caminhos sugeridos</div>
+        <ul style="margin:6px 0;padding-left:18px">
+          <li>Empenhar/liquidar despesas de ASPS já previstas e represadas (checar restos a pagar de saúde).</li>
+          <li>Revisar a classificação de despesas elegíveis conforme SIOPS (atenção básica, vigilância).</li>
+          <li>Antecipar repasses ao FMS com lastro de caixa.</li>
+          <li>Revisar a base de cálculo (receita de impostos) com a contabilidade.</li>
+        </ul>
+      </div>
+      <div class="gb-hook"><b>Governança Brasil pode entregar:</b> projeção preditiva mensal de mínimos + alerta automático aos 60/30/15 dias + apoio de reclassificação contábil junto ao SIOPS.</div>
+    </div>
+    <div class="mf"><button class="btn ghost" onclick="closeModal()">Fechar</button><a class="btn primary" href="vendas-servicos.html">Falar com a GB →</a></div>
+  </div>
+
+  <!-- modal genérico "Como fazer" (data-driven) -->
+  <div class="modal" id="modalHow" style="display:none">
+    <div class="mh"><h3 id="howTitle"></h3><button class="x" onclick="closeModal()">×</button></div>
+    <div class="mb">
+      <div class="howsec"><div class="lbl">O que o painel mostra</div><div class="val" id="howWhat"></div></div>
+      <div class="howsec"><div class="lbl">De onde vêm os dados</div><div id="howSrc"></div></div>
+      <div class="howsec"><div class="lbl">Como construir</div><div class="val" id="howHow"></div></div>
+      <div class="gb-hook" id="howHook"></div>
+    </div>
+    <div class="mf"><button class="btn ghost" onclick="closeModal()">Fechar</button><a class="btn primary" href="vendas-servicos.html">Quero esse painel →</a></div>
+  </div>
 </div>
 
 <div class="toast" id="toast"><span id="toastMsg"></span></div>
@@ -528,6 +821,64 @@
   function openRgf(){openModal('modalRgf');}
   function startRgf(){closeModal();toast('Abrindo formulário de RGF com dados pré-carregados…');}
 
+  // catálogo "Como fazer" dos painéis ausentes
+  const howto = {
+    emendas:{t:'🏛️ Painel de Emendas Parlamentares',
+      what:'Cada emenda (individual, de bancada e especial/"Pix") do recebimento ao empenho, liquidação e prestação de contas, com alertas de prazo e de saldo a executar.',
+      src:['Transfere.gov (API)','Portal da Transparência','SIOP','Contabilidade local'],
+      how:'Importar a carteira de emendas via Transfere.gov, cruzar com empenhos do SIAFIC e calcular saldo a executar por emenda; disparar alertas em 90/30 dias do prazo.',
+      hook:'integração com Transfere.gov + esteira de execução e alertas automáticos por emenda.'},
+    convenios:{t:'📜 Convênios & Prestação de Contas',
+      what:'Saldo, vigência, contrapartida e pendências de prestação de contas de cada convênio/transferência voluntária — evitando devolução de recurso e inadimplência (CADIN/Siconv).',
+      src:['Transfere.gov','Plano de trabalho/SICONV','Contabilidade local'],
+      how:'Mapear convênios vigentes, prazos de PC e situação de adimplência; painel com semáforo por convênio e checklist de documentos.',
+      hook:'monitor de vigências + checklist de prestação de contas e bloqueio preventivo de inadimplência.'},
+    capag:{t:'💳 Capacidade de Pagamento (CAPAG)',
+      what:'Nota A/B/C do Tesouro (endividamento, poupança corrente e liquidez) e os limites da LRF — pré-requisito para operações de crédito com garantia da União.',
+      src:['STN / Tesouro (CAPAG)','SICONFI (MSC/RREO/RGF)'],
+      how:'Calcular os 3 indicadores da metodologia CAPAG a partir dos dados do SICONFI e simular o efeito de novas operações de crédito.',
+      hook:'cálculo automático da CAPAG + simulador de endividamento para planejar investimentos.'},
+    restos:{t:'🧾 Restos a Pagar & Caixa',
+      what:'Restos a pagar processados e não processados confrontados com a disponibilidade de caixa por fonte de recurso — risco de inscrição irregular (LRF art. 42, fim de mandato).',
+      src:['SIAFIC / execução local','SICONFI (Anexo de RP)'],
+      how:'Conciliar RP por fonte com disponibilidade financeira e sinalizar fontes com cobertura insuficiente.',
+      hook:'conciliação de RP por fonte em tempo real + alerta de art. 42 da LRF.'},
+    minimos:{t:'📈 Projeção Preditiva de Mínimos',
+      what:'Projeção de Saúde (15%) e Educação (25%) até dez/2026 com base no ritmo de execução, com alerta aos 60/30/15 dias. Foi essa lógica que disparou o alerta de hoje.',
+      src:['SIOPS','SIOPE','Execução orçamentária'],
+      how:'Modelo de tendência sobre a série de aplicação mensal projeta o fechamento do exercício e estima o gap em R$.',
+      hook:'IA de projeção de mínimos + alertas escalonados e simulação de "quanto empenhar para fechar o ano".'},
+    divida:{t:'💰 Dívida Ativa & Recuperação',
+      what:'Estoque da dívida ativa, priorização por probabilidade de recuperação e régua de cobrança automatizada — o JTBD nº2 do município: "arrecadar mais sem subir imposto".',
+      src:['Cadastro tributário (IPTU/ISS)','Dívida ativa local','PGM'],
+      how:'Scoring por valor e chance de recuperação, integração cadastral e disparo de notificações (e-mail/WhatsApp/carta).',
+      hook:'módulo de recuperação de receita com priorização por IA e cobrança multicanal (Microfeature de Arrecadação).'},
+    transp:{t:'🔎 Transparência Ativa & e-SIC',
+      what:'Cobertura dos itens obrigatórios da LAI no portal, prazos de resposta do e-SIC e lacunas que geram notificação do TCE/MP.',
+      src:['Portal da Transparência municipal','e-SIC','Checklist LAI/Lei 12.527'],
+      how:'Varredura dos itens obrigatórios + SLA de respostas do e-SIC; painel de conformidade da LAI com pendências.',
+      hook:'auditoria contínua da LAI + gestão de prazos do e-SIC e publicação automática de itens obrigatórios.'},
+    obras:{t:'🏗️ Obras & Contratos (Execução)',
+      what:'Cronograma físico-financeiro de obras x medições x contratos publicados no PNCP — atrasos e aditivos que viram apontamento no TCE.',
+      src:['PNCP','Contratos/medições locais','Fiscais de contrato'],
+      how:'Vincular contrato do PNCP à execução física e financeira, sinalizando desvios de cronograma e aditivos acima do limite.',
+      hook:'painel de obras integrado ao PNCP + alertas de atraso e de limite de aditivos.'},
+    fundeb70:{t:'🎓 FUNDEB — 70% Magistério',
+      what:'Acompanhamento da aplicação mínima de 70% do FUNDEB na remuneração de profissionais do magistério da educação básica (CF art. 212-A).',
+      src:['SIOPE','Folha de pessoal','Execução da educação'],
+      how:'Confrontar despesa elegível de magistério com o total recebido do FUNDEB no exercício e projetar o fechamento.',
+      hook:'painel FUNDEB com projeção do índice de 70% e alerta de risco.'},
+  };
+  function openHow(k){
+    const d=howto[k]; if(!d) return;
+    document.getElementById('howTitle').textContent=d.t;
+    document.getElementById('howWhat').innerHTML=d.what;
+    document.getElementById('howHow').innerHTML=d.how;
+    document.getElementById('howSrc').innerHTML=d.src.map(s=>'<span class="src-pill">'+s+'</span>').join('');
+    document.getElementById('howHook').innerHTML='<b>Governança Brasil pode entregar:</b> '+d.hook;
+    openModal('modalHow');
+  }
+
   function refresh(){
     const b=document.getElementById('refreshBtn');
     b.innerHTML='<span class="ic spin">⟳</span> Atualizando…';
@@ -546,7 +897,7 @@
   window.addEventListener('load',()=>{
     const ring=document.getElementById('ring');
     ring.style.setProperty('--p','0%');
-    setTimeout(()=>ring.style.setProperty('--p','95%'),200);
+    setTimeout(()=>ring.style.setProperty('--p','86%'),200);
   });
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 </script>
