@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Serviços Equiplano · Proposta para Londrina/PR</title>
+<style>
+  :root{
+    --navy:#0b3a5b;--navy2:#0f4d76;--blue:#0a6fb0;--gold:#5bbf4a;--gold-d:#3a8f2e;
+    --red:#c8102e;--green:#2f7d32;--bg:#eef2f6;--card:#fff;--ink:#13202d;--soft:#5b6b7a;--line:#e2e8ef;
+    --ok:#1f9d55;--ok-bg:#e6f6ec;--warn:#c77700;--warn-bg:#fdf3e2;
+    --shadow:0 1px 3px rgba(16,40,70,.08),0 8px 24px rgba(16,40,70,.06);--radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;font-size:15px}
+  a{color:inherit}
+  /* topbar */
+  .topbar{background:linear-gradient(180deg,var(--navy),var(--navy2));color:#fff;display:flex;align-items:center;gap:14px;padding:0 22px;height:60px;position:sticky;top:0;z-index:30;border-bottom:3px solid var(--gold);box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+  .brand .logo{width:30px;height:30px;border-radius:8px;background:var(--gold);display:grid;place-items:center;font-weight:800;color:var(--navy);font-size:15px}
+  .brand small{display:block;font-weight:400;font-size:11px;opacity:.7;margin-top:-2px}
+  .spacer{flex:1}
+  .topbar a.back{color:#fff;text-decoration:none;font-size:13.5px;opacity:.85;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:7px 13px;border-radius:9px}
+  .topbar a.back:hover{opacity:1}
+  /* hero */
+  .hero{background:linear-gradient(135deg,var(--navy),#16517f);color:#fff;padding:46px 22px 40px}
+  .hero .in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:30px;flex-wrap:wrap}
+  .hero .htxt{flex:1;min-width:300px}
+  .hero .eyebrow{font-size:12.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);font-weight:700}
+  .hero h1{font-size:33px;margin:8px 0 12px;line-height:1.15}
+  .hero p{font-size:16px;opacity:.9;max-width:620px}
+  .hero .cta-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:12px 18px;border-radius:10px;font-size:14.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:.15s}
+  .btn:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+  .btn.gold{background:var(--gold);border-color:var(--gold);color:#3a2a00}
+  .btn.gold:hover{background:#ffce2e}
+  .btn.outline{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+  .btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
+  .hero .crestwrap{flex:none;background:#fff;border-radius:18px;padding:16px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+  /* metrics band */
+  .band{max-width:1080px;margin:-26px auto 0;padding:0 22px;position:relative;z-index:5}
+  .band .row{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-wrap:wrap;border-top:3px solid var(--gold)}
+  .band .m{flex:1;min-width:160px;padding:18px;border-right:1px solid var(--line)}
+  .band .m:last-child{border-right:none}
+  .band .m .n{font-size:24px;font-weight:800;color:var(--blue)}
+  .band .m .l{font-size:12.5px;color:var(--soft)}
+  /* sections */
+  .wrap{max-width:1080px;margin:0 auto;padding:46px 22px}
+  .sec-h{text-align:center;margin-bottom:30px}
+  .sec-h .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);font-weight:700}
+  .sec-h h2{font-size:27px;margin:7px 0 6px}
+  .sec-h p{color:var(--soft);max-width:620px;margin:0 auto}
+  /* service cards */
+  .svc{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;display:flex;flex-direction:column;gap:11px;transition:.15s;position:relative;overflow:hidden}
+  .scard:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(16,40,70,.12)}
+  .scard .ic{width:48px;height:48px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:23px}
+  .scard h3{margin:2px 0 0;font-size:18px}
+  .scard .who{font-size:12px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px}
+  .scard p{margin:0;font-size:13.8px;color:var(--soft);flex:1}
+  .scard .roi{font-size:13px;background:var(--ok-bg);color:#15663a;border-radius:9px;padding:9px 11px;font-weight:600}
+  .scard .price{font-size:13px;color:var(--ink);border-top:1px dashed var(--line);padding-top:10px}
+  .scard .price b{color:var(--navy);font-size:15px}
+  .scard.feature{border:1.5px solid var(--gold);background:linear-gradient(180deg,#fffdf5,#fff)}
+  .ribbon{position:absolute;top:14px;right:-32px;background:var(--gold);color:#3a2a00;font-size:11px;font-weight:800;padding:4px 38px;transform:rotate(45deg);letter-spacing:.5px}
+  .tagline{display:inline-block;font-size:11px;font-weight:700;color:var(--soft);background:#eef2f6;border-radius:20px;padding:3px 10px}
+  /* plans */
+  .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:6px}
+  .plan{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;display:flex;flex-direction:column}
+  .plan.best{border:2px solid var(--blue);position:relative}
+  .plan.best .flag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:.4px}
+  .plan h3{margin:0 0 2px;font-size:20px}
+  .plan .pr{font-size:30px;font-weight:800;color:var(--navy);margin:10px 0 2px}
+  .plan .pr small{font-size:13px;color:var(--soft);font-weight:600}
+  .plan .setup{font-size:12.5px;color:var(--soft);margin-bottom:14px}
+  .plan ul{list-style:none;padding:0;margin:0 0 18px;flex:1}
+  .plan li{padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px;display:flex;gap:9px;align-items:flex-start}
+  .plan li::before{content:"✓";color:var(--ok);font-weight:800;flex:none}
+  .plan li.no{color:#9aa7b4}.plan li.no::before{content:"—";color:#cbd5df}
+  /* roadmap */
+  .road{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+  .road .step{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .road .step:last-child{border-bottom:none}
+  .road .num{width:34px;height:34px;border-radius:50%;background:var(--gold);color:#3a2a00;font-weight:800;display:grid;place-items:center;flex:none}
+  .road .st b{font-size:15px}
+  .road .st p{margin:3px 0 0;color:var(--soft);font-size:13.5px}
+  .road .st .wk{font-size:12px;color:var(--blue);font-weight:700}
+  /* final cta */
+  .final{background:linear-gradient(135deg,var(--navy),#16517f);color:#fff;border-radius:var(--radius);padding:38px;text-align:center;box-shadow:var(--shadow)}
+  .final h2{margin:0 0 10px;font-size:26px}
+  .final p{opacity:.9;max-width:560px;margin:0 auto 22px}
+  .footer{text-align:center;color:var(--soft);font-size:12px;padding:30px 22px 50px;line-height:1.7}
+  .disc{max-width:1080px;margin:0 auto;font-size:11.5px;color:var(--soft);background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><div class="logo">eq</div><div>Equiplano<small>Gestão Pública · desde 1974</small></div></div>
+  <div class="spacer"></div>
+  <a class="back" href="painel-equiplano-londrina.html">← Voltar ao painel</a>
+</div>
+
+<section class="hero">
+  <div class="in">
+    <div class="htxt">
+      <div class="eyebrow">Proposta de serviços · Prefeitura de Londrina / PR</div>
+      <h1>Tranquilidade no TCE-PR, do empenho à prestação de contas.</h1>
+      <p>Implantamos os painéis que faltam, integramos suas fontes de dados (SICONFI, FNS, FNDE, FNAS, Transfere.gov, SEFAZ-PR) e monitoramos prazos, repasses e mínimos constitucionais — para o gestor nunca mais ser pego de surpresa.</p>
+      <div class="cta-row">
+        <a class="btn gold" href="#planos">Ver planos →</a>
+        <a class="btn outline" href="painel-equiplano-londrina.html">Ver o painel funcionando</a>
+      </div>
+    </div>
+    <div class="crestwrap">
+      <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="Brasão de Londrina" xmlns="http://www.w3.org/2000/svg">
+        <g fill="#caa53d" stroke="#9c7d23" stroke-width="1"><rect x="30" y="15" width="60" height="9"/><rect x="30" y="9" width="9" height="8"/><rect x="46.5" y="9" width="9" height="8"/><rect x="64.5" y="9" width="9" height="8"/><rect x="81" y="9" width="9" height="8"/></g>
+        <path d="M28,28 H92 V64 Q92,92 60,107 Q28,92 28,64 Z" fill="#fff" stroke="#0b3a5b" stroke-width="2.5"/>
+        <defs><clipPath id="shClip"><path d="M28,28 H92 V64 Q92,92 60,107 Q28,92 28,64 Z"/></clipPath></defs>
+        <g clip-path="url(#shClip)">
+          <rect x="20" y="28" width="80" height="30" fill="#0a6fb0"/>
+          <circle cx="60" cy="49" r="8" fill="#f2b705"/>
+          <g stroke="#f2b705" stroke-width="2" stroke-linecap="round"><line x1="60" y1="33" x2="60" y2="38"/><line x1="44" y1="49" x2="49" y2="49"/><line x1="71" y1="49" x2="76" y2="49"/><line x1="49" y1="38" x2="52" y2="41"/><line x1="71" y1="38" x2="68" y2="41"/></g>
+          <rect x="20" y="58" width="80" height="60" fill="#2f7d32"/>
+          <path d="M46,100 Q60,80 74,100" stroke="#d8efc0" stroke-width="2" fill="none"/>
+          <g fill="#1f6b27"><ellipse cx="45" cy="88" rx="6" ry="3" transform="rotate(-28 45 88)"/><ellipse cx="75" cy="88" rx="6" ry="3" transform="rotate(28 75 88)"/></g>
+          <g fill="#c8102e" stroke="#7d0b1d" stroke-width="0.4"><circle cx="50" cy="94" r="3.6"/><circle cx="60" cy="88" r="3.6"/><circle cx="70" cy="94" r="3.6"/><circle cx="55" cy="98" r="3.6"/><circle cx="65" cy="98" r="3.6"/></g>
+        </g>
+        <path d="M22,103 Q60,117 98,103 L94,113 Q60,125 26,113 Z" fill="#0b3a5b"/>
+        <text x="60" y="113" text-anchor="middle" font-family="Arial" font-size="7.5" font-weight="700" fill="#fff" letter-spacing="0.8">LONDRINA · 1934</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<div class="band"><div class="row">
+  <div class="m"><div class="n">R$ 3,63 bi</div><div class="l">receita realizada de Londrina (2024)</div></div>
+  <div class="m"><div class="n">13</div><div class="l">fluxos de repasse monitoráveis</div></div>
+  <div class="m"><div class="n">8</div><div class="l">painéis de alto retorno a implantar</div></div>
+  <div class="m"><div class="n">−30%</div><div class="l">meta de redução de tickets de suporte</div></div>
+</div></div>
+
+<div class="wrap">
+  <div class="sec-h">
+    <div class="eyebrow">Catálogo de serviços</div>
+    <h2>O que a Equiplano entrega</h2>
+    <p>Cada serviço ataca uma dor concreta do gestor municipal e se conecta aos painéis do seu dashboard.</p>
+  </div>
+
+  <div class="svc">
+
+    <div class="scard feature"><div class="ribbon">DESTAQUE</div>
+      <div class="ic">📊</div><span class="who">Prefeito · Sec. Fazenda</span>
+      <h3>Painel de Conformidade & Repasses</h3>
+      <p>Implantação do dashboard one-page: SIAFIC, PNCP, RGF/RREO, LRF, score explicável e a visão consolidada de todas as verbas de repasse.</p>
+      <div class="roi">ROI: 1 renovação retida paga o projeto · churn de produto que cai</div>
+      <div class="price">A partir de <b>R$ 4.900/mês</b> + setup R$ 18k</div>
+    </div>
+
+    <div class="scard feature"><div class="ribbon">IA</div>
+      <div class="ic">📈</div><span class="who">Sec. Fazenda · Contador</span>
+      <h3>Projeção Preditiva de Mínimos + Alertas</h3>
+      <p>IA projeta Saúde (15%) e Educação (25%) até o fim do exercício e alerta aos 60/30/15 dias — evita a rejeição de contas antes que ela aconteça.</p>
+      <div class="roi">ROI: evita 1 rejeição de contas = mandato salvo</div>
+      <div class="price">A partir de <b>R$ 2.400/mês</b></div>
+    </div>
+
+    <div class="scard feature"><div class="ribbon">MAIOR ROI</div>
+      <div class="ic">💰</div><span class="who">Sec. Fazenda · PGM</span>
+      <h3>Recuperação de Receita (Dívida Ativa)</h3>
+      <p>Priorização por probabilidade de recuperação, integração cadastral IPTU/ISS e cobrança multicanal (carta/e-mail/WhatsApp). "Arrecadar mais sem subir imposto."</p>
+      <div class="roi">ROI: success fee — % sobre o recuperado</div>
+      <div class="price">Setup R$ 30k + <b>8–12% do recuperado</b></div>
+    </div>
+
+    <div class="scard">
+      <div class="ic">🏛️</div><span class="who">Prefeito · Gabinete</span>
+      <h3>Captação & Gestão de Emendas/Convênios</h3>
+      <p>Carteira de emendas e convênios via Transfere.gov, da captação à prestação de contas, com alertas de prazo e saldo a executar.</p>
+      <div class="roi">ROI: recurso que ia prescrever vira obra entregue</div>
+      <div class="price">A partir de <b>R$ 3.200/mês</b></div>
+    </div>
+
+    <div class="scard">
+      <div class="ic">🔗</div><span class="who">TI · Atendimento</span>
+      <h3>Integração gov.br / PNCP / SICx</h3>
+      <p>Login Único gov.br, publicação no PNCP e adesão ao SICx (Lei 15.266/2025). Cidadão acessa serviços com a experiência gov.br.</p>
+      <div class="roi">ROI: feature-matching vs. Betha/IPM em vendas</div>
+      <div class="price">Projeto a partir de <b>R$ 28k</b></div>
+    </div>
+
+    <div class="scard">
+      <div class="ic">🤖</div><span class="who">Atendimento · Cidadão</span>
+      <h3>IA: Copiloto de Conformidade + Assistente</h3>
+      <p>Copiloto valida o fechamento do mês antes do envio ao TCE; assistente emite guias/certidões via WhatsApp 24/7 e desafoga o suporte.</p>
+      <div class="roi">ROI: −30% tickets · fechamento de 5 → 2 dias</div>
+      <div class="price">A partir de <b>R$ 3.900/mês</b></div>
+    </div>
+
+    <div class="scard">
+      <div class="ic">🛡️</div><span class="who">Controle Interno · TI</span>
+      <h3>LGPD as a Service</h3>
+      <p>Trilha de consentimento, logs de acesso e RIPD para a prefeitura como operadora de dados — a ANPD já fiscaliza municípios.</p>
+      <div class="roi">ROI: evita multa e risco contratual</div>
+      <div class="price">A partir de <b>R$ 1.800/mês</b></div>
+    </div>
+
+    <div class="scard">
+      <div class="ic">⚙️</div><span class="who">TI · Sec. Fazenda</span>
+      <h3>Estabilidade & SLA Premium</h3>
+      <p>SLA público de 99,5%, monitoramento proativo e on-call estruturado — o sistema não cai no pico do RGF/RREO.</p>
+      <div class="roi">ROI: cada 1% de uptime ≈ R$ 500k/ano retidos</div>
+      <div class="price">A partir de <b>R$ 1.500/mês</b></div>
+    </div>
+
+    <div class="scard">
+      <div class="ic">📚</div><span class="who">Contador · Equipe</span>
+      <h3>Prestação de Contas TCE-PR gerenciada</h3>
+      <p>Serviço assistido de geração e validação no SIM-AM (TCE-PR), com capacitação da equipe — "operar com o time que eu tenho".</p>
+      <div class="roi">ROI: menos retrabalho e dependência de suporte</div>
+      <div class="price">A partir de <b>R$ 2.200/mês</b></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="wrap" id="planos" style="padding-top:10px">
+  <div class="sec-h">
+    <div class="eyebrow">Planos</div>
+    <h2>Escolha o nível de cobertura</h2>
+    <p>Tudo modular: comece pelo essencial e evolua. Valores de referência (proposta formal mediante diagnóstico).</p>
+  </div>
+  <div class="plans">
+    <div class="plan">
+      <h3>Essencial</h3>
+      <div class="pr">R$ 6,9k<small> /mês</small></div>
+      <div class="setup">Setup R$ 18k · implantação 2–3 semanas</div>
+      <ul>
+        <li>Painel de Conformidade (SIAFIC, PNCP, RGF/RREO, LRF)</li>
+        <li>Visão consolidada de verbas de repasse</li>
+        <li>Score explicável + frescor por fonte</li>
+        <li class="no">Projeção preditiva de mínimos</li>
+        <li class="no">Recuperação de dívida ativa</li>
+        <li class="no">IA de atendimento</li>
+      </ul>
+      <a class="btn blue" href="#contato">Começar</a>
+    </div>
+    <div class="plan best"><div class="flag">MAIS ESCOLHIDO</div>
+      <h3>Gestão</h3>
+      <div class="pr">R$ 12,9k<small> /mês</small></div>
+      <div class="setup">Setup R$ 35k · implantação 4–6 semanas</div>
+      <ul>
+        <li>Tudo do Essencial</li>
+        <li>Projeção preditiva de mínimos + alertas 60/30/15</li>
+        <li>Painéis de emendas, convênios, CAPAG e restos a pagar</li>
+        <li>Copiloto de conformidade (IA)</li>
+        <li>Integração gov.br / PNCP</li>
+        <li class="no">Recuperação de dívida ativa (success fee à parte)</li>
+      </ul>
+      <a class="btn blue" href="#contato">Falar com a GB</a>
+    </div>
+    <div class="plan">
+      <h3>Estratégico</h3>
+      <div class="pr">R$ 22,9k<small> /mês</small></div>
+      <div class="setup">+ success fee dívida ativa · implantação 6–10 sem.</div>
+      <ul>
+        <li>Tudo do Gestão</li>
+        <li>Recuperação de receita / dívida ativa (8–12% do recuperado)</li>
+        <li>Assistente de atendimento WhatsApp 24/7</li>
+        <li>LGPD as a Service</li>
+        <li>SLA Premium 99,5% + on-call</li>
+        <li>Prestação de contas TCE-PR gerenciada</li>
+      </ul>
+      <a class="btn blue" href="#contato">Falar com a GB</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:10px">
+  <div class="sec-h"><div class="eyebrow">Como começamos</div><h2>Da assinatura ao go-live</h2></div>
+  <div class="road">
+    <div class="step"><div class="num">1</div><div class="st"><span class="wk">Semana 0</span><b>Diagnóstico gratuito</b><p>Levantamento de fontes (SICONFI, SIOPS/SIOPE, Transfere.gov) e dos riscos de conformidade atuais.</p></div></div>
+    <div class="step"><div class="num">2</div><div class="st"><span class="wk">Semanas 1–3</span><b>Implantação do painel</b><p>Conexão das fontes, carga de dados e configuração dos painéis de conformidade e repasses.</p></div></div>
+    <div class="step"><div class="num">3</div><div class="st"><span class="wk">Semanas 3–5</span><b>Painéis avançados & IA</b><p>Projeção de mínimos, emendas/convênios e copiloto de conformidade conforme o plano.</p></div></div>
+    <div class="step"><div class="num">4</div><div class="st"><span class="wk">Contínuo</span><b>Go-live & acompanhamento</b><p>Capacitação da equipe, alertas ativos e revisões mensais de conformidade.</p></div></div>
+  </div>
+</div>
+
+<div class="wrap" id="contato" style="padding-top:10px">
+  <div class="final">
+    <h2>Pronto para nunca mais ser pego de surpresa pelo TCE-PR?</h2>
+    <p>Agende um diagnóstico gratuito. Mostramos, com os dados da sua prefeitura, quais painéis faltam e quanto risco você reduz já no primeiro mês.</p>
+    <a class="btn gold" href="mailto:comercial@equiplano.com.br?subject=Diagnóstico%20Londrina/PR">Agendar diagnóstico gratuito →</a>
+    &nbsp;
+    <a class="btn outline" href="painel-equiplano-londrina.html">Rever o painel</a>
+  </div>
+</div>
+
+<div class="disc">
+  <b>Aviso:</b> esta é uma página de demonstração (protótipo). Valores, planos e indicadores são <b>ilustrativos</b> para validação comercial e não constituem proposta formal. Dados do município com base em fontes públicas (IBGE, Portal da Transparência de Londrina).
+</div>
+
+<div class="footer">
+  <b>Equiplano</b> · Gestão Pública Municipal — Consolidação horizontal + roadmap de produto<br>
+  Confidencial · Interno. Material de demonstração.
+</div>
+
+</body>
+</html>
