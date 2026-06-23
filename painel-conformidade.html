@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Painel de Conformidade TCE · Governança Brasil</title>
+<style>
+  :root{
+    --gb-navy:#0b2e4f;
+    --gb-navy-2:#103f6b;
+    --gb-blue:#1769aa;
+    --gb-accent:#1f9d8f;
+    --bg:#eef2f6;
+    --card:#ffffff;
+    --ink:#13202d;
+    --ink-soft:#5b6b7a;
+    --line:#e2e8ef;
+    --ok:#1f9d55;
+    --ok-bg:#e6f6ec;
+    --warn:#c77700;
+    --warn-bg:#fdf3e2;
+    --err:#cc2b2b;
+    --err-bg:#fbe9e9;
+    --shadow:0 1px 3px rgba(16,40,70,.08),0 6px 20px rgba(16,40,70,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;
+  }
+  a{color:inherit}
+  /* ---------- Top bar ---------- */
+  .topbar{
+    background:linear-gradient(180deg,var(--gb-navy),var(--gb-navy-2));
+    color:#fff;display:flex;align-items:center;gap:18px;
+    padding:0 22px;height:60px;position:sticky;top:0;z-index:40;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.2px}
+  .brand .logo{
+    width:30px;height:30px;border-radius:8px;background:var(--gb-accent);
+    display:grid;place-items:center;font-weight:800;color:#06241f;font-size:15px;
+  }
+  .brand small{display:block;font-weight:400;font-size:11px;opacity:.7;margin-top:-2px}
+  .muni{
+    margin-left:8px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.14);padding:6px 12px;border-radius:9px;cursor:pointer;
+    font-size:13.5px;
+  }
+  .muni:hover{background:rgba(255,255,255,.14)}
+  .muni .chev{opacity:.6;font-size:11px}
+  .spacer{flex:1}
+  .topbar .nav{display:flex;gap:4px}
+  .topbar .nav a{
+    padding:8px 12px;border-radius:8px;font-size:13.5px;opacity:.85;text-decoration:none;
+  }
+  .topbar .nav a.active{background:rgba(255,255,255,.13);opacity:1;font-weight:600}
+  .topbar .nav a:hover{opacity:1}
+  .user{display:flex;align-items:center;gap:9px;cursor:pointer}
+  .avatar{
+    width:34px;height:34px;border-radius:50%;background:#cfe0ee;color:var(--gb-navy);
+    display:grid;place-items:center;font-weight:700;font-size:13px;
+  }
+  .user .meta{font-size:12.5px;line-height:1.2}
+  .user .meta b{font-weight:600}
+  .user .meta span{display:block;opacity:.65;font-size:11px}
+
+  /* ---------- Page ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 22px 60px}
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+  .page-head h1{font-size:23px;margin:0 0 3px}
+  .page-head .sub{color:var(--ink-soft);font-size:13.5px;margin:0}
+  .page-head .sub .dot{color:var(--ok);font-weight:700}
+  .head-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    border:1px solid var(--line);background:#fff;color:var(--ink);
+    padding:9px 14px;border-radius:10px;font-size:13.5px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;gap:7px;transition:.15s;
+  }
+  .btn:hover{border-color:#c4d2df;box-shadow:var(--shadow)}
+  .btn.primary{background:var(--gb-blue);border-color:var(--gb-blue);color:#fff}
+  .btn.primary:hover{background:#125a93}
+  .btn.ghost{background:transparent}
+  .btn .ic{font-size:15px;line-height:1}
+
+  /* ---------- Hero / score ---------- */
+  .grid-top{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-bottom:18px}
+  @media(max-width:860px){.grid-top{grid-template-columns:1fr}}
+  .score-card{
+    background:linear-gradient(150deg,var(--gb-navy),#16517f);color:#fff;border-radius:var(--radius);
+    padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .score-card h3{margin:0 0 2px;font-size:13px;text-transform:uppercase;letter-spacing:.7px;opacity:.8;font-weight:600}
+  .score-card .when{font-size:11.5px;opacity:.6;margin-bottom:14px}
+  .gauge{display:flex;align-items:center;gap:18px}
+  .ring{
+    width:118px;height:118px;border-radius:50%;flex:none;
+    background:conic-gradient(var(--gb-accent) 0 var(--p,95%), rgba(255,255,255,.16) var(--p,95%) 100%);
+    display:grid;place-items:center;position:relative;transition:background 1s ease;
+  }
+  .ring::before{content:"";position:absolute;inset:11px;border-radius:50%;background:#103c5f}
+  .ring .val{position:relative;font-size:30px;font-weight:800}
+  .ring .val small{font-size:14px;font-weight:600;opacity:.85}
+  .score-legend{font-size:13px;display:flex;flex-direction:column;gap:7px}
+  .score-legend div{display:flex;align-items:center;gap:8px}
+  .pill{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .pill.ok{background:var(--ok)} .pill.warn{background:#f0b429} .pill.err{background:#ff6b6b}
+
+  /* ---------- Status cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:560px){.cards{grid-template-columns:1fr}}
+  .card{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    border:1px solid var(--line);padding:0;overflow:hidden;display:flex;flex-direction:column;
+    transition:.18s;
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(16,40,70,.12)}
+  .card .ch{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px;border-bottom:1px solid var(--line);
+  }
+  .card .ch .name{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+  .card .ch .ico{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:17px}
+  .badge{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:30px;text-transform:uppercase;letter-spacing:.4px;display:inline-flex;gap:5px;align-items:center}
+  .badge.ok{background:var(--ok-bg);color:var(--ok)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .badge.err{background:var(--err-bg);color:var(--err)}
+  .ico.ok{background:var(--ok-bg)} .ico.warn{background:var(--warn-bg)} .ico.err{background:var(--err-bg)}
+  .card .cb{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:11px}
+  .kv{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13.5px}
+  .kv .k{color:var(--ink-soft)}
+  .kv .v{font-weight:700;text-align:right}
+  .kv .v.big{font-size:18px}
+  .meter{height:8px;border-radius:6px;background:#eef2f6;overflow:hidden;margin-top:2px}
+  .meter > i{display:block;height:100%;border-radius:6px;background:var(--ok);transition:width 1s ease}
+  .meter.warn > i{background:#f0b429}
+  .card .cf{padding:11px 16px;border-top:1px solid var(--line);background:#fafcfe}
+  .linkbtn{background:none;border:none;color:var(--gb-blue);font-weight:600;font-size:13.5px;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:5px}
+  .linkbtn:hover{text-decoration:underline}
+  .deadline-flag{font-size:12px;color:var(--warn);font-weight:700}
+
+  /* ---------- Timeline ---------- */
+  .panel{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);margin-top:18px;overflow:hidden}
+  .panel .ph{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .panel .ph h2{margin:0;font-size:16px}
+  .panel .ph .hint{font-size:12.5px;color:var(--ink-soft)}
+  .timeline{padding:26px 22px 30px;position:relative}
+  .tl-track{position:relative;height:4px;background:#dce5ee;border-radius:4px;margin:30px 4% 0}
+  .tl-fill{position:absolute;left:0;top:0;height:100%;width:18%;background:var(--gb-accent);border-radius:4px}
+  .tl-node{position:absolute;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center}
+  .tl-dot{width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--gb-blue);box-shadow:0 0 0 4px #fff}
+  .tl-dot.warn{border-color:var(--warn)} .tl-dot.now{background:var(--gb-accent);border-color:var(--gb-accent)}
+  .tl-label{position:absolute;font-size:11.5px;white-space:nowrap;color:var(--ink-soft);font-weight:600}
+  .tl-top{bottom:26px} .tl-bottom{top:26px}
+  .tl-bottom b{display:block;color:var(--ink)}
+  .tl-months{display:flex;justify-content:space-between;margin:46px 4% 0;font-size:12px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+  /* ---------- Table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-soft);padding:12px 18px;border-bottom:1px solid var(--line);font-weight:700}
+  tbody td{padding:13px 18px;border-bottom:1px solid var(--line)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#f7fafc}
+  .st{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px}
+  .st.ok{color:var(--ok)} .st.warn{color:var(--warn)} .st.err{color:var(--err)}
+  .days{font-weight:700}
+  .days.warn{color:var(--warn)}
+  .tbtn{font-size:12.5px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600}
+  .tbtn.warn{border-color:#f0c674;background:var(--warn-bg);color:var(--warn)}
+  .tbtn:hover{box-shadow:var(--shadow)}
+
+  /* ---------- Action bar ---------- */
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .actions .btn{padding:12px 16px;font-size:14px}
+
+  /* ---------- Toast / Modal ---------- */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--gb-navy);color:#fff;padding:13px 20px;border-radius:11px;box-shadow:0 10px 30px rgba(0,0,0,.25);
+    font-size:14px;opacity:0;pointer-events:none;transition:.3s;display:flex;align-items:center;gap:10px;z-index:80}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .overlay{position:fixed;inset:0;background:rgba(11,46,79,.55);display:none;place-items:center;z-index:70;padding:20px}
+  .overlay.show{display:grid}
+  .modal{background:#fff;border-radius:16px;max-width:540px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);overflow:hidden;animation:pop .2s ease}
+  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .mh{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .modal .mh h3{margin:0;font-size:17px}
+  .modal .mh .x{border:none;background:none;font-size:22px;cursor:pointer;color:var(--ink-soft);line-height:1}
+  .modal .mb{padding:20px;font-size:14px}
+  .modal .mb ul{margin:12px 0;padding-left:20px}
+  .modal .mb li{margin-bottom:7px}
+  .modal .mf{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:#fafcfe}
+  .check{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .check:last-child{border-bottom:none}
+  .check .cmark{width:22px;height:22px;border-radius:50%;background:var(--ok-bg);color:var(--ok);display:grid;place-items:center;font-weight:800;flex:none}
+  .check .cmark.warn{background:var(--warn-bg);color:var(--warn)}
+
+  .footer{text-align:center;color:var(--ink-soft);font-size:12px;margin-top:34px;line-height:1.6}
+  .footer b{color:var(--ink-soft)}
+  .demo-tag{position:fixed;top:68px;right:14px;background:#fff3cd;color:#8a6d00;border:1px solid #f0d98a;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;z-index:50;box-shadow:var(--shadow)}
+  .spin{display:inline-block;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">GB</div>
+    <div>Governança Brasil<small>Gestão Pública Municipal</small></div>
+  </div>
+  <div class="muni" onclick="toast('Troca de município disponível na versão completa')">
+    <span>🏛️ Prefeitura de Uberaba · MG</span><span class="chev">▾</span>
+  </div>
+  <div class="spacer"></div>
+  <nav class="nav">
+    <a href="#" class="active">Conformidade</a>
+    <a href="#" onclick="toast('Módulo Financeiro — fora deste protótipo');return false">Financeiro</a>
+    <a href="#" onclick="toast('Módulo Arrecadação — fora deste protótipo');return false">Arrecadação</a>
+    <a href="#" onclick="toast('Módulo Compras/PNCP — fora deste protótipo');return false">Compras</a>
+  </nav>
+  <div class="user" onclick="toast('Logado como Secretário de Fazenda')">
+    <div class="meta" style="text-align:right"><b>Carlos Menezes</b><span>Sec. de Fazenda</span></div>
+    <div class="avatar">CM</div>
+  </div>
+</div>
+
+<div class="demo-tag">● PROTÓTIPO — dados ilustrativos</div>
+
+<div class="wrap">
+
+  <div class="page-head">
+    <div>
+      <h1>Painel de Conformidade TCE</h1>
+      <p class="sub">Última verificação automática <b id="lastcheck">hoje às 09:15</b> · <span class="dot">●</span> dados sincronizados com SIAFIC e PNCP</p>
+    </div>
+    <div class="head-actions">
+      <button class="btn ghost" id="refreshBtn" onclick="refresh()"><span class="ic">⟳</span> Atualizar agora</button>
+      <button class="btn primary" onclick="toast('Gerando relatório PDF imprimível…')"><span class="ic">⤓</span> Baixar relatório PDF</button>
+    </div>
+  </div>
+
+  <!-- score + first two cards -->
+  <div class="grid-top">
+    <div class="score-card">
+      <h3>Score de Conformidade</h3>
+      <div class="when">Verificado hoje às 09:15</div>
+      <div class="gauge">
+        <div class="ring" id="ring"><div class="val" id="ringVal">95<small>%</small></div></div>
+        <div class="score-legend">
+          <div><span class="pill ok"></span> <b>4</b>&nbsp;itens em dia</div>
+          <div><span class="pill warn"></span> <b>1</b>&nbsp;item com atenção</div>
+          <div><span class="pill err"></span> <b>0</b>&nbsp;itens atrasados</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards" style="grid-template-columns:1fr 1fr">
+      <!-- SIAFIC -->
+      <div class="card">
+        <div class="ch">
+          <div class="name"><span class="ico ok">🗂️</span> SIAFIC</div>
+          <span class="badge ok">✓ Em dia</span>
+        </div>
+        <div class="cb">
+          <div class="kv"><span class="k">Status</span><span class="v">Conformidade ok</span></div>
+          <div class="kv"><span class="k">Última atualização</span><span class="v">22/06 às 14:30</span></div>
+          <div class="kv"><span class="k">Próximo prazo</span><span class="v">Contínuo</span></div>
+        </div>
+        <div class="cf"><button class="linkbtn" onclick="openSiafic()">Ver checklist SIAFIC →</button></div>
+      </div>
+      <!-- PNCP -->
+      <div class="card">
+        <div class="ch">
+          <div class="name"><span class="ico ok">📡</span> PNCP</div>
+          <span class="badge ok">✓ Em dia</span>
+        </div>
+        <div class="cb">
+          <div class="kv"><span class="k">Contratos publicados (2026)</span><span class="v big">47</span></div>
+          <div class="kv"><span class="k">Última publicação</span><span class="v">21/06/2026</span></div>
+          <div class="kv"><span class="k">Pendências</span><span class="v">Nenhuma</span></div>
+        </div>
+        <div class="cf"><button class="linkbtn" onclick="toast('Abrindo últimas 10 publicações no PNCP…')">Ver últimas 10 →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RGF + LRF -->
+  <div class="cards">
+    <!-- RGF -->
+    <div class="card">
+      <div class="ch">
+        <div class="name"><span class="ico warn">📑</span> RGF / RREO</div>
+        <span class="badge warn">⚠ Atenção</span>
+      </div>
+      <div class="cb">
+        <div class="kv"><span class="k">Próximo prazo (RGF trimestral)</span><span class="v">31/07/2026</span></div>
+        <div class="kv"><span class="k">Dias restantes</span><span class="v big" style="color:var(--warn)">38 dias</span></div>
+        <div class="kv"><span class="k">Completude</span><span class="v">0%</span></div>
+        <div class="meter warn"><i style="width:2%"></i></div>
+        <div class="deadline-flag">⚠ Ainda não iniciado — recomendado começar até 10/07</div>
+      </div>
+      <div class="cf"><button class="linkbtn" onclick="openRgf()">Iniciar RGF agora →</button></div>
+    </div>
+    <!-- LRF -->
+    <div class="card">
+      <div class="ch">
+        <div class="name"><span class="ico ok">⚖️</span> LRF</div>
+        <span class="badge ok">✓ Ok</span>
+      </div>
+      <div class="cb">
+        <div class="kv"><span class="k">Despesa com pessoal</span><span class="v">52% <span style="color:var(--ink-soft);font-weight:400">/ limite 54%</span></span></div>
+        <div class="meter"><i style="width:96%"></i></div>
+        <div class="kv" style="margin-top:4px"><span class="k">Arrecadação própria (meta)</span><span class="v">85%</span></div>
+        <div class="meter"><i style="width:85%"></i></div>
+      </div>
+      <div class="cf"><button class="linkbtn" onclick="toast('Abrindo detalhamento de execução orçamentária…')">Detalhes da LRF →</button></div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="panel">
+    <div class="ph">
+      <h2>Prazos dos próximos 90 dias</h2>
+      <span class="hint">Atualizado automaticamente todas as madrugadas</span>
+    </div>
+    <div class="timeline">
+      <div class="tl-track">
+        <div class="tl-fill"></div>
+        <!-- nodes -->
+        <div class="tl-node" style="left:5%">
+          <div class="tl-dot now"></div>
+          <div class="tl-label tl-top">Hoje · 23/jun</div>
+        </div>
+        <div class="tl-node" style="left:42%">
+          <div class="tl-dot warn"></div>
+          <div class="tl-label tl-bottom"><b>RGF trimestral</b>31/jul · 38 dias</div>
+        </div>
+        <div class="tl-node" style="left:95%">
+          <div class="tl-dot"></div>
+          <div class="tl-label tl-bottom"><b>RREO bimestral</b>30/set · 99 dias</div>
+        </div>
+      </div>
+      <div class="tl-months"><span>Junho</span><span>Julho</span><span>Agosto</span><span>Setembro</span></div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="panel">
+    <div class="ph"><h2>Obrigações legais</h2><span class="hint">Ordenadas por urgência</span></div>
+    <table>
+      <thead><tr><th>Obrigação</th><th>Prazo</th><th>Dias restantes</th><th>Status</th><th style="text-align:right">Ação</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>RGF trimestral</b><br><span style="color:var(--ink-soft);font-size:12.5px">Relatório de Gestão Fiscal · 2º quadrimestre</span></td>
+          <td>31/07/2026</td>
+          <td><span class="days warn">38</span></td>
+          <td><span class="st warn">⚠ Não iniciado</span></td>
+          <td style="text-align:right"><button class="tbtn warn" onclick="openRgf()">Iniciar</button></td>
+        </tr>
+        <tr>
+          <td><b>RREO bimestral</b><br><span style="color:var(--ink-soft);font-size:12.5px">Relatório Resumido da Execução Orçamentária</span></td>
+          <td>30/09/2026</td>
+          <td><span class="days">99</span></td>
+          <td><span class="st ok">✓ No prazo</span></td>
+          <td style="text-align:right"><button class="tbtn" onclick="toast('RREO ainda dentro do prazo confortável')">Ver</button></td>
+        </tr>
+        <tr>
+          <td><b>PNCP — publicações</b><br><span style="color:var(--ink-soft);font-size:12.5px">Portal Nacional de Contratações Públicas</span></td>
+          <td>Contínuo</td>
+          <td>—</td>
+          <td><span class="st ok">✓ Em dia</span></td>
+          <td style="text-align:right"><button class="tbtn" onclick="toast('Nenhuma publicação pendente')">Ver</button></td>
+        </tr>
+        <tr>
+          <td><b>SIAFIC</b><br><span style="color:var(--ink-soft);font-size:12.5px">Sistema Único de Contabilidade · Tesouro</span></td>
+          <td>Contínuo</td>
+          <td>—</td>
+          <td><span class="st ok">✓ Em dia</span></td>
+          <td style="text-align:right"><button class="tbtn" onclick="openSiafic()">Verificar</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn primary" onclick="openRgf()"><span class="ic">📑</span> Gerar RGF agora</button>
+    <button class="btn" onclick="openSiafic()"><span class="ic">🗂️</span> Verificar SIAFIC</button>
+    <button class="btn" onclick="toast('Abrindo fluxo de publicação no PNCP…')"><span class="ic">📡</span> Publicar no PNCP</button>
+    <button class="btn ghost" onclick="toast('Gerando relatório PDF imprimível…')"><span class="ic">⤓</span> Baixar relatório PDF</button>
+  </div>
+
+  <div class="footer">
+    <b>Governança Brasil</b> · Painel de Conformidade TCE — protótipo de validação<br>
+    Confidencial · Interno. Dados ilustrativos para fins de demonstração.
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalSiafic" style="display:none">
+    <div class="mh"><h3>🗂️ Checklist SIAFIC</h3><button class="x" onclick="closeModal()">×</button></div>
+    <div class="mb">
+      <p style="margin-top:0;color:var(--ink-soft)">Validação automática das últimas transações enviadas ao SIAFIC (Tesouro Nacional).</p>
+      <div class="check"><span class="cmark">✓</span> Empenhos do mês conciliados (1.284 lançamentos)</div>
+      <div class="check"><span class="cmark">✓</span> Liquidações sem inconsistência</div>
+      <div class="check"><span class="cmark">✓</span> Pagamentos batidos com extrato bancário</div>
+      <div class="check"><span class="cmark">✓</span> Plano de contas PCASP atualizado</div>
+      <div class="check"><span class="cmark warn">!</span> 3 notas de empenho aguardando assinatura digital</div>
+    </div>
+    <div class="mf">
+      <button class="btn ghost" onclick="closeModal()">Fechar</button>
+      <button class="btn primary" onclick="closeModal();toast('Abrindo as 3 notas pendentes…')">Resolver pendências</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modalRgf" style="display:none">
+    <div class="mh"><h3>📑 Iniciar RGF — 2º quadrimestre</h3><button class="x" onclick="closeModal()">×</button></div>
+    <div class="mb">
+      <p style="margin-top:0;color:var(--ink-soft)">Prazo legal: <b style="color:var(--warn)">31/07/2026 (38 dias)</b>. O sistema já pré-carrega os dados de execução orçamentária disponíveis.</p>
+      <ul>
+        <li>Receita corrente líquida apurada — <b>pronta</b></li>
+        <li>Despesa com pessoal consolidada — <b>pronta</b></li>
+        <li>Dívida consolidada líquida — <b>requer revisão manual</b></li>
+        <li>Demonstrativos complementares — <b>pendente</b></li>
+      </ul>
+      <p style="color:var(--ink-soft);font-size:13px">Estimativa: ~40 min para concluir com os dados atuais.</p>
+    </div>
+    <div class="mf">
+      <button class="btn ghost" onclick="closeModal()">Agora não</button>
+      <button class="btn primary" onclick="startRgf()">Começar preenchimento</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+
+<script>
+  let toastTimer;
+  function toast(msg){
+    const t=document.getElementById('toast');
+    document.getElementById('toastMsg').textContent=msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+  }
+  function openModal(id){
+    document.querySelectorAll('.modal').forEach(m=>m.style.display='none');
+    document.getElementById(id).style.display='block';
+    document.getElementById('overlay').classList.add('show');
+  }
+  function closeModal(){document.getElementById('overlay').classList.remove('show');}
+  function openSiafic(){openModal('modalSiafic');}
+  function openRgf(){openModal('modalRgf');}
+  function startRgf(){closeModal();toast('Abrindo formulário de RGF com dados pré-carregados…');}
+
+  function refresh(){
+    const b=document.getElementById('refreshBtn');
+    b.innerHTML='<span class="ic spin">⟳</span> Atualizando…';
+    b.disabled=true;
+    setTimeout(()=>{
+      b.innerHTML='<span class="ic">⟳</span> Atualizar agora';
+      b.disabled=false;
+      const now=new Date();
+      const hh=String(now.getHours()).padStart(2,'0'), mm=String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('lastcheck').textContent='hoje às '+hh+':'+mm;
+      toast('Dados sincronizados — nenhuma alteração de status');
+    },1400);
+  }
+
+  // animate gauge on load
+  window.addEventListener('load',()=>{
+    const ring=document.getElementById('ring');
+    ring.style.setProperty('--p','0%');
+    setTimeout(()=>ring.style.setProperty('--p','95%'),200);
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>
