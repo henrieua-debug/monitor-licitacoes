@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camada Agêntica — Governança Brasil</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #efefec;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18; --text2: #5a5a56; --text3: #8a8a85;
+    --blue-bg: #E6F1FB; --blue-text: #185FA5;
+    --purple-bg: #EEEDFE; --purple-text: #3C3489;
+    --red-bg: #FAECE7; --red-text: #993C1D;
+    --green-bg: #EAF3DE; --green-text: #3B6D11;
+    --amber-bg: #FAEEDA; --amber-text: #854F0B;
+    --success-bg: #EAF3DE; --success-text: #3B6D11;
+    --warn-bg: #FAEEDA; --warn-text: #854F0B;
+    --gray-bg: #F1EFE8; --gray-text: #5F5E5A;
+    --radius: 8px; --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --mono: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #2e2e2b;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --text: #f0f0ec; --text2: #a0a09a; --text3: #666662;
+      --blue-bg: #0c2a45; --blue-text: #85B7EB;
+      --purple-bg: #1e1b3a; --purple-text: #AFA9EC;
+      --red-bg: #2e1a0f; --red-text: #F0997B;
+      --green-bg: #1a2e10; --green-text: #97C459;
+      --amber-bg: #2e1f08; --amber-text: #EF9F27;
+      --success-bg: #1a2e10; --success-text: #97C459;
+      --warn-bg: #2e1f08; --warn-text: #EF9F27;
+      --gray-bg: #2a2a27; --gray-text: #a0a09a;
+    }
+  }
+  body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* Header */
+  .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 20px 24px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo { width: 40px; height: 40px; border-radius: 10px; background: var(--blue-bg); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .header-title { font-size: 17px; font-weight: 600; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 500; }
+  .badge-ok { background: var(--success-bg); color: var(--success-text); }
+  .badge-warn { background: var(--warn-bg); color: var(--warn-text); }
+
+  /* Metrics */
+  .metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+  .metric { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; }
+  .metric-label { font-size: 12px; color: var(--text3); margin-bottom: 5px; }
+  .metric-val { font-size: 24px; font-weight: 600; color: var(--text); }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  /* Section */
+  .section { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .section-desc { font-size: 12px; color: var(--text3); margin-bottom: 14px; }
+
+  /* Inbox de exceções */
+  .inbox { display: flex; flex-direction: column; gap: 8px; }
+  .exc { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 13px 15px; border-left: 2px solid #BA7517; }
+  .exc.crit { border-left-color: #993C1D; }
+  .exc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+  .exc-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.45; }
+  .exc-agent { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .exc-meta { display: flex; gap: 14px; flex-wrap: wrap; margin: 4px 0 8px; }
+  .exc-meta span { font-size: 11px; color: var(--text3); }
+  .exc-meta strong { color: var(--text2); font-weight: 500; }
+  .exc-rec { font-size: 12px; color: var(--text2); line-height: 1.55; background: var(--bg2); border-radius: 6px; padding: 9px 11px; margin-bottom: 10px; }
+  .exc-rec b { color: var(--text); }
+  .exc-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn { font-size: 12px; padding: 6px 14px; border-radius: 100px; border: 0.5px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+  .btn:hover { background: var(--bg2); }
+  .btn-primary { background: var(--green-bg); color: var(--green-text); border-color: transparent; }
+  .btn-primary:hover { opacity: 0.85; background: var(--green-bg); }
+  .btn-danger:hover { background: var(--red-bg); color: var(--red-text); border-color: var(--red-text); }
+  .exc.done { opacity: 0.5; }
+  .exc.done .exc-actions { display: none; }
+  .exc-resolved { font-size: 11px; font-weight: 600; color: var(--green-text); display: none; }
+  .exc.done .exc-resolved { display: block; }
+
+  /* Pill / chips */
+  .chip { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; }
+  .chip-area0 { background: var(--blue-bg); color: var(--blue-text); }
+  .chip-area1 { background: var(--green-bg); color: var(--green-text); }
+  .chip-area2 { background: var(--purple-bg); color: var(--purple-text); }
+  .chip-area3 { background: var(--amber-bg); color: var(--amber-text); }
+  .chip-area4 { background: var(--red-bg); color: var(--red-text); }
+  .chip-area5 { background: var(--gray-bg); color: var(--gray-text); }
+  .chip-wave { background: var(--amber-bg); color: var(--amber-text); }
+
+  /* Filter */
+  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filter-btn { font-size: 12px; padding: 4px 12px; border-radius: 100px; border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+  .filter-btn:hover { border-color: var(--border2); }
+  .filter-btn.active { border-color: var(--blue-text); background: var(--blue-bg); color: var(--blue-text); }
+
+  /* Agentes grid */
+  .agents-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .agent-card { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 13px 15px; cursor: pointer; transition: border-color 0.15s; }
+  .agent-card:hover { border-color: var(--border2); }
+  .agent-card.hidden { display: none; }
+  .agent-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 7px; }
+  .agent-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .agent-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .agent-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 9px; }
+  .agent-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+  .agent-stat { font-size: 11px; color: var(--text3); }
+  .agent-stat b { font-size: 14px; font-weight: 600; color: var(--text); display: block; }
+  .agent-stat.warn b { color: var(--amber-text); }
+
+  /* Status dot */
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; flex-shrink: 0; }
+  .st-run { background: #639922; }
+  .st-wait { background: #BA7517; }
+  .st-idle { background: #888780; }
+
+  /* Escada de confiança */
+  .ladder { display: flex; align-items: center; gap: 3px; margin-top: 9px; }
+  .ladder-label { font-size: 10px; color: var(--text3); margin-right: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .rung { width: 22px; height: 4px; border-radius: 2px; background: var(--bg3); }
+  .rung.on { background: var(--green-text); }
+  .ladder-name { font-size: 10px; color: var(--text2); margin-left: 6px; font-weight: 500; }
+
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: flex-start; justify-content: center; padding: 32px 16px; z-index: 50; overflow-y: auto; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); max-width: 720px; width: 100%; padding: 24px; }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .modal-title { font-size: 17px; font-weight: 600; color: var(--text); }
+  .modal-sub { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .modal-close { font-size: 20px; color: var(--text3); cursor: pointer; background: none; border: none; line-height: 1; padding: 2px 6px; }
+  .modal-close:hover { color: var(--text); }
+  .mblock { margin-top: 18px; }
+  .mblock-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+
+  /* Steps timeline */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step { display: flex; gap: 12px; }
+  .step-rail { display: flex; flex-direction: column; align-items: center; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--green-bg); color: var(--green-text); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-num.human { background: var(--amber-bg); color: var(--amber-text); }
+  .step-num.esc { background: var(--red-bg); color: var(--red-text); }
+  .step-line { width: 1.5px; flex: 1; background: var(--border); min-height: 10px; }
+  .step-body { padding-bottom: 16px; }
+  .step:last-child .step-body { padding-bottom: 0; }
+  .step-decision { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.45; }
+  .step-detail { font-size: 12px; color: var(--text2); line-height: 1.55; margin-top: 3px; }
+  .step-tool { font-size: 10px; font-family: var(--mono); color: var(--text3); background: var(--bg2); padding: 1px 7px; border-radius: 5px; margin-top: 6px; display: inline-block; }
+  .step-flag { font-size: 11px; color: var(--amber-text); margin-top: 5px; font-weight: 500; }
+
+  /* Audit trail */
+  .audit { font-family: var(--mono); font-size: 11px; color: var(--text2); background: var(--bg2); border-radius: var(--radius); padding: 12px 14px; line-height: 1.7; }
+  .audit .t { color: var(--text3); }
+  .audit .ok { color: var(--green-text); }
+  .audit .wn { color: var(--amber-text); }
+
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 12px; }
+  .kv dt { color: var(--text3); }
+  .kv dd { color: var(--text2); }
+
+  .footer { text-align: center; font-size: 12px; color: var(--text3); padding-top: 8px; }
+  .note { font-size: 11px; color: var(--text3); font-style: italic; }
+
+  @media (max-width: 700px) {
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .agents-grid { grid-template-columns: 1fr; }
+    .header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">◆</div>
+      <div>
+        <div class="header-title">Camada Agêntica · Governança Brasil</div>
+        <div class="header-sub">29 módulos · 6 áreas · um motor que lê, decide, produz e escala a exceção</div>
+      </div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-ok" id="b-active">11 agentes ativos</span>
+      <span class="badge badge-warn" id="b-exc">5 exceções na fila</span>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Agentes ativos</div><div class="metric-val">11</div><div class="metric-sub">de 14 mapeados · 6 áreas</div></div>
+    <div class="metric"><div class="metric-label">Horas economizadas</div><div class="metric-val">1.840h</div><div class="metric-sub">este mês · ~167h/cliente</div></div>
+    <div class="metric"><div class="metric-label">Exceções na fila</div><div class="metric-val" style="color:var(--amber-text)">5</div><div class="metric-sub">aguardando decisão humana</div></div>
+    <div class="metric"><div class="metric-label">Taxa de autonomia</div><div class="metric-val">87%</div><div class="metric-sub">resolvido sem humano</div></div>
+  </div>
+
+  <!-- Fila de exceções -->
+  <div class="section">
+    <div class="section-title">Fila de exceções · Humano no loop</div>
+    <div class="section-desc">O agente trabalhou. Isto é só o que ele <b>não</b> teve confiança para decidir sozinho — e por quê. Você decide, ele aprende.</div>
+    <div class="inbox" id="inbox"></div>
+  </div>
+
+  <!-- Agentes -->
+  <div class="section">
+    <div class="section-title">Agentes por área</div>
+    <div class="section-desc">Cada agente sobe a <b>escada de confiança</b>: Sugere → Minuta → Executa c/ aprovação → Autônomo. Clique para ver as decisões e a trilha de auditoria.</div>
+    <div class="filter-bar" id="filters">
+      <button class="filter-btn active" data-f="todos" onclick="filtrar(this,'todos')">Todos</button>
+      <button class="filter-btn" data-f="wave1" onclick="filtrar(this,'wave1')">★ Onda 1</button>
+      <button class="filter-btn" data-f="0" onclick="filtrar(this,'0')">Finanças</button>
+      <button class="filter-btn" data-f="1" onclick="filtrar(this,'1')">Arrecadação</button>
+      <button class="filter-btn" data-f="2" onclick="filtrar(this,'2')">RH/Folha</button>
+      <button class="filter-btn" data-f="3" onclick="filtrar(this,'3')">Compras</button>
+      <button class="filter-btn" data-f="4" onclick="filtrar(this,'4')">Controle Interno</button>
+      <button class="filter-btn" data-f="5" onclick="filtrar(this,'5')">Digital/Plataforma</button>
+    </div>
+    <div class="agents-grid" id="agents"></div>
+  </div>
+
+  <div class="footer">Protótipo · Camada Agêntica GOVBR — dados ilustrativos · Trilha de auditoria em todo agente</div>
+</div>
+
+<!-- Modal agente -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const AREAS = ["Finanças & Orçamento","Arrecadação & Tributos","RH & Folha","Compras & Patrimônio","Controle Interno","Digital & Plataforma"];
+const LADDER = ["Sugere","Minuta","Executa c/ aprovação","Autônomo"];
+
+// ---- Agentes (dados ilustrativos) ----
+const AGENTS = [
+  { id:"F1", area:0, wave:true, name:"Prestação de Contas (TCE)",
+    sub:"Monta RREO/RGF/MSC, valida e corrige rejeições", rung:3, status:"wait",
+    runs:"4 entes hoje", saved:"42h/mês", exc:2,
+    trigger:"Fechamento do bimestre + abertura da janela de remessa do TCE.",
+    reads:["Lançamentos contábeis e orçamentários do ERP","Regras de validação do tribunal (layout vigente)","Histórico de rejeições anteriores do ente"],
+    steps:[
+      {t:"Consolida os demonstrativos", d:"Decide os agrupamentos contábeis e monta RREO, RGF e Matriz de Saldos a partir dos lançamentos do período.", tool:"erp.contabil.read()", kind:"a"},
+      {t:"Valida contra as regras do TCE", d:"Roda o conjunto de validações do layout vigente e classifica cada inconsistência: corrigível por regra vs. exige decisão.", tool:"tce.validate(layout)", kind:"a"},
+      {t:"Corrige rejeições recorrentes", d:"Aplica as correções de erros já conhecidos (ex.: código de função mal classificado) com base no histórico.", tool:"rules.autofix()", kind:"a"},
+      {t:"Sinaliza divergência de limite", d:"Detectou gasto com pessoal em 54,2% — abaixo do limite, mas variação atípica vs. bimestre anterior. Não corrige; escala.", kind:"esc", flag:"Escalado: variação de 6,1 p.p. exige confirmação do contador."},
+      {t:"Contador revisa e assina", d:"A remessa só é transmitida após assinatura do responsável — ato legal indelegável.", kind:"human"},
+      {t:"Transmite e comprova", d:"Envia a remessa, reconcilia o protocolo de retorno e arquiva o comprovante para a prestação de contas.", tool:"tce.submit()", kind:"a"}
+    ],
+    audit:[
+      {time:"08:02", txt:"run iniciado · ente=Pref. Ponta Grossa/PR · período=4º bim", c:"t"},
+      {time:"08:02", txt:"226 demonstrativos consolidados · 0 erro de leitura", c:"ok"},
+      {time:"08:03", txt:"validação TCE-PR: 11 inconsistências · 9 auto-corrigidas", c:"ok"},
+      {time:"08:03", txt:"2 itens escalados · motivo: variação de limite > threshold", c:"wn"},
+      {time:"08:03", txt:"aguardando assinatura do responsável", c:"wn"}
+    ]
+  },
+  { id:"F2", area:0, wave:true, name:"Conciliação Bancária Automática",
+    sub:"Casa extrato × lançamentos, isola exceções", rung:3, status:"run",
+    runs:"contínuo", saved:"31h/mês", exc:1,
+    trigger:"Importação diária do extrato bancário (OFX/API).",
+    reads:["Extrato bancário do dia","Lançamentos de tesouraria em aberto","Regras de conciliação do ente"],
+    steps:[
+      {t:"Casa as transações óbvias", d:"Decide os matches 1:1 por valor, data e histórico. 312 de 340 conciliados automaticamente.", tool:"bank.match()", kind:"a"},
+      {t:"Resolve diferenças de data", d:"Aplica tolerância de D+2 para débitos automáticos e casa mais 19 lançamentos.", tool:"rules.tolerance()", kind:"a"},
+      {t:"Isola e explica as exceções", d:"9 transações sem par: agrupa por causa provável (tarifa não lançada, recebimento não identificado).", kind:"esc", flag:"Escalado: 1 crédito de R$ 18.400 sem origem identificada."},
+      {t:"Tesoureiro aprova as exceções", d:"Humano decide o destino contábil das transações não casadas.", kind:"human"}
+    ],
+    audit:[
+      {time:"06:15", txt:"extrato importado · 340 transações", c:"t"},
+      {time:"06:15", txt:"331 conciliadas automaticamente (97,4%)", c:"ok"},
+      {time:"06:15", txt:"9 exceções isoladas · 1 escalada", c:"wn"}
+    ]
+  },
+  { id:"F3", area:0, wave:false, name:"Empenho de Despesa Recorrente",
+    sub:"Lê fatura, classifica dotação, emite empenho", rung:2, status:"run",
+    runs:"23 hoje", saved:"14h/mês", exc:0,
+    trigger:"Chegada de fatura de concessionária (água, luz, telefone).",
+    reads:["Fatura digital da concessionária","Dotação orçamentária vinculada","Histórico de empenhos do fornecedor"],
+    steps:[
+      {t:"Extrai os dados da fatura", d:"Decide valor, competência e unidade consumidora a partir do PDF/XML.", tool:"ocr.invoice()", kind:"a"},
+      {t:"Classifica a dotação", d:"Vincula à dotação correta com base no histórico do fornecedor e da unidade.", tool:"erp.dotacao()", kind:"a"},
+      {t:"Minuta empenho e liquidação", d:"Gera o empenho; valores dentro do padrão seguem para aprovação.", kind:"human"},
+      {t:"Ordenador libera", d:"Aprovação do ordenador de despesa.", kind:"human"}
+    ],
+    audit:[{time:"hoje", txt:"23 faturas processadas · 0 fora do padrão", c:"ok"}]
+  },
+  { id:"F4", area:0, wave:false, name:"Sentinela da LRF",
+    sub:"Monitora limites e alerta antes do estouro", rung:1, status:"run",
+    runs:"contínuo", saved:"—", exc:0,
+    trigger:"Atualização de empenhos e folha.",
+    reads:["Despesa com pessoal acumulada","Receita corrente líquida","Limites legais (pessoal, saúde, educação)"],
+    steps:[
+      {t:"Recalcula os índices", d:"Projeta o gasto com pessoal vs. limite prudencial a cada novo empenho relevante.", tool:"lrf.compute()", kind:"a"},
+      {t:"Minuta o alerta", d:"Quando a projeção cruza o limiar, redige o aviso ao gestor com a causa.", kind:"human"}
+    ],
+    audit:[{time:"hoje", txt:"pessoal 54,2% RCL · dentro do limite prudencial", c:"ok"}]
+  },
+  { id:"R1", area:1, wave:false, name:"Cobrança da Dívida Ativa",
+    sub:"Segmenta inadimplentes, minuta campanhas", rung:2, status:"run",
+    runs:"2.140 contrib.", saved:"28h/mês", exc:1,
+    trigger:"Inscrição em dívida ativa ou ciclo de campanha de REFIS.",
+    reads:["Cadastro de inadimplentes","Faixas de valor e tempo de débito","Política de cobrança do ente"],
+    steps:[
+      {t:"Segmenta os devedores", d:"Decide a faixa (lembrete, negociação, pré-ajuizamento) por valor e prazo.", tool:"crm.segment()", kind:"a"},
+      {t:"Minuta notificações", d:"Gera os textos por canal (e-mail, SMS, carta) respeitando a política.", kind:"human"},
+      {t:"Marca limiar de ajuizamento", d:"Débitos acima do piso de ajuizamento são separados para a Procuradoria.", kind:"esc", flag:"Escalado: 38 débitos cruzaram o piso de ajuizamento."}
+    ],
+    audit:[{time:"hoje", txt:"2.140 contribuintes segmentados · 38 p/ Procuradoria", c:"wn"}]
+  },
+  { id:"R3", area:1, wave:false, name:"Detecção de Anomalia Fiscal (ISS)",
+    sub:"Cruza declarações × NFe × setor, monta dossiê", rung:1, status:"idle",
+    runs:"semanal", saved:"—", exc:1,
+    trigger:"Fechamento da competência de ISS.",
+    reads:["Declarações de ISS","Notas fiscais eletrônicas","Benchmark de faturamento por setor"],
+    steps:[
+      {t:"Cruza as bases", d:"Compara o declarado com NFe e o padrão do setor; calcula desvio.", tool:"fiscal.crosscheck()", kind:"a"},
+      {t:"Monta o dossiê de indício", d:"Para cada contribuinte fora da curva, organiza as evidências.", kind:"a"},
+      {t:"Auditor decide abrir ação", d:"Acusar contribuinte é ato grave — o agente nunca decide, só instrui.", kind:"esc", flag:"Escalado: 12 contribuintes com indício de subdeclaração."}
+    ],
+    audit:[{time:"seg", txt:"4.300 declarações cruzadas · 12 indícios", c:"wn"}]
+  },
+  { id:"H1", area:2, wave:false, name:"Pré-fechamento de Folha",
+    sub:"Checa anomalias antes de fechar a folha", rung:2, status:"wait",
+    runs:"mensal", saved:"36h/mês", exc:1,
+    trigger:"Janela de fechamento da folha do mês.",
+    reads:["Movimento do mês (admissões, afastamentos)","Regras de cálculo e rubricas","Consistência com eSocial"],
+    steps:[
+      {t:"Roda as checagens de anomalia", d:"Detecta valores fora do padrão, dado faltante e violação de regra rubrica a rubrica.", tool:"payroll.lint()", kind:"a"},
+      {t:"Reconcilia com o eSocial", d:"Confere consistência dos eventos antes do envio.", tool:"esocial.check()", kind:"a"},
+      {t:"Escala as exceções", d:"Servidor com salário 3,2× a média do cargo — possível erro de lançamento.", kind:"esc", flag:"Escalado: 3 anomalias salariais para revisão."},
+      {t:"RH fecha e assina", d:"O fechamento é ato do RH.", kind:"human"}
+    ],
+    audit:[{time:"hoje", txt:"1.240 matrículas checadas · 3 anomalias · eSocial OK", c:"wn"}]
+  },
+  { id:"H2", area:2, wave:false, name:"Obrigações eSocial / DIRF / RAIS",
+    sub:"Gera eventos, lê retorno, corrige e reenvia", rung:3, status:"run",
+    runs:"contínuo", saved:"22h/mês", exc:0,
+    trigger:"Geração de eventos trabalhistas ou prazo de obrigação acessória.",
+    reads:["Eventos da folha","Retornos do governo","Regras de cada obrigação"],
+    steps:[
+      {t:"Gera os eventos", d:"Monta o lote conforme o leiaute vigente.", tool:"esocial.build()", kind:"a"},
+      {t:"Lê o retorno e corrige", d:"Reprocessa erros recorrentes automaticamente e reenvia.", tool:"gov.retry()", kind:"a"},
+      {t:"Aprova o envio final", d:"Humano confirma o lote.", kind:"human"}
+    ],
+    audit:[{time:"hoje", txt:"lote eSocial · 18 eventos · 2 reprocessados · OK", c:"ok"}]
+  },
+  { id:"P1", area:3, wave:true, name:"Pesquisa de Preços",
+    sub:"Monta mapa de preços com justificativa (IN 65)", rung:3, status:"wait",
+    runs:"7 processos", saved:"34h/mês", exc:1,
+    trigger:"Novo processo na fase de planejamento, com a lista de itens.",
+    reads:["Lista de itens (descrição, unidade, quantidade)","Política de pesquisa do ente (hierarquia IN 65)","PNCP, Painel de Preços, atas de outros entes"],
+    steps:[
+      {t:"Normaliza e classifica os itens", d:"Decide a descrição canônica e o código CATMAT/CATSER de cada item.", tool:"catmat.match()", kind:"a"},
+      {t:"Consulta as fontes na hierarquia", d:"Busca preços na ordem da IN 65 e marca os hits utilizáveis por item.", tool:"pncp.query() · painel.query()", kind:"a"},
+      {t:"Filtra comparáveis e trata outliers", d:"Remove preços inexequíveis/sobrepreço por desvio da mediana, documentando a regra.", tool:"stats.outlier()", kind:"a"},
+      {t:"Calcula a referência + justificativa", d:"Decide média/mediana por política e redige a justificativa com a trilha de fontes.", kind:"a"},
+      {t:"Item sem fonte suficiente", d:"Item nicho com < 3 fontes comparáveis — propõe pesquisa direta com fornecedores.", kind:"esc", flag:"Escalado: 1 item sem comparáveis suficientes."},
+      {t:"Pregoeiro assina o preço", d:"O preço de referência é ato sob responsabilidade do pregoeiro.", kind:"human"}
+    ],
+    audit:[
+      {time:"10:40", txt:"run · processo=Pregão 12/2026 · 14 itens", c:"t"},
+      {time:"10:41", txt:"12 itens precificados (PNCP+Painel) · método mediana", c:"ok"},
+      {time:"10:41", txt:"2 itens em revisão · 1 escalado (sem comparável)", c:"wn"}
+    ]
+  },
+  { id:"P5", area:3, wave:false, name:"Reposição Inteligente de Materiais",
+    sub:"Prevê consumo e minuta requisição", rung:2, status:"run",
+    runs:"diário", saved:"11h/mês", exc:0,
+    trigger:"Saldo de estoque cruza o ponto de reposição.",
+    reads:["Saldo e giro de cada item","Histórico de consumo por unidade","Lead time de fornecimento"],
+    steps:[
+      {t:"Prevê o consumo", d:"Projeta a demanda por item com base no histórico e sazonalidade.", tool:"forecast.run()", kind:"a"},
+      {t:"Minuta a requisição", d:"Gera a requisição de compra com quantidade sugerida.", kind:"human"}
+    ],
+    audit:[{time:"hoje", txt:"312 itens avaliados · 8 requisições minutadas", c:"ok"}]
+  },
+  { id:"C1", area:4, wave:true, name:"Sentinela de Prazos & Obrigações",
+    sub:"Monitora todos os módulos, cobra o responsável", rung:3, status:"run",
+    runs:"contínuo", saved:"19h/mês", exc:0,
+    trigger:"Calendário de obrigações legais + estado de cada módulo.",
+    reads:["Calendário de obrigações (todos os módulos)","Status de cada entrega","Responsáveis por área"],
+    steps:[
+      {t:"Cruza prazos × estado real", d:"Decide o que está em risco comparando o prazo legal com o andamento real do módulo.", tool:"calendar.scan()", kind:"a"},
+      {t:"Cobra o responsável", d:"Dispara lembretes escalonados ao dono de cada obrigação em risco.", tool:"notify.escalate()", kind:"a"},
+      {t:"Escala o gestor", d:"Obrigação a < 48h sem movimento sobe para o gestor.", kind:"human"}
+    ],
+    audit:[{time:"hoje", txt:"41 obrigações monitoradas · 3 lembretes · 0 em risco crítico", c:"ok"}]
+  },
+  { id:"D1", area:5, wave:false, name:"Auditor de Transparência Ativa",
+    sub:"Garante publicação legal no prazo, sinaliza lacunas", rung:3, status:"run",
+    runs:"contínuo", saved:"9h/mês", exc:0,
+    trigger:"Novos atos (despesas, contratos, folha) nos módulos.",
+    reads:["Itens de publicação obrigatória","O que já está publicado no portal","Prazos legais (LAI/LC 131)"],
+    steps:[
+      {t:"Reconcilia obrigatório × publicado", d:"Decide o que a lei exige publicar e o que ainda falta.", tool:"transp.diff()", kind:"a"},
+      {t:"Publica e sinaliza lacuna", d:"Publica o que pode e alerta o responsável sobre o que depende de ação humana.", tool:"portal.publish()", kind:"a"}
+    ],
+    audit:[{time:"hoje", txt:"100% dos atos obrigatórios publicados no prazo", c:"ok"}]
+  },
+  { id:"D3", area:5, wave:false, name:"Despacho & Triagem (Processo Digital)",
+    sub:"Classifica, roteia e minuta despachos", rung:2, status:"wait",
+    runs:"148 hoje", saved:"24h/mês", exc:0,
+    trigger:"Abertura ou tramitação de processo administrativo.",
+    reads:["Conteúdo do processo","Fluxos e competências por tipo","Histórico de despachos similares"],
+    steps:[
+      {t:"Classifica e roteia", d:"Decide o tipo do processo e a unidade competente.", tool:"nlp.classify()", kind:"a"},
+      {t:"Minuta o despacho", d:"Redige o despacho padrão com base em casos similares.", kind:"human"}
+    ],
+    audit:[{time:"hoje", txt:"148 processos triados · 96% roteados sem revisão", c:"ok"}]
+  }
+];
+
+// ---- Exceções (fila humano-no-loop) ----
+const EXC = [
+  { id:"e1", crit:true, agentId:"F1", title:"Variação atípica do limite de gasto com pessoal antes da remessa ao TCE",
+    agent:"Prestação de Contas (TCE) · Pref. Ponta Grossa/PR",
+    meta:[["Período","4º bimestre"],["Prazo remessa","2 dias"],["Confiança","baixa"]],
+    rec:"O agente calculou <b>gasto com pessoal em 54,2% da RCL</b> — dentro do limite, mas com salto de <b>+6,1 p.p.</b> vs. o bimestre anterior. Pode ser real (nomeações) ou erro de classificação na folha. <b>Recomendação:</b> confirmar antes de transmitir; o agente já isolou os 3 empenhos que causaram o salto."
+  },
+  { id:"e2", crit:false, agentId:"P1", title:"Item sem fontes comparáveis suficientes para o preço de referência",
+    agent:"Pesquisa de Preços · Pregão 12/2026",
+    meta:[["Item","Licença software gestão"],["Fontes","2 de 3 mín."],["Confiança","baixa"]],
+    rec:"Item de nicho retornou apenas <b>2 fontes comparáveis</b> no PNCP/Painel (mínimo 3 pela política). <b>Recomendação:</b> autorizar pesquisa direta com fornecedores — o agente já minutou o RFQ para 3 empresas do ramo."
+  },
+  { id:"e3", crit:false, agentId:"H1", title:"3 anomalias salariais detectadas no pré-fechamento da folha",
+    agent:"Pré-fechamento de Folha · competência 06/2026",
+    meta:[["Matrículas","1.240"],["Anomalias","3"],["Confiança","média"]],
+    rec:"Uma matrícula está com líquido <b>3,2× a média do cargo</b>. Provável lançamento indevido de rubrica retroativa. <b>Recomendação:</b> revisar as 3 antes do fechamento; o agente bloqueou o avanço só desses casos."
+  },
+  { id:"e4", crit:false, agentId:"F2", title:"Crédito bancário de R$ 18.400 sem origem identificada",
+    agent:"Conciliação Bancária · conta movimento",
+    meta:[["Valor","R$ 18.400"],["Data","ontem"],["Confiança","baixa"]],
+    rec:"Crédito sem lançamento correspondente em tesouraria. Pode ser receita não identificada ou estorno. <b>Recomendação:</b> classificar o destino contábil; o agente sugere 'receita a identificar' como provisório."
+  },
+  { id:"e5", crit:false, agentId:"R1", title:"38 débitos cruzaram o piso de ajuizamento",
+    agent:"Cobrança da Dívida Ativa · campanha REFIS",
+    meta:[["Débitos","38"],["Total","R$ 1,2M"],["Confiança","alta"]],
+    rec:"38 débitos ultrapassaram o piso de ajuizamento definido na política. <b>Recomendação:</b> liberar o envio do pacote à Procuradoria; o agente já montou os dossiês de execução fiscal."
+  }
+];
+
+// ---- Render ----
+function escapeMeta(m){return m;}
+function renderInbox(){
+  const el = document.getElementById('inbox');
+  el.innerHTML = EXC.map(e=>{
+    const metaHtml = e.meta.map(p=>`<span><strong>${p[0]}:</strong> ${p[1]}</span>`).join('');
+    return `<div class="exc ${e.crit?'crit':''}" id="${e.id}">
+      <div class="exc-top">
+        <div>
+          <div class="exc-title">${e.title}</div>
+          <div class="exc-agent">${e.agent}</div>
+        </div>
+        <span class="status-dot st-wait" title="aguarda decisão"></span>
+      </div>
+      <div class="exc-meta">${metaHtml}</div>
+      <div class="exc-rec">${e.rec}</div>
+      <div class="exc-actions">
+        <button class="btn btn-primary" onclick="resolve('${e.id}','Aprovado')">Aprovar recomendação</button>
+        <button class="btn" onclick="openAgent('${e.agentId}')">Ver o raciocínio do agente</button>
+        <button class="btn btn-danger" onclick="resolve('${e.id}','Devolvido')">Devolver ao agente</button>
+      </div>
+      <div class="exc-resolved">✓ Resolvido</div>
+    </div>`;
+  }).join('');
+}
+function resolve(id, label){
+  const c = document.getElementById(id);
+  c.classList.add('done');
+  c.querySelector('.exc-resolved').textContent = '✓ '+label+' — o agente registrou sua decisão e segue.';
+}
+
+function rungHtml(r){
+  let s='<div class="ladder"><span class="ladder-label">Confiança</span>';
+  for(let i=0;i<4;i++) s+=`<span class="rung ${i<r?'on':''}"></span>`;
+  s+=`<span class="ladder-name">${LADDER[r-1]}</span></div>`;
+  return s;
+}
+function renderAgents(){
+  const el = document.getElementById('agents');
+  el.innerHTML = AGENTS.map((a,i)=>{
+    const excStat = a.exc>0 ? `<div class="agent-stat warn"><b>${a.exc}</b>exceções</div>` : `<div class="agent-stat"><b>0</b>exceções</div>`;
+    return `<div class="agent-card" data-area="${a.area}" data-wave="${a.wave?'1':'0'}" onclick="openAgent('${a.id}')">
+      <div class="agent-head">
+        <div>
+          <div class="agent-name"><span class="status-dot st-${a.status}"></span>${a.name}</div>
+          <div class="agent-sub">${a.sub}</div>
+        </div>
+      </div>
+      <div class="agent-chips">
+        <span class="chip chip-area${a.area}">${AREAS[a.area]}</span>
+        ${a.wave?'<span class="chip chip-wave">★ Onda 1</span>':''}
+      </div>
+      <div class="agent-stats">
+        <div class="agent-stat"><b>${a.runs}</b>execuções</div>
+        <div class="agent-stat"><b>${a.saved}</b>economia</div>
+        ${excStat}
+      </div>
+      ${rungHtml(a.rung)}
+    </div>`;
+  }).join('');
+}
+function filtrar(btn, f){
+  document.querySelectorAll('#filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.agent-card').forEach(c=>{
+    let show = f==='todos' || (f==='wave1'&&c.dataset.wave==='1') || c.dataset.area===f;
+    c.classList.toggle('hidden', !show);
+  });
+}
+
+function stepNum(kind, n){
+  if(kind==='human') return `<div class="step-num human">✋</div>`;
+  if(kind==='esc') return `<div class="step-num esc">!</div>`;
+  return `<div class="step-num">${n}</div>`;
+}
+function openAgent(id){
+  const a = AGENTS.find(x=>x.id===id); if(!a) return;
+  const steps = a.steps.map((s,i)=>`
+    <div class="step">
+      <div class="step-rail">${stepNum(s.kind,i+1)}${i<a.steps.length-1?'<div class="step-line"></div>':''}</div>
+      <div class="step-body">
+        <div class="step-decision">${s.t}</div>
+        <div class="step-detail">${s.d}</div>
+        ${s.tool?`<span class="step-tool">${s.tool}</span>`:''}
+        ${s.flag?`<div class="step-flag">⚠ ${s.flag}</div>`:''}
+      </div>
+    </div>`).join('');
+  const reads = a.reads.map(r=>`<li style="margin-bottom:4px">${r}</li>`).join('');
+  const audit = a.audit.map(l=>`<div><span class="t">${l.time}</span> · <span class="${l.c}">${l.txt}</span></div>`).join('');
+  document.getElementById('modal').innerHTML = `
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">${a.name}</div>
+        <div class="modal-sub">${AREAS[a.area]} · ${a.id} ${a.wave?'· ★ Onda 1':''}</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    ${rungHtml(a.rung)}
+    <div class="mblock">
+      <div class="mblock-title">Gatilho</div>
+      <div class="step-detail" style="font-size:13px">${a.trigger}</div>
+    </div>
+    <div class="mblock">
+      <div class="mblock-title">O agente lê</div>
+      <ul style="font-size:13px;color:var(--text2);padding-left:18px">${reads}</ul>
+    </div>
+    <div class="mblock">
+      <div class="mblock-title">Sequência de decisões  ·  ✋ humano   ! escala</div>
+      <div class="steps">${steps}</div>
+    </div>
+    <div class="mblock">
+      <div class="mblock-title">Trilha de auditoria</div>
+      <div class="audit">${audit}</div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+renderInbox();
+renderAgents();
+</script>
+</body>
+</html>
