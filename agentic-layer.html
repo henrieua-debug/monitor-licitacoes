@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Layer — Governança Brasil</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #efefec;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18; --text2: #5a5a56; --text3: #8a8a85;
+    --blue-bg: #E6F1FB; --blue-text: #185FA5;
+    --purple-bg: #EEEDFE; --purple-text: #3C3489;
+    --red-bg: #FAECE7; --red-text: #993C1D;
+    --green-bg: #EAF3DE; --green-text: #3B6D11;
+    --amber-bg: #FAEEDA; --amber-text: #854F0B;
+    --success-bg: #EAF3DE; --success-text: #3B6D11;
+    --warn-bg: #FAEEDA; --warn-text: #854F0B;
+    --gray-bg: #F1EFE8; --gray-text: #5F5E5A;
+    --radius: 8px; --radius-lg: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --mono: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #2e2e2b;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --text: #f0f0ec; --text2: #a0a09a; --text3: #666662;
+      --blue-bg: #0c2a45; --blue-text: #85B7EB;
+      --purple-bg: #1e1b3a; --purple-text: #AFA9EC;
+      --red-bg: #2e1a0f; --red-text: #F0997B;
+      --green-bg: #1a2e10; --green-text: #97C459;
+      --amber-bg: #2e1f08; --amber-text: #EF9F27;
+      --success-bg: #1a2e10; --success-text: #97C459;
+      --warn-bg: #2e1f08; --warn-text: #EF9F27;
+      --gray-bg: #2a2a27; --gray-text: #a0a09a;
+    }
+  }
+  body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 16px; }
+
+  .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 20px 24px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo { width: 40px; height: 40px; border-radius: 10px; background: var(--blue-bg); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .header-title { font-size: 17px; font-weight: 600; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 100px; font-weight: 500; }
+  .badge-ok { background: var(--success-bg); color: var(--success-text); }
+  .badge-warn { background: var(--warn-bg); color: var(--warn-text); }
+
+  .metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+  .metric { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; }
+  .metric-label { font-size: 12px; color: var(--text3); margin-bottom: 5px; }
+  .metric-val { font-size: 24px; font-weight: 600; color: var(--text); }
+  .metric-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  .section { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 18px 20px; }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .section-desc { font-size: 12px; color: var(--text3); margin-bottom: 14px; }
+
+  .inbox { display: flex; flex-direction: column; gap: 8px; }
+  .exc { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 13px 15px; border-left: 2px solid #BA7517; }
+  .exc.crit { border-left-color: #993C1D; }
+  .exc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+  .exc-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.45; }
+  .exc-agent { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .exc-meta { display: flex; gap: 14px; flex-wrap: wrap; margin: 4px 0 8px; }
+  .exc-meta span { font-size: 11px; color: var(--text3); }
+  .exc-meta strong { color: var(--text2); font-weight: 500; }
+  .exc-rec { font-size: 12px; color: var(--text2); line-height: 1.55; background: var(--bg2); border-radius: 6px; padding: 9px 11px; margin-bottom: 10px; }
+  .exc-rec b { color: var(--text); }
+  .exc-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn { font-size: 12px; padding: 6px 14px; border-radius: 100px; border: 0.5px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+  .btn:hover { background: var(--bg2); }
+  .btn-primary { background: var(--green-bg); color: var(--green-text); border-color: transparent; }
+  .btn-primary:hover { opacity: 0.85; background: var(--green-bg); }
+  .btn-danger:hover { background: var(--red-bg); color: var(--red-text); border-color: var(--red-text); }
+  .exc.done { opacity: 0.5; }
+  .exc.done .exc-actions { display: none; }
+  .exc-resolved { font-size: 11px; font-weight: 600; color: var(--green-text); display: none; }
+  .exc.done .exc-resolved { display: block; }
+
+  .chip { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; }
+  .chip-area0 { background: var(--blue-bg); color: var(--blue-text); }
+  .chip-area1 { background: var(--green-bg); color: var(--green-text); }
+  .chip-area2 { background: var(--purple-bg); color: var(--purple-text); }
+  .chip-area3 { background: var(--amber-bg); color: var(--amber-text); }
+  .chip-area4 { background: var(--red-bg); color: var(--red-text); }
+  .chip-area5 { background: var(--gray-bg); color: var(--gray-text); }
+  .chip-wave { background: var(--amber-bg); color: var(--amber-text); }
+
+  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filter-btn { font-size: 12px; padding: 4px 12px; border-radius: 100px; border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+  .filter-btn:hover { border-color: var(--border2); }
+  .filter-btn.active { border-color: var(--blue-text); background: var(--blue-bg); color: var(--blue-text); }
+
+  .agents-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+  .agent-card { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 13px 15px; cursor: pointer; transition: border-color 0.15s; }
+  .agent-card:hover { border-color: var(--border2); }
+  .agent-card.hidden { display: none; }
+  .agent-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 7px; }
+  .agent-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .agent-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .agent-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 9px; }
+  .agent-stats { display: flex; gap: 16px; flex-wrap: wrap; }
+  .agent-stat { font-size: 11px; color: var(--text3); }
+  .agent-stat b { font-size: 14px; font-weight: 600; color: var(--text); display: block; }
+  .agent-stat.warn b { color: var(--amber-text); }
+
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; flex-shrink: 0; }
+  .st-run { background: #639922; }
+  .st-wait { background: #BA7517; }
+  .st-idle { background: #888780; }
+
+  .ladder { display: flex; align-items: center; gap: 3px; margin-top: 9px; }
+  .ladder-label { font-size: 10px; color: var(--text3); margin-right: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .rung { width: 22px; height: 4px; border-radius: 2px; background: var(--bg3); }
+  .rung.on { background: var(--green-text); }
+  .ladder-name { font-size: 10px; color: var(--text2); margin-left: 6px; font-weight: 500; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: flex-start; justify-content: center; padding: 32px 16px; z-index: 50; overflow-y: auto; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg); max-width: 720px; width: 100%; padding: 24px; }
+  .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .modal-title { font-size: 17px; font-weight: 600; color: var(--text); }
+  .modal-sub { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .modal-close { font-size: 20px; color: var(--text3); cursor: pointer; background: none; border: none; line-height: 1; padding: 2px 6px; }
+  .modal-close:hover { color: var(--text); }
+  .mblock { margin-top: 18px; }
+  .mblock-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step { display: flex; gap: 12px; }
+  .step-rail { display: flex; flex-direction: column; align-items: center; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--green-bg); color: var(--green-text); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-num.human { background: var(--amber-bg); color: var(--amber-text); }
+  .step-num.esc { background: var(--red-bg); color: var(--red-text); }
+  .step-line { width: 1.5px; flex: 1; background: var(--border); min-height: 10px; }
+  .step-body { padding-bottom: 16px; }
+  .step:last-child .step-body { padding-bottom: 0; }
+  .step-decision { font-size: 13px; color: var(--text); font-weight: 500; line-height: 1.45; }
+  .step-detail { font-size: 12px; color: var(--text2); line-height: 1.55; margin-top: 3px; }
+  .step-tool { font-size: 10px; font-family: var(--mono); color: var(--text3); background: var(--bg2); padding: 1px 7px; border-radius: 5px; margin-top: 6px; display: inline-block; }
+  .step-flag { font-size: 11px; color: var(--amber-text); margin-top: 5px; font-weight: 500; }
+
+  .audit { font-family: var(--mono); font-size: 11px; color: var(--text2); background: var(--bg2); border-radius: var(--radius); padding: 12px 14px; line-height: 1.7; }
+  .audit .t { color: var(--text3); }
+  .audit .ok { color: var(--green-text); }
+  .audit .wn { color: var(--amber-text); }
+
+  .footer { text-align: center; font-size: 12px; color: var(--text3); padding-top: 8px; }
+
+  @media (max-width: 700px) {
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .agents-grid { grid-template-columns: 1fr; }
+    .header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">◆</div>
+      <div>
+        <div class="header-title">Agentic Layer · Governança Brasil</div>
+        <div class="header-sub">29 modules · 6 areas · one engine that reads, decides, produces, and escalates the exception</div>
+      </div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-ok">11 agents active</span>
+      <span class="badge badge-warn">5 exceptions queued</span>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Active agents</div><div class="metric-val">11</div><div class="metric-sub">of 14 mapped · 6 areas</div></div>
+    <div class="metric"><div class="metric-label">Hours saved</div><div class="metric-val">1,840h</div><div class="metric-sub">this month · ~167h/customer</div></div>
+    <div class="metric"><div class="metric-label">Exceptions queued</div><div class="metric-val" style="color:var(--amber-text)">5</div><div class="metric-sub">awaiting human decision</div></div>
+    <div class="metric"><div class="metric-label">Autonomy rate</div><div class="metric-val">87%</div><div class="metric-sub">resolved without a human</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Exception queue · Human in the loop</div>
+    <div class="section-desc">The agent did the work. This is only what it was <b>not</b> confident enough to decide alone — and why. You decide, it learns.</div>
+    <div class="inbox" id="inbox"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Agents by area</div>
+    <div class="section-desc">Each agent climbs the <b>trust ladder</b>: Suggests → Drafts → Executes w/ approval → Autonomous. Click to see the decisions and the audit trail.</div>
+    <div class="filter-bar" id="filters">
+      <button class="filter-btn active" data-f="all" onclick="filtrar(this,'all')">All</button>
+      <button class="filter-btn" data-f="wave1" onclick="filtrar(this,'wave1')">★ Wave 1</button>
+      <button class="filter-btn" data-f="0" onclick="filtrar(this,'0')">Finance</button>
+      <button class="filter-btn" data-f="1" onclick="filtrar(this,'1')">Revenue & Tax</button>
+      <button class="filter-btn" data-f="2" onclick="filtrar(this,'2')">HR & Payroll</button>
+      <button class="filter-btn" data-f="3" onclick="filtrar(this,'3')">Procurement</button>
+      <button class="filter-btn" data-f="4" onclick="filtrar(this,'4')">Internal Control</button>
+      <button class="filter-btn" data-f="5" onclick="filtrar(this,'5')">Digital/Platform</button>
+    </div>
+    <div class="agents-grid" id="agents"></div>
+  </div>
+
+  <div class="footer">Prototype · GOVBR Agentic Layer — illustrative data · Audit trail on every agent</div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const AREAS = ["Finance & Budget","Revenue & Tax","HR & Payroll","Procurement & Assets","Internal Control","Digital & Platform"];
+const LADDER = ["Suggests","Drafts","Executes w/ approval","Autonomous"];
+
+const AGENTS = [
+  { id:"F1", area:0, wave:true, name:"Accountability & Reporting (Audit Court)",
+    sub:"Builds RREO/RGF/MSC, validates, fixes rejections", rung:3, status:"wait",
+    runs:"4 entities today", saved:"42h/mo", exc:2,
+    trigger:"Bimester close + opening of the Audit Court (TCE) submission window.",
+    reads:["Accounting and budget entries from the ERP","Audit Court validation rules (current layout)","The entity's prior rejection history"],
+    steps:[
+      {t:"Consolidates the statements", d:"Decides the accounting groupings and builds RREO, RGF and the Balance Matrix from the period's entries.", tool:"erp.accounting.read()", kind:"a"},
+      {t:"Validates against Audit Court rules", d:"Runs the full validation set of the current layout and classifies each inconsistency: rule-fixable vs. needs a decision.", tool:"tce.validate(layout)", kind:"a"},
+      {t:"Fixes recurring rejections", d:"Applies fixes for known errors (e.g., a mis-classified function code) based on history.", tool:"rules.autofix()", kind:"a"},
+      {t:"Flags a limit anomaly", d:"Detected personnel spending at 54.2% — under the cap, but an atypical swing vs. last bimester. Does not fix; escalates.", kind:"esc", flag:"Escalated: a 6.1 p.p. swing requires the accountant's confirmation."},
+      {t:"Accountant reviews and signs", d:"The submission is transmitted only after the responsible officer signs — a non-delegable legal act.", kind:"human"},
+      {t:"Transmits and proves", d:"Submits, reconciles the return receipt and files the proof for the accountability record.", tool:"tce.submit()", kind:"a"}
+    ],
+    audit:[
+      {time:"08:02", txt:"run started · entity=Ponta Grossa City Hall/PR · period=4th bim", c:"t"},
+      {time:"08:02", txt:"226 statements consolidated · 0 read errors", c:"ok"},
+      {time:"08:03", txt:"TCE-PR validation: 11 inconsistencies · 9 auto-fixed", c:"ok"},
+      {time:"08:03", txt:"2 items escalated · reason: limit swing > threshold", c:"wn"},
+      {time:"08:03", txt:"awaiting officer signature", c:"wn"}
+    ]
+  },
+  { id:"F2", area:0, wave:true, name:"Automatic Bank Reconciliation",
+    sub:"Matches statement × ledger, isolates exceptions", rung:3, status:"run",
+    runs:"continuous", saved:"31h/mo", exc:1,
+    trigger:"Daily import of the bank statement (OFX/API).",
+    reads:["Today's bank statement","Open treasury entries","The entity's reconciliation rules"],
+    steps:[
+      {t:"Matches the obvious transactions", d:"Decides the 1:1 matches by amount, date and description. 312 of 340 reconciled automatically.", tool:"bank.match()", kind:"a"},
+      {t:"Resolves date differences", d:"Applies a D+2 tolerance for direct debits and matches 19 more entries.", tool:"rules.tolerance()", kind:"a"},
+      {t:"Isolates and explains exceptions", d:"9 transactions with no pair: groups them by likely cause (unposted fee, unidentified receipt).", kind:"esc", flag:"Escalated: 1 credit of R$ 18,400 with no identified origin."},
+      {t:"Treasurer approves the exceptions", d:"Human decides the accounting destination of the unmatched transactions.", kind:"human"}
+    ],
+    audit:[
+      {time:"06:15", txt:"statement imported · 340 transactions", c:"t"},
+      {time:"06:15", txt:"331 reconciled automatically (97.4%)", c:"ok"},
+      {time:"06:15", txt:"9 exceptions isolated · 1 escalated", c:"wn"}
+    ]
+  },
+  { id:"F3", area:0, wave:false, name:"Recurring Expense Commitment",
+    sub:"Reads invoice, classifies budget line, issues commitment", rung:2, status:"run",
+    runs:"23 today", saved:"14h/mo", exc:0,
+    trigger:"Arrival of a utility invoice (water, power, telecom).",
+    reads:["The utility's digital invoice","The linked budget appropriation","Vendor commitment history"],
+    steps:[
+      {t:"Extracts the invoice data", d:"Decides amount, period and metering unit from the PDF/XML.", tool:"ocr.invoice()", kind:"a"},
+      {t:"Classifies the budget line", d:"Links to the right appropriation based on vendor and unit history.", tool:"erp.budgetline()", kind:"a"},
+      {t:"Drafts commitment and settlement", d:"Generates the commitment; in-pattern amounts go to approval.", kind:"human"},
+      {t:"Authorizing officer releases", d:"Approval by the expense authorizer.", kind:"human"}
+    ],
+    audit:[{time:"today", txt:"23 invoices processed · 0 out of pattern", c:"ok"}]
+  },
+  { id:"F4", area:0, wave:false, name:"Fiscal Responsibility Sentinel",
+    sub:"Monitors limits and alerts before a breach", rung:1, status:"run",
+    runs:"continuous", saved:"—", exc:0,
+    trigger:"Update of commitments and payroll.",
+    reads:["Accumulated personnel spending","Net current revenue","Legal limits (personnel, health, education)"],
+    steps:[
+      {t:"Recomputes the indices", d:"Projects personnel spending vs. the prudential limit on each relevant new commitment.", tool:"lrf.compute()", kind:"a"},
+      {t:"Drafts the alert", d:"When the projection crosses the threshold, drafts the notice to the manager with the cause.", kind:"human"}
+    ],
+    audit:[{time:"today", txt:"personnel 54.2% of NCR · within the prudential limit", c:"ok"}]
+  },
+  { id:"R1", area:1, wave:false, name:"Active Debt Collection",
+    sub:"Segments delinquents, drafts campaigns", rung:2, status:"run",
+    runs:"2,140 taxpayers", saved:"28h/mo", exc:1,
+    trigger:"Enrollment in active debt or a tax-amnesty (REFIS) campaign cycle.",
+    reads:["Delinquent registry","Amount and age brackets of the debt","The entity's collection policy"],
+    steps:[
+      {t:"Segments the debtors", d:"Decides the tier (reminder, negotiation, pre-litigation) by amount and age.", tool:"crm.segment()", kind:"a"},
+      {t:"Drafts notifications", d:"Generates the texts per channel (email, SMS, letter) per policy.", kind:"human"},
+      {t:"Marks the litigation threshold", d:"Debts above the litigation floor are set aside for the Attorney's Office.", kind:"esc", flag:"Escalated: 38 debts crossed the litigation floor."}
+    ],
+    audit:[{time:"today", txt:"2,140 taxpayers segmented · 38 to Attorney's Office", c:"wn"}]
+  },
+  { id:"R3", area:1, wave:false, name:"Fiscal Anomaly Detection (Service Tax)",
+    sub:"Cross-checks filings × e-invoices × sector, builds dossier", rung:1, status:"idle",
+    runs:"weekly", saved:"—", exc:1,
+    trigger:"Close of the service-tax (ISS) period.",
+    reads:["Service-tax filings","Electronic invoices","Revenue benchmark by sector"],
+    steps:[
+      {t:"Cross-checks the sources", d:"Compares what was filed against e-invoices and the sector pattern; computes the deviation.", tool:"fiscal.crosscheck()", kind:"a"},
+      {t:"Builds the evidence dossier", d:"For each out-of-curve taxpayer, organizes the evidence.", kind:"a"},
+      {t:"Auditor decides whether to open a case", d:"Accusing a taxpayer is a serious act — the agent never decides, only instructs.", kind:"esc", flag:"Escalated: 12 taxpayers with under-reporting indicators."}
+    ],
+    audit:[{time:"Mon", txt:"4,300 filings cross-checked · 12 indicators", c:"wn"}]
+  },
+  { id:"H1", area:2, wave:false, name:"Payroll Pre-Close",
+    sub:"Checks anomalies before closing payroll", rung:2, status:"wait",
+    runs:"monthly", saved:"36h/mo", exc:1,
+    trigger:"The month's payroll closing window.",
+    reads:["The month's movement (hires, leaves)","Calculation rules and pay items","Consistency with eSocial"],
+    steps:[
+      {t:"Runs the anomaly checks", d:"Detects out-of-pattern values, missing data and rule violations, pay-item by pay-item.", tool:"payroll.lint()", kind:"a"},
+      {t:"Reconciles with eSocial", d:"Checks event consistency before submission.", tool:"esocial.check()", kind:"a"},
+      {t:"Escalates the exceptions", d:"An employee with net pay 3.2× the role average — likely a pay-item error.", kind:"esc", flag:"Escalated: 3 salary anomalies for review."},
+      {t:"HR closes and signs", d:"The close is HR's act.", kind:"human"}
+    ],
+    audit:[{time:"today", txt:"1,240 records checked · 3 anomalies · eSocial OK", c:"wn"}]
+  },
+  { id:"H2", area:2, wave:false, name:"eSocial / Tax-Withholding Filings",
+    sub:"Generates events, reads return, fixes and resubmits", rung:3, status:"run",
+    runs:"continuous", saved:"22h/mo", exc:0,
+    trigger:"Generation of labor events or a statutory filing deadline.",
+    reads:["Payroll events","Government returns","Each filing's rules"],
+    steps:[
+      {t:"Generates the events", d:"Builds the batch per the current layout.", tool:"esocial.build()", kind:"a"},
+      {t:"Reads the return and fixes", d:"Reprocesses recurring errors automatically and resubmits.", tool:"gov.retry()", kind:"a"},
+      {t:"Approves the final submission", d:"Human confirms the batch.", kind:"human"}
+    ],
+    audit:[{time:"today", txt:"eSocial batch · 18 events · 2 reprocessed · OK", c:"ok"}]
+  },
+  { id:"P1", area:3, wave:true, name:"Price Research",
+    sub:"Builds the price basket with justification (IN 65)", rung:3, status:"wait",
+    runs:"7 processes", saved:"34h/mo", exc:1,
+    trigger:"A new process in the planning phase, with the item list.",
+    reads:["Item list (description, unit, quantity)","The entity's research policy (IN 65 hierarchy)","PNCP, the federal Price Panel, other entities' price registries"],
+    steps:[
+      {t:"Normalizes and classifies the items", d:"Decides the canonical description and the CATMAT/CATSER code for each item.", tool:"catmat.match()", kind:"a"},
+      {t:"Queries the sources in hierarchy", d:"Searches prices in IN 65 order and marks the usable hits per item.", tool:"pncp.query() · pricepanel.query()", kind:"a"},
+      {t:"Filters comparables and treats outliers", d:"Removes inexecutable/overpriced quotes by deviation from the median, documenting the rule.", tool:"stats.outlier()", kind:"a"},
+      {t:"Computes the reference + justification", d:"Decides mean/median per policy and drafts the justification with the source trail.", kind:"a"},
+      {t:"Item without enough sources", d:"A niche item with < 3 comparable sources — proposes direct vendor research.", kind:"esc", flag:"Escalated: 1 item without enough comparables."},
+      {t:"Buyer signs the price", d:"The reference price is an act under the buyer's responsibility.", kind:"human"}
+    ],
+    audit:[
+      {time:"10:40", txt:"run · process=Bid 12/2026 · 14 items", c:"t"},
+      {time:"10:41", txt:"12 items priced (PNCP+Panel) · median method", c:"ok"},
+      {time:"10:41", txt:"2 items in review · 1 escalated (no comparable)", c:"wn"}
+    ]
+  },
+  { id:"P5", area:3, wave:false, name:"Smart Materials Replenishment",
+    sub:"Forecasts consumption and drafts requisition", rung:2, status:"run",
+    runs:"daily", saved:"11h/mo", exc:0,
+    trigger:"Stock balance crosses the reorder point.",
+    reads:["Balance and turnover of each item","Consumption history per unit","Supply lead time"],
+    steps:[
+      {t:"Forecasts consumption", d:"Projects demand per item from history and seasonality.", tool:"forecast.run()", kind:"a"},
+      {t:"Drafts the requisition", d:"Generates the purchase requisition with a suggested quantity.", kind:"human"}
+    ],
+    audit:[{time:"today", txt:"312 items evaluated · 8 requisitions drafted", c:"ok"}]
+  },
+  { id:"C1", area:4, wave:true, name:"Deadline & Obligations Sentinel",
+    sub:"Monitors all modules, chases the owner", rung:3, status:"run",
+    runs:"continuous", saved:"19h/mo", exc:0,
+    trigger:"Legal obligations calendar + the state of each module.",
+    reads:["Obligations calendar (all modules)","Status of each deliverable","Owners per area"],
+    steps:[
+      {t:"Cross-checks deadlines × real state", d:"Decides what is at risk by comparing the legal deadline with the module's actual progress.", tool:"calendar.scan()", kind:"a"},
+      {t:"Chases the owner", d:"Fires escalating reminders to the owner of each at-risk obligation.", tool:"notify.escalate()", kind:"a"},
+      {t:"Escalates to the manager", d:"An obligation under 48h with no movement goes up to the manager.", kind:"human"}
+    ],
+    audit:[{time:"today", txt:"41 obligations monitored · 3 reminders · 0 at critical risk", c:"ok"}]
+  },
+  { id:"D1", area:5, wave:false, name:"Active Transparency Auditor",
+    sub:"Ensures legal publication on time, flags gaps", rung:3, status:"run",
+    runs:"continuous", saved:"9h/mo", exc:0,
+    trigger:"New acts (expenses, contracts, payroll) across modules.",
+    reads:["Items requiring mandatory publication","What is already published on the portal","Legal deadlines (FOIA/transparency law)"],
+    steps:[
+      {t:"Reconciles required × published", d:"Decides what the law requires publishing and what is still missing.", tool:"transp.diff()", kind:"a"},
+      {t:"Publishes and flags the gap", d:"Publishes what it can and alerts the owner about what needs a human action.", tool:"portal.publish()", kind:"a"}
+    ],
+    audit:[{time:"today", txt:"100% of mandatory acts published on time", c:"ok"}]
+  },
+  { id:"D3", area:5, wave:false, name:"Dispatch & Triage (Digital Process)",
+    sub:"Classifies, routes and drafts dispatches", rung:2, status:"wait",
+    runs:"148 today", saved:"24h/mo", exc:0,
+    trigger:"Opening or routing of an administrative process.",
+    reads:["The process content","Flows and jurisdictions per type","History of similar dispatches"],
+    steps:[
+      {t:"Classifies and routes", d:"Decides the process type and the competent unit.", tool:"nlp.classify()", kind:"a"},
+      {t:"Drafts the dispatch", d:"Drafts the standard dispatch based on similar cases.", kind:"human"}
+    ],
+    audit:[{time:"today", txt:"148 processes triaged · 96% routed without review", c:"ok"}]
+  }
+];
+
+const EXC = [
+  { id:"e1", crit:true, agentId:"F1", title:"Atypical swing in the personnel-spending limit before the Audit Court submission",
+    agent:"Accountability & Reporting · Ponta Grossa City Hall/PR",
+    meta:[["Period","4th bimester"],["Submission deadline","2 days"],["Confidence","low"]],
+    rec:"The agent computed <b>personnel spending at 54.2% of net current revenue</b> — within the cap, but a jump of <b>+6.1 p.p.</b> vs. the prior bimester. It could be real (new appointments) or a payroll mis-classification. <b>Recommendation:</b> confirm before transmitting; the agent has already isolated the 3 commitments that caused the jump."
+  },
+  { id:"e2", crit:false, agentId:"P1", title:"Item without enough comparable sources for the reference price",
+    agent:"Price Research · Bid 12/2026",
+    meta:[["Item","Management software license"],["Sources","2 of 3 min."],["Confidence","low"]],
+    rec:"A niche item returned only <b>2 comparable sources</b> in PNCP/Panel (the policy requires 3). <b>Recommendation:</b> authorize direct vendor research — the agent has already drafted the RFQ for 3 firms in the field."
+  },
+  { id:"e3", crit:false, agentId:"H1", title:"3 salary anomalies detected in the payroll pre-close",
+    agent:"Payroll Pre-Close · period 06/2026",
+    meta:[["Records","1,240"],["Anomalies","3"],["Confidence","medium"]],
+    rec:"One record has net pay <b>3.2× the role average</b>. Likely an improperly entered retroactive pay item. <b>Recommendation:</b> review the 3 before closing; the agent blocked the advance only for these cases."
+  },
+  { id:"e4", crit:false, agentId:"F2", title:"Bank credit of R$ 18,400 with no identified origin",
+    agent:"Bank Reconciliation · operating account",
+    meta:[["Amount","R$ 18,400"],["Date","yesterday"],["Confidence","low"]],
+    rec:"A credit with no matching treasury entry. Could be unidentified revenue or a reversal. <b>Recommendation:</b> classify the accounting destination; the agent suggests 'revenue to identify' as a provisional."
+  },
+  { id:"e5", crit:false, agentId:"R1", title:"38 debts crossed the litigation floor",
+    agent:"Active Debt Collection · REFIS campaign",
+    meta:[["Debts","38"],["Total","R$ 1.2M"],["Confidence","high"]],
+    rec:"38 debts exceeded the litigation floor set in the policy. <b>Recommendation:</b> release the package to the Attorney's Office; the agent has already built the tax-foreclosure dossiers."
+  }
+];
+
+function renderInbox(){
+  const el = document.getElementById('inbox');
+  el.innerHTML = EXC.map(e=>{
+    const metaHtml = e.meta.map(p=>`<span><strong>${p[0]}:</strong> ${p[1]}</span>`).join('');
+    return `<div class="exc ${e.crit?'crit':''}" id="${e.id}">
+      <div class="exc-top">
+        <div>
+          <div class="exc-title">${e.title}</div>
+          <div class="exc-agent">${e.agent}</div>
+        </div>
+        <span class="status-dot st-wait" title="awaiting decision"></span>
+      </div>
+      <div class="exc-meta">${metaHtml}</div>
+      <div class="exc-rec">${e.rec}</div>
+      <div class="exc-actions">
+        <button class="btn btn-primary" onclick="resolve('${e.id}','Approved')">Approve recommendation</button>
+        <button class="btn" onclick="openAgent('${e.agentId}')">See the agent's reasoning</button>
+        <button class="btn btn-danger" onclick="resolve('${e.id}','Returned')">Return to agent</button>
+      </div>
+      <div class="exc-resolved">✓ Resolved</div>
+    </div>`;
+  }).join('');
+}
+function resolve(id, label){
+  const c = document.getElementById(id);
+  c.classList.add('done');
+  c.querySelector('.exc-resolved').textContent = '✓ '+label+' — the agent logged your decision and moves on.';
+}
+
+function rungHtml(r){
+  let s='<div class="ladder"><span class="ladder-label">Trust</span>';
+  for(let i=0;i<4;i++) s+=`<span class="rung ${i<r?'on':''}"></span>`;
+  s+=`<span class="ladder-name">${LADDER[r-1]}</span></div>`;
+  return s;
+}
+function renderAgents(){
+  const el = document.getElementById('agents');
+  el.innerHTML = AGENTS.map((a)=>{
+    const excStat = a.exc>0 ? `<div class="agent-stat warn"><b>${a.exc}</b>exceptions</div>` : `<div class="agent-stat"><b>0</b>exceptions</div>`;
+    return `<div class="agent-card" data-area="${a.area}" data-wave="${a.wave?'1':'0'}" onclick="openAgent('${a.id}')">
+      <div class="agent-head">
+        <div>
+          <div class="agent-name"><span class="status-dot st-${a.status}"></span>${a.name}</div>
+          <div class="agent-sub">${a.sub}</div>
+        </div>
+      </div>
+      <div class="agent-chips">
+        <span class="chip chip-area${a.area}">${AREAS[a.area]}</span>
+        ${a.wave?'<span class="chip chip-wave">★ Wave 1</span>':''}
+      </div>
+      <div class="agent-stats">
+        <div class="agent-stat"><b>${a.runs}</b>runs</div>
+        <div class="agent-stat"><b>${a.saved}</b>saved</div>
+        ${excStat}
+      </div>
+      ${rungHtml(a.rung)}
+    </div>`;
+  }).join('');
+}
+function filtrar(btn, f){
+  document.querySelectorAll('#filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.agent-card').forEach(c=>{
+    let show = f==='all' || (f==='wave1'&&c.dataset.wave==='1') || c.dataset.area===f;
+    c.classList.toggle('hidden', !show);
+  });
+}
+
+function stepNum(kind, n){
+  if(kind==='human') return `<div class="step-num human">✋</div>`;
+  if(kind==='esc') return `<div class="step-num esc">!</div>`;
+  return `<div class="step-num">${n}</div>`;
+}
+function openAgent(id){
+  const a = AGENTS.find(x=>x.id===id); if(!a) return;
+  const steps = a.steps.map((s,i)=>`
+    <div class="step">
+      <div class="step-rail">${stepNum(s.kind,i+1)}${i<a.steps.length-1?'<div class="step-line"></div>':''}</div>
+      <div class="step-body">
+        <div class="step-decision">${s.t}</div>
+        <div class="step-detail">${s.d}</div>
+        ${s.tool?`<span class="step-tool">${s.tool}</span>`:''}
+        ${s.flag?`<div class="step-flag">⚠ ${s.flag}</div>`:''}
+      </div>
+    </div>`).join('');
+  const reads = a.reads.map(r=>`<li style="margin-bottom:4px">${r}</li>`).join('');
+  const audit = a.audit.map(l=>`<div><span class="t">${l.time}</span> · <span class="${l.c}">${l.txt}</span></div>`).join('');
+  document.getElementById('modal').innerHTML = `
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">${a.name}</div>
+        <div class="modal-sub">${AREAS[a.area]} · ${a.id} ${a.wave?'· ★ Wave 1':''}</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    ${rungHtml(a.rung)}
+    <div class="mblock">
+      <div class="mblock-title">Trigger</div>
+      <div class="step-detail" style="font-size:13px">${a.trigger}</div>
+    </div>
+    <div class="mblock">
+      <div class="mblock-title">The agent reads</div>
+      <ul style="font-size:13px;color:var(--text2);padding-left:18px">${reads}</ul>
+    </div>
+    <div class="mblock">
+      <div class="mblock-title">Decision sequence  ·  ✋ human   ! escalation</div>
+      <div class="steps">${steps}</div>
+    </div>
+    <div class="mblock">
+      <div class="mblock-title">Audit trail</div>
+      <div class="audit">${audit}</div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+renderInbox();
+renderAgents();
+</script>
+</body>
+</html>
