@@ -21,17 +21,20 @@ const LANG_NAME = { pt: "português brasileiro", en: "English", es: "español" }
 async function generateValid(task: string): Promise<{ ir: ShortcutIR; name: string; summary: string[] } | null> {
   const system = buildSystemPrompt();
   const messages: ChatMessage[] = [{ role: "user", content: task }];
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 5; attempt++) {
     const result = await generateShortcut(system, messages);
     if (!result.ok) {
+      console.error(`tentativa ${attempt}: saída fora do formato →\n${result.issues}`);
       messages.push({ role: "user", content: buildRetryPrompt(result.issues) });
       continue;
     }
     const ir = genToIR(result.gen);
     const validation = validateIR(ir);
     if (validation.ok) return { ir, name: result.gen.name, summary: result.gen.summary };
+    const issues = issuesForModel(validation);
+    console.error(`tentativa ${attempt}: reprovado no validador →\n${issues}`);
     messages.push({ role: "assistant", content: JSON.stringify(result.gen) });
-    messages.push({ role: "user", content: buildRetryPrompt(issuesForModel(validation)) });
+    messages.push({ role: "user", content: buildRetryPrompt(issues) });
   }
   return null;
 }
@@ -65,7 +68,7 @@ async function main() {
   // 2. Gera em pt com Craig Loop.
   console.log("Gerando receita em pt…");
   const pt = await generateValid(
-    `Idioma do usuário: português brasileiro.\n\n${inspiration}\n\nCrie o melhor atalho possível para isso.`
+    `Idioma do usuário: português brasileiro.\n\n${inspiration}\n\nCrie o melhor atalho possível para isso. Prefira algo SIMPLES e robusto: entre 4 e 10 passos, sem menu/if a menos que sejam realmente necessários, usando apenas ações do catálogo.`
   );
   if (!pt) {
     console.error("Não consegui gerar uma receita válida hoje.");
