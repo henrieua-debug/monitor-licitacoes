@@ -91,6 +91,63 @@ const GenStep = z.discriminatedUnion("type", [
   z.object({ type: z.literal("endmenu") }),
 ]);
 
+// Normalizador de candidatos "quase certos" — modelos gratuitos (Gemini free tier)
+// frequentemente erram o envelope, não o conteúdo: params como objeto em vez de
+// lista {key,value}, literais crus em vez de {kind:...}, summary como string única.
+// Corrigir isso antes do safeParse multiplica a taxa de sucesso do Craig Loop.
+export function normalizeGenCandidate(input: unknown): unknown {
+  if (typeof input !== "object" || input === null || Array.isArray(input)) return input;
+  const obj = { ...(input as Record<string, unknown>) };
+  if (typeof obj.summary === "string") obj.summary = [obj.summary];
+  if (Array.isArray(obj.steps)) obj.steps = obj.steps.map(normalizeStep);
+  return obj;
+}
+
+function normalizeStep(step: unknown): unknown {
+  if (typeof step !== "object" || step === null) return step;
+  const s = { ...(step as Record<string, unknown>) };
+  if (s.type === "action") {
+    if (s.params && !Array.isArray(s.params) && typeof s.params === "object") {
+      s.params = Object.entries(s.params as Record<string, unknown>).map(([key, value]) => ({
+        key,
+        value: wrapValue(value),
+      }));
+    } else if (Array.isArray(s.params)) {
+      s.params = s.params.map((p) =>
+        typeof p === "object" && p !== null && "key" in p
+          ? { ...(p as Record<string, unknown>), value: wrapValue((p as Record<string, unknown>).value) }
+          : p
+      );
+    }
+  }
+  if ((s.type === "if" || s.type === "repeatEach") && typeof s.input === "string") {
+    s.input = { ref: s.input };
+  }
+  return s;
+}
+
+function wrapValue(v: unknown): unknown {
+  if (typeof v === "object" && v !== null && !Array.isArray(v) && "kind" in v) return v;
+  if (typeof v === "string") return { kind: "string", value: v };
+  if (typeof v === "number") return { kind: "number", value: v };
+  if (typeof v === "boolean") return { kind: "boolean", value: v };
+  if (typeof v === "object" && v !== null && !Array.isArray(v)) {
+    const o = v as Record<string, unknown>;
+    if (typeof o.var === "string") return { kind: "var", name: o.var };
+    if (typeof o.ref === "string") return { kind: "ref", ref: o.ref };
+    if (typeof o.special === "string") return { kind: "special", special: o.special };
+    if (Array.isArray(o.parts)) return { kind: "text", parts: o.parts };
+    if (Array.isArray(o.text)) {
+      return { kind: "text", parts: o.text.map((p) => (typeof p === "string" ? { literal: p } : p)) };
+    }
+    if (typeof o.magnitude === "number" && typeof o.unit === "string") {
+      return { kind: "quantity", magnitude: o.magnitude, unit: o.unit };
+    }
+    if (typeof o.raw === "string") return { kind: "json", raw: o.raw };
+  }
+  return { kind: "json", raw: JSON.stringify(v ?? null) };
+}
+
 export const GenShortcutSchema = z.object({
   name: z.string().describe("nome curto do atalho, no idioma do usuário"),
   summary: z

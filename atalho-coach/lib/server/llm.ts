@@ -6,7 +6,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 // Imports relativos: este módulo também roda fora do Next (scripts/gerar-receita.ts).
-import { GenShortcut, GenShortcutSchema } from "../shortcuts/genSchema";
+import { GenShortcut, GenShortcutSchema, normalizeGenCandidate } from "../shortcuts/genSchema";
 
 export interface ChatMessage {
   role: "user" | "assistant";
@@ -101,7 +101,7 @@ async function viaGemini(system: string, messages: ChatMessage[]): Promise<LLMRe
     } catch {
       return { ok: false, issues: "- [error] a resposta não era JSON válido; responda APENAS com o objeto JSON" };
     }
-    const result = GenShortcutSchema.safeParse(parsed);
+    const result = GenShortcutSchema.safeParse(normalizeGenCandidate(parsed));
     if (!result.success) {
       const zodIssues = result.error.issues
         .slice(0, 12)
