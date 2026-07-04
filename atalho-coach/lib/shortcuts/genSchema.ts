@@ -61,6 +61,9 @@ const GenValue = z.discriminatedUnion("kind", [
   z
     .object({ kind: z.literal("json"), raw: z.string() })
     .describe("dicionário ou lista, codificado como JSON string"),
+  z
+    .object({ kind: z.literal("quantity"), magnitude: z.number(), unit: z.string() })
+    .describe("quantidade com unidade, ex. 25 min (para timer, durações)"),
 ]);
 
 const GenParam = z.object({ key: z.string(), value: GenValue });
@@ -141,6 +144,8 @@ function valueToIR(v: GenValueT): IRValue {
         return v.raw;
       }
     }
+    case "quantity":
+      return { quantity: v.magnitude, unit: v.unit };
   }
 }
 

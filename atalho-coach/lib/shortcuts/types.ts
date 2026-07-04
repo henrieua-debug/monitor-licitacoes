@@ -41,6 +41,12 @@ export interface IRDictionary {
   dict: Record<string, IRValue>;
 }
 
+/** Quantidade com unidade (WFQuantityFieldValue), ex. { quantity: 25, unit: "min" }. */
+export interface IRQuantity {
+  quantity: number;
+  unit: string;
+}
+
 export type IRValue =
   | string
   | number
@@ -49,6 +55,7 @@ export type IRValue =
   | IRAskEachTime
   | IRInterpolatedText
   | IRDictionary
+  | IRQuantity
   | IRValue[];
 
 /** Operadores de condição suportados pelo If. */
