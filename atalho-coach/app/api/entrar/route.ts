@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hasActiveSubscription, issueSession, mpEnabled } from "@/lib/server/premium";
+import { hasActiveSubscription, isCourtesyEmail, issueSession, mpEnabled } from "@/lib/server/premium";
 
 export const runtime = "nodejs";
 
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    if (!(await hasActiveSubscription(e))) {
+    if (!isCourtesyEmail(e) && !(await hasActiveSubscription(e))) {
       return NextResponse.json({ error: "not_subscriber" }, { status: 403 });
     }
   } catch (err) {
