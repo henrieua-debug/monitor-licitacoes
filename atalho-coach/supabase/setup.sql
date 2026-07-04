@@ -25,3 +25,15 @@ security definer
 as $$
   update sugestoes set votos = votos + 1 where id = sugestao_id and status = 'aberta';
 $$;
+
+-- Códigos de login por e-mail (verificação em duas etapas do premium).
+-- Guarda só o HASH do código; o código em si vai por e-mail e expira em minutos.
+create table if not exists codigos_login (
+  email text primary key,
+  code_hash text not null,
+  expires_at timestamptz not null,
+  attempts integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
+alter table codigos_login enable row level security;

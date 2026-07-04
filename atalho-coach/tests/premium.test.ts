@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { isCourtesyEmail, issueSession, verifySession } from "@/lib/server/premium";
+import { hashCode, otpEnabled } from "@/lib/server/otp";
 import { PREMIUM_RECIPES } from "@/lib/proposals/premium-recipes";
 
 describe("sessão premium (cookie HMAC)", () => {
@@ -50,6 +51,25 @@ describe("premium de cortesia", () => {
 
   it("sem a variável, ninguém é cortesia", () => {
     expect(isCourtesyEmail("dona@site.com")).toBe(false);
+  });
+});
+
+describe("código de login (OTP)", () => {
+  beforeEach(() => {
+    process.env.APP_SECRET = "segredo-de-teste";
+  });
+  afterEach(() => {
+    delete process.env.APP_SECRET;
+  });
+
+  it("hash é determinístico e sensível a e-mail e código", () => {
+    expect(hashCode("a@b.com", "123456")).toBe(hashCode("A@B.com", "123456"));
+    expect(hashCode("a@b.com", "123456")).not.toBe(hashCode("a@b.com", "123457"));
+    expect(hashCode("a@b.com", "123456")).not.toBe(hashCode("x@y.com", "123456"));
+  });
+
+  it("fica desligado sem as variáveis do Brevo/Supabase", () => {
+    expect(otpEnabled()).toBe(false);
   });
 });
 
