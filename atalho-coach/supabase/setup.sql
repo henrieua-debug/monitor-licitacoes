@@ -8,8 +8,12 @@ create table if not exists sugestoes (
   idioma text not null default 'pt',
   votos integer not null default 1,
   status text not null default 'aberta', -- 'aberta' | 'criada'
+  premium boolean not null default false, -- sugestão de assinante (prioridade no robô)
   created_at timestamptz not null default now()
 );
+
+-- Migração para bancos criados antes da coluna premium (seguro rodar sempre):
+alter table sugestoes add column if not exists premium boolean not null default false;
 
 -- Só o backend (service key) acessa; nenhum acesso público direto.
 alter table sugestoes enable row level security;

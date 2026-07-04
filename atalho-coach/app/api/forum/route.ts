@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSuggestion, forumEnabled, listSuggestions } from "@/lib/server/forum";
+import { isPremiumRequest } from "@/lib/server/premium";
 
 export const runtime = "nodejs";
 
@@ -35,7 +36,12 @@ export async function POST(req: Request) {
   if (t.length < 3) return NextResponse.json({ error: "invalid_title" }, { status: 400 });
 
   try {
-    await createSuggestion(t, d, ["pt", "en", "es"].includes(idioma ?? "") ? idioma! : "pt");
+    await createSuggestion(
+      t,
+      d,
+      ["pt", "en", "es"].includes(idioma ?? "") ? idioma! : "pt",
+      isPremiumRequest(req)
+    );
     lastPost.set(ip, Date.now());
     return NextResponse.json({ ok: true });
   } catch (err) {

@@ -9,6 +9,7 @@ interface Suggestion {
   descricao: string;
   votos: number;
   status: "aberta" | "criada";
+  premium?: boolean;
 }
 
 const VOTED_KEY = "atalho-coach:votos";
@@ -134,7 +135,10 @@ export default function Forum() {
                   ▲ {s.votos}
                 </button>
                 <div>
-                  <strong>{s.titulo}</strong>
+                  <strong>
+                    {s.premium ? "⭐ " : ""}
+                    {s.titulo}
+                  </strong>
                   {s.descricao && (
                     <p style={{ margin: "4px 0 0", color: "var(--ink-dim)", fontSize: "0.9rem" }}>{s.descricao}</p>
                   )}

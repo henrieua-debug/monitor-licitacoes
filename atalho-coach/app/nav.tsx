@@ -13,6 +13,7 @@ export function Nav() {
     { href: "/propostas", label: t.navProposals },
     { href: "/construtor", label: t.navBuilder },
     { href: "/forum", label: t.navForum },
+    { href: "/assinatura", label: t.navPremium },
     { href: "/onboarding", label: t.navOnboarding },
   ];
 
