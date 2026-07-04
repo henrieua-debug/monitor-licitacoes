@@ -1,0 +1,52 @@
+# Gera uma automação nova por dia (Gemini free tier) e commita no catálogo.
+# A sugestão mais votada do fórum tem prioridade; sem fórum, inventa um tema novo.
+# Segredos necessários (Settings → Secrets and variables → Actions):
+#   GEMINI_API_KEY (obrigatório) · SUPABASE_URL + SUPABASE_SERVICE_KEY (opcionais, fórum)
+name: Receita diária
+
+on:
+  schedule:
+    - cron: "23 9 * * *" # ~6h23 da manhã em Brasília
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  gerar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: atalho-coach/package-lock.json
+
+      - run: npm ci --no-audit --no-fund
+        working-directory: atalho-coach
+
+      - name: Gerar e validar a receita do dia
+        run: npx tsx scripts/gerar-receita.ts
+        working-directory: atalho-coach
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+      - name: Rodar os testes com a receita nova
+        run: npm test
+        working-directory: atalho-coach
+
+      - name: Commitar no catálogo
+        run: |
+          if git diff --quiet atalho-coach/lib/proposals/auto-recipes.json; then
+            echo "Nenhuma receita nova hoje."
+            exit 0
+          fi
+          git config user.name "atalho-coach-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add atalho-coach/lib/proposals/auto-recipes.json
+          git commit -m "Receita automática do dia 🤖"
+          git push
