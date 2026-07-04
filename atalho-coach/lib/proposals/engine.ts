@@ -18,6 +18,8 @@ export interface Recipe {
   devices?: string[];
   /** Receita exclusiva para assinantes. */
   premium?: boolean;
+  /** Link(s) de instalação em 1 toque via iCloud (ver icloud-links.json). */
+  icloud?: string | Partial<Record<Locale, string>>;
   build: (locale: Locale) => ShortcutIR;
 }
 

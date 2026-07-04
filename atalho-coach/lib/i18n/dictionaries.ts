@@ -76,6 +76,18 @@ const pt = {
   installStep1: "Toque em Baixar e abra o arquivo no seu iPhone/Mac.",
   installStep2: "O app Atalhos abre uma tela de revisão — confira as ações.",
   installStep3: "Toque em \"Adicionar atalho\". Pronto!",
+  installOneTap: "Instalar em 1 toque",
+  installOpenInShortcuts: "Abrir no app Atalhos",
+  installDownloadFallback: "ou baixar o arquivo",
+  installOpensInApp: "Abre no app Atalhos do iPhone/Mac, não no navegador.",
+  installWrongDeviceTitle: "Isto é para iPhone, iPad ou Mac",
+  installWrongDeviceBody:
+    "Os Atalhos da Apple não existem no Android nem no Windows. Copie o link abaixo e abra no seu iPhone para instalar:",
+  installCopyLink: "Copiar link",
+  installCopied: "Link copiado!",
+  installUntrustedTitle: "Primeira vez no app Atalhos?",
+  installUntrustedBody:
+    "Se der erro ao instalar, abra Ajustes › Atalhos e ligue \"Permitir Atalhos Não Confiáveis\" (essa opção só aparece depois de rodar qualquer atalho uma vez). A forma mais fácil é usar os atalhos marcados com ⚡ \"1 toque\", que dispensam esse ajuste.",
 
   privacyNote:
     "Privacidade: seu perfil fica no localStorage do navegador. Nenhum dado do quiz vai para servidores.",
@@ -199,6 +211,18 @@ const en: typeof pt = {
   installStep1: "Tap Download and open the file on your iPhone/Mac.",
   installStep2: "The Shortcuts app opens a review screen — check the actions.",
   installStep3: "Tap \"Add Shortcut\". Done!",
+  installOneTap: "Install in one tap",
+  installOpenInShortcuts: "Open in Shortcuts app",
+  installDownloadFallback: "or download the file",
+  installOpensInApp: "Opens in the iPhone/Mac Shortcuts app, not the browser.",
+  installWrongDeviceTitle: "This is for iPhone, iPad or Mac",
+  installWrongDeviceBody:
+    "Apple Shortcuts don't exist on Android or Windows. Copy the link below and open it on your iPhone to install:",
+  installCopyLink: "Copy link",
+  installCopied: "Link copied!",
+  installUntrustedTitle: "First time in the Shortcuts app?",
+  installUntrustedBody:
+    "If installing fails, open Settings › Shortcuts and turn on \"Allow Untrusted Shortcuts\" (it only appears after you've run any shortcut once). The easiest path is the ⚡ \"1 tap\" shortcuts, which skip this setting.",
 
   privacyNote:
     "Privacy: your profile lives in the browser's localStorage. No quiz data ever reaches our servers.",
@@ -322,6 +346,18 @@ const es: typeof pt = {
   installStep1: "Toca Descargar y abre el archivo en tu iPhone/Mac.",
   installStep2: "La app Atajos abre una pantalla de revisión — revisa las acciones.",
   installStep3: "Toca \"Añadir atajo\". ¡Listo!",
+  installOneTap: "Instalar en 1 toque",
+  installOpenInShortcuts: "Abrir en la app Atajos",
+  installDownloadFallback: "o descargar el archivo",
+  installOpensInApp: "Se abre en la app Atajos del iPhone/Mac, no en el navegador.",
+  installWrongDeviceTitle: "Esto es para iPhone, iPad o Mac",
+  installWrongDeviceBody:
+    "Los Atajos de Apple no existen en Android ni en Windows. Copia el enlace de abajo y ábrelo en tu iPhone para instalar:",
+  installCopyLink: "Copiar enlace",
+  installCopied: "¡Enlace copiado!",
+  installUntrustedTitle: "¿Primera vez en la app Atajos?",
+  installUntrustedBody:
+    "Si falla la instalación, abre Ajustes › Atajos y activa \"Permitir atajos no confiables\" (solo aparece después de ejecutar cualquier atajo una vez). Lo más fácil son los atajos con ⚡ \"1 toque\", que se saltan este ajuste.",
 
   privacyNote:
     "Privacidad: tu perfil vive en el localStorage del navegador. Ningún dato del quiz llega a nuestros servidores.",

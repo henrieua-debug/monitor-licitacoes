@@ -4,14 +4,16 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { GOALS, KNOWN_APPS, ROUTINES, UserProfile, loadProfile } from "@/lib/profile";
-import { ALL_RECIPES } from "@/lib/proposals/recipes";
+import { ALL_RECIPES, icloudLinkFor } from "@/lib/proposals/recipes";
 import { ScoredRecipe, scoreRecipes } from "@/lib/proposals/engine";
-import { Delivery, DeliveryPanel } from "../delivery";
+import { useDevice } from "@/lib/useDevice";
+import { Delivery, DeliveryPanel, WrongDeviceCard } from "../delivery";
 
 const LEVEL_BADGE = { simple: "badge-simple", medium: "badge-medium", bold: "badge-bold" } as const;
 
 export default function Proposals() {
   const { t, locale } = useI18n();
+  const device = useDevice();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -89,10 +91,17 @@ export default function Proposals() {
     <main>
       <h1>{t.proposalsTitle}</h1>
       <p style={{ color: "var(--ink-dim)" }}>{t.proposalsSubtitle}</p>
+      {(device === "android" || device === "desktop") && (
+        <div style={{ margin: "12px 0" }}>
+          <WrongDeviceCard />
+        </div>
+      )}
       <div className="proposal-grid">
         {scored.map((s) => {
           const r = s.recipe;
           const why = whyText(s);
+          const oneTap = icloudLinkFor(r.icloud, locale);
+          const unlocked = !r.premium || isPremium;
           return (
             <div key={r.id} className="card proposal-card">
               <span className="emoji">{r.emoji}</span>
@@ -108,10 +117,20 @@ export default function Proposals() {
                 </p>
               )}
               <div className="proposal-actions">
-                {r.premium && !isPremium ? (
+                {!unlocked ? (
                   <Link href="/assinatura" className="btn btn-primary" style={{ justifyContent: "center" }}>
                     {t.premiumLockedCta}
                   </Link>
+                ) : oneTap ? (
+                  <a
+                    className="btn btn-primary"
+                    style={{ justifyContent: "center" }}
+                    href={oneTap}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    ⚡ {t.installOneTap}
+                  </a>
                 ) : (
                   <button className="btn btn-primary" disabled={busy !== null} onClick={() => generate(r.id)}>
                     {busy === r.id ? <span className="spinner" /> : null}
@@ -125,8 +144,13 @@ export default function Proposals() {
                   {t.customize}
                 </Link>
               </div>
+              {unlocked && oneTap && (
+                <p className="why" style={{ marginTop: 8 }}>
+                  {t.installOpensInApp}
+                </p>
+              )}
               {failed === r.id && <p className="callout callout-err">✕</p>}
-              {delivered[r.id] && <DeliveryPanel delivery={delivered[r.id]} />}
+              {delivered[r.id] && <DeliveryPanel delivery={delivered[r.id]} recipeId={r.id} locale={locale} />}
             </div>
           );
         })}

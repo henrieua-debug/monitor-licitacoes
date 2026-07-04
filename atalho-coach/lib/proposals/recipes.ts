@@ -509,12 +509,29 @@ export const RECIPES: Recipe[] = [
 
 // Catálogo completo: automáticas (mais novas primeiro) + curadas + premium.
 import { PREMIUM_RECIPES } from "./premium-recipes";
+import icloudLinksData from "./icloud-links.json";
+
+type IcloudLink = string | Partial<Record<Locale, string>>;
+const ICLOUD_LINKS = icloudLinksData as Record<string, IcloudLink>;
+
+// Anexa o link de instalação em 1 toque (iCloud) à receita, quando cadastrado.
+function withIcloud(r: Recipe): Recipe {
+  const link = ICLOUD_LINKS[r.id];
+  return link ? { ...r, icloud: link } : r;
+}
+
+/** Resolve o link do iCloud para o idioma atual (cai no pt / no primeiro disponível). */
+export function icloudLinkFor(icloud: Recipe["icloud"], locale: Locale): string | undefined {
+  if (!icloud) return undefined;
+  if (typeof icloud === "string") return icloud;
+  return icloud[locale] ?? icloud.pt ?? Object.values(icloud).find(Boolean);
+}
 
 export const ALL_RECIPES: Recipe[] = [
   ...AUTO_RECIPES.map(storedToRecipe).reverse(),
   ...RECIPES,
   ...PREMIUM_RECIPES,
-];
+].map(withIcloud);
 
 export function getRecipe(id: string): Recipe | undefined {
   return ALL_RECIPES.find((r) => r.id === id);
