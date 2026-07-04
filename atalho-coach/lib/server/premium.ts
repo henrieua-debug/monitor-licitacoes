@@ -46,6 +46,15 @@ export function verifySession(cookieValue: string | undefined): { email: string 
   return { email };
 }
 
+/** E-mails com premium de cortesia (dono, testes) — PREMIUM_CORTESIA, separados por vírgula. */
+export function isCourtesyEmail(email: string): boolean {
+  return (process.env.PREMIUM_CORTESIA ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean)
+    .includes(email.trim().toLowerCase());
+}
+
 export function isPremiumRequest(req: Request): boolean {
   const raw = req.headers.get("cookie") ?? "";
   const match = raw.split(/;\s*/).find((c) => c.startsWith(`${COOKIE_NAME}=`));

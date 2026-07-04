@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { issueSession, verifySession } from "@/lib/server/premium";
+import { isCourtesyEmail, issueSession, verifySession } from "@/lib/server/premium";
 import { PREMIUM_RECIPES } from "@/lib/proposals/premium-recipes";
 
 describe("sessão premium (cookie HMAC)", () => {
@@ -33,6 +33,23 @@ describe("sessão premium (cookie HMAC)", () => {
     const { createHmac } = require("node:crypto") as typeof import("node:crypto");
     const sig = createHmac("sha256", "segredo-de-teste").update(payload).digest("base64url");
     expect(verifySession(`${payload}.${sig}`)).toBeNull();
+  });
+});
+
+describe("premium de cortesia", () => {
+  afterEach(() => {
+    delete process.env.PREMIUM_CORTESIA;
+  });
+
+  it("reconhece e-mails da lista, ignorando maiúsculas e espaços", () => {
+    process.env.PREMIUM_CORTESIA = "dona@site.com, Amigo@Teste.com";
+    expect(isCourtesyEmail("DONA@site.com")).toBe(true);
+    expect(isCourtesyEmail(" amigo@teste.com ")).toBe(true);
+    expect(isCourtesyEmail("outra@pessoa.com")).toBe(false);
+  });
+
+  it("sem a variável, ninguém é cortesia", () => {
+    expect(isCourtesyEmail("dona@site.com")).toBe(false);
   });
 });
 
