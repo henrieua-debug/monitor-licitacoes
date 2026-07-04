@@ -1,0 +1,3 @@
+{
+  "_comentario": "Links de instalação em 1 toque (iCloud). Para cada receita, o dono importa o atalho uma vez no iPhone/Mac, toca em Compartilhar > Copiar link do iCloud e cola aqui: \"id-da-receita\": \"https://www.icloud.com/shortcuts/...\". Aceita string (um link) ou objeto por idioma: {\"pt\":\"...\",\"en\":\"...\"}. Quando presente, o site instala direto, sem download e sem o ajuste de Atalhos Não Confiáveis."
+}
