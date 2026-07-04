@@ -171,6 +171,9 @@ export const CATALOG: CatalogAction[] = [
     params: [
       { key: "WFText", type: "tokenstring", required: true },
       { key: "WFSpeakTextWait", type: "boolean", required: false },
+      { key: "WFSpeakTextRate", type: "number", required: false, description: "velocidade, 0.5 = normal" },
+      { key: "WFSpeakTextPitch", type: "number", required: false },
+      { key: "WFSpeakTextLanguage", type: "string", required: false, description: "ex. pt-BR, en-US" },
     ],
     hasOutput: false,
   },

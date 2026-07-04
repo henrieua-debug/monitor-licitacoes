@@ -9,6 +9,7 @@ export interface Suggestion {
   idioma: string;
   votos: number;
   status: "aberta" | "criada";
+  premium: boolean;
   created_at: string;
 }
 
@@ -38,11 +39,16 @@ export async function listSuggestions(): Promise<Suggestion[]> {
   return (await res.json()) as Suggestion[];
 }
 
-export async function createSuggestion(titulo: string, descricao: string, idioma: string): Promise<void> {
+export async function createSuggestion(
+  titulo: string,
+  descricao: string,
+  idioma: string,
+  premium = false
+): Promise<void> {
   const res = await fetch(`${base()}/sugestoes`, {
     method: "POST",
     headers: { ...headers(), Prefer: "return=minimal" },
-    body: JSON.stringify({ titulo, descricao, idioma }),
+    body: JSON.stringify({ titulo, descricao, idioma, premium }),
   });
   if (!res.ok) throw new Error(`supabase ${res.status}: ${(await res.text()).slice(0, 200)}`);
 }
@@ -56,10 +62,10 @@ export async function voteSuggestion(id: string): Promise<void> {
   if (!res.ok) throw new Error(`supabase ${res.status}`);
 }
 
-/** Sugestão aberta mais votada — insumo do gerador diário de automações. */
+/** Sugestão aberta mais votada — assinantes têm prioridade na fila do robô. */
 export async function topOpenSuggestion(): Promise<Suggestion | null> {
   const res = await fetch(
-    `${base()}/sugestoes?select=*&status=eq.aberta&order=votos.desc,created_at.asc&limit=1`,
+    `${base()}/sugestoes?select=*&status=eq.aberta&order=premium.desc,votos.desc,created_at.asc&limit=1`,
     { headers: headers(), cache: "no-store" }
   );
   if (!res.ok) throw new Error(`supabase ${res.status}`);

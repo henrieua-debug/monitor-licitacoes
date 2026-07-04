@@ -17,10 +17,15 @@ export default function Proposals() {
   const [busy, setBusy] = useState<string | null>(null);
   const [delivered, setDelivered] = useState<Record<string, Delivery>>({});
   const [failed, setFailed] = useState<string | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     setProfile(loadProfile());
     setLoaded(true);
+    fetch("/api/eu")
+      .then((r) => r.json())
+      .then((d) => setIsPremium(Boolean(d.premium)))
+      .catch(() => {});
   }, []);
 
   const scored: ScoredRecipe[] = useMemo(
@@ -91,8 +96,9 @@ export default function Proposals() {
           return (
             <div key={r.id} className="card proposal-card">
               <span className="emoji">{r.emoji}</span>
-              <div>
+              <div style={{ display: "flex", gap: 6 }}>
                 <span className={`badge ${LEVEL_BADGE[r.level]}`}>{levelLabel[r.level]}</span>
+                {r.premium && <span className="badge badge-bold">{t.premiumBadge}</span>}
               </div>
               <h3>{r.title[locale]}</h3>
               <p>{r.description[locale]}</p>
@@ -102,10 +108,16 @@ export default function Proposals() {
                 </p>
               )}
               <div className="proposal-actions">
-                <button className="btn btn-primary" disabled={busy !== null} onClick={() => generate(r.id)}>
-                  {busy === r.id ? <span className="spinner" /> : null}
-                  {busy === r.id ? t.builderGenerating : t.generateThis}
-                </button>
+                {r.premium && !isPremium ? (
+                  <Link href="/assinatura" className="btn btn-primary" style={{ justifyContent: "center" }}>
+                    {t.premiumLockedCta}
+                  </Link>
+                ) : (
+                  <button className="btn btn-primary" disabled={busy !== null} onClick={() => generate(r.id)}>
+                    {busy === r.id ? <span className="spinner" /> : null}
+                    {busy === r.id ? t.builderGenerating : t.generateThis}
+                  </button>
+                )}
                 <Link
                   className="btn btn-ghost"
                   href={`/construtor?ideia=${encodeURIComponent(r.title[locale] + ": " + r.description[locale])}`}

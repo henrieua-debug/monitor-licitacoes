@@ -16,6 +16,8 @@ export interface Recipe {
   goals?: string[];
   /** Restringe a certos aparelhos (ex.: só faz sentido no iPhone). */
   devices?: string[];
+  /** Receita exclusiva para assinantes. */
+  premium?: boolean;
   build: (locale: Locale) => ShortcutIR;
 }
 

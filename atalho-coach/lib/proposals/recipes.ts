@@ -507,8 +507,14 @@ export const RECIPES: Recipe[] = [
   },
 ];
 
-// Catálogo completo: curadas + geradas automaticamente (mais novas primeiro).
-export const ALL_RECIPES: Recipe[] = [...AUTO_RECIPES.map(storedToRecipe).reverse(), ...RECIPES];
+// Catálogo completo: automáticas (mais novas primeiro) + curadas + premium.
+import { PREMIUM_RECIPES } from "./premium-recipes";
+
+export const ALL_RECIPES: Recipe[] = [
+  ...AUTO_RECIPES.map(storedToRecipe).reverse(),
+  ...RECIPES,
+  ...PREMIUM_RECIPES,
+];
 
 export function getRecipe(id: string): Recipe | undefined {
   return ALL_RECIPES.find((r) => r.id === id);
