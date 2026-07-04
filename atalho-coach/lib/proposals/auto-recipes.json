@@ -1,1 +1,340 @@
-[]
+[
+ {
+  "id": "auto-20260704",
+  "emoji": "🌙",
+  "level": "medium",
+  "title": {
+   "pt": "Registro de Humor Rápido",
+   "en": "Quick Mood Tracker",
+   "es": "Registro de Estado de Ánimo Rápido"
+  },
+  "description": {
+   "pt": "Inicia exibindo uma lista para você escolher como está se sentindo no momento.",
+   "en": "Starts by displaying a list for you to choose how you are feeling at the moment.",
+   "es": "Comienza mostrando una lista para que elijas cómo te sientes en este momento."
+  },
+  "ir": {
+   "pt": {
+    "name": "Registro de Humor Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Registra seu humor atual e uma breve justificativa por ditado de voz, salvando em um arquivo de log no iCloud Drive para acompanhar seu bem-estar ao longo do tempo."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.list",
+      "params": {
+       "WFItems": [
+        "Muito Feliz",
+        "Feliz",
+        "Neutro",
+        "Triste",
+        "Muito Triste"
+       ]
+      },
+      "ref": "lista_humor"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.choosefromlist",
+      "params": {
+       "WFInput": {
+        "ref": "lista_humor"
+       },
+       "WFChooseFromListActionPrompt": "Como você está se sentindo hoje?"
+      },
+      "ref": "humor_escolhido"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dictatetext",
+      "params": {
+       "WFDictateTextStopListening": "After Pause"
+      },
+      "ref": "ditado_motivo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Short",
+       "WFTimeFormatStyle": "Short"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "data_formatada"
+         },
+         " | Humor: ",
+         {
+          "ref": "humor_escolhido"
+         },
+         " | Notas: ",
+         {
+          "ref": "ditado_motivo"
+         },
+         "\n"
+        ]
+       }
+      },
+      "ref": "linha_registro"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "registro_humor.txt",
+       "WFInput": {
+        "ref": "linha_registro"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Humor Registrado!",
+       "WFNotificationActionBody": "Seu registro diário foi adicionado ao arquivo com sucesso."
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Quick Mood Tracker",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Logs your current mood and a brief explanation using voice dictation, saving it to a log file in iCloud Drive to track your well-being over time."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.list",
+      "params": {
+       "WFItems": [
+        "Very Happy",
+        "Happy",
+        "Neutral",
+        "Sad",
+        "Very Sad"
+       ]
+      },
+      "ref": "mood_list"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.choosefromlist",
+      "params": {
+       "WFInput": {
+        "ref": "mood_list"
+       },
+       "WFChooseFromListActionPrompt": "How are you feeling today?"
+      },
+      "ref": "selected_mood"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dictatetext",
+      "params": {
+       "WFDictateTextStopListening": "After Pause"
+      },
+      "ref": "dictated_reason"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Short",
+       "WFTimeFormatStyle": "Short"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "formatted_date"
+         },
+         " | Mood: ",
+         {
+          "ref": "selected_mood"
+         },
+         " | Notes: ",
+         {
+          "ref": "dictated_reason"
+         },
+         "\n"
+        ]
+       }
+      },
+      "ref": "log_line"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "mood_log.txt",
+       "WFInput": {
+        "ref": "log_line"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Mood Logged!",
+       "WFNotificationActionBody": "Your daily entry has been successfully added to the file."
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Registro de Estado de Ánimo Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Registra tu estado de ánimo actual y una breve explicación mediante dictado de voz, guardándolo en un archivo de registro en iCloud Drive para realizar un seguimiento de tu bienestar a lo largo del tiempo."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.list",
+      "params": {
+       "WFItems": [
+        "Muy feliz",
+        "Feliz",
+        "Neutro",
+        "Triste",
+        "Muy triste"
+       ]
+      },
+      "ref": "lista_humor"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.choosefromlist",
+      "params": {
+       "WFInput": {
+        "ref": "lista_humor"
+       },
+       "WFChooseFromListActionPrompt": "¿Cómo te sientes hoy?"
+      },
+      "ref": "humor_escolhido"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dictatetext",
+      "params": {
+       "WFDictateTextStopListening": "After Pause"
+      },
+      "ref": "ditado_motivo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Short",
+       "WFTimeFormatStyle": "Short"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "data_formatada"
+         },
+         " | Estado de ánimo: ",
+         {
+          "ref": "humor_escolhido"
+         },
+         " | Notas: ",
+         {
+          "ref": "ditado_motivo"
+         },
+         "\n"
+        ]
+       }
+      },
+      "ref": "linha_registro"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "registro_humor.txt",
+       "WFInput": {
+        "ref": "linha_registro"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "¡Ánimo Registrado!",
+       "WFNotificationActionBody": "Tu registro diario se ha añadido al archivo con éxito."
+      }
+     }
+    ]
+   }
+  }
+ }
+]
