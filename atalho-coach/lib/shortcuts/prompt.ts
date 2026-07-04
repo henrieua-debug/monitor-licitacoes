@@ -31,7 +31,30 @@ ${catalogPromptDocs()}
 
 ## Condições do if
 
-operator: equals|notEquals|contains|notContains|beginsWith|endsWith (exigem value string), greaterThan|lessThan (exigem value numérico), hasValue|hasNoValue (sem value). input aceita {"ref":...}, {"var":...} ou {"special":...}.`;
+operator: equals|notEquals|contains|notContains|beginsWith|endsWith (exigem value string), greaterThan|lessThan (exigem value numérico), hasValue|hasNoValue (sem value). input aceita {"ref":...}, {"var":...} ou {"special":...}.
+
+## Formato EXATO da resposta (responda APENAS com este objeto JSON, sem texto fora dele)
+
+{
+  "name": "Nome do atalho",
+  "summary": ["frase 1", "frase 2"],
+  "steps": [
+    {"type":"action","identifier":"is.workflow.actions.gettext","ref":"txt","params":[{"key":"WFTextActionText","value":{"kind":"string","value":"Olá"}}]},
+    {"type":"if","input":{"ref":"txt"},"operator":"contains","value":"Olá"},
+    {"type":"otherwise"},
+    {"type":"endif"},
+    {"type":"repeat","count":3},
+    {"type":"endrepeat"},
+    {"type":"repeatEach","input":{"ref":"lista"}},
+    {"type":"endrepeat"},
+    {"type":"menu","prompt":"Escolha","items":["A","B"]},
+    {"type":"case","label":"A"},
+    {"type":"case","label":"B"},
+    {"type":"endmenu"}
+  ]
+}
+
+Cada params[i].value é um dos kinds da regra 4. Nunca invente campos fora dos mostrados.`;
 }
 
 export function buildUserPrompt(request: string, locale: string, profileHint?: string): string {

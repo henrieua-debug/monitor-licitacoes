@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { irToPlist } from "@/lib/shortcuts/plist";
 import { validateIR } from "@/lib/shortcuts/validator";
-import { RECIPES } from "@/lib/proposals/recipes";
+import { ALL_RECIPES } from "@/lib/proposals/recipes";
 import type { Locale } from "@/lib/i18n/dictionaries";
 import type { ShortcutIR } from "@/lib/shortcuts/types";
 
@@ -101,9 +101,9 @@ describe("irToPlist", () => {
   });
 });
 
-describe("receitas curadas", () => {
+describe("receitas (curadas + automáticas)", () => {
   const locales: Locale[] = ["pt", "en", "es"];
-  for (const recipe of RECIPES) {
+  for (const recipe of ALL_RECIPES) {
     for (const locale of locales) {
       it(`${recipe.id} valida e serializa em ${locale}`, () => {
         const ir = recipe.build(locale);

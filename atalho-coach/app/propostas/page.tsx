@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { GOALS, KNOWN_APPS, ROUTINES, UserProfile, loadProfile } from "@/lib/profile";
-import { RECIPES } from "@/lib/proposals/recipes";
+import { ALL_RECIPES } from "@/lib/proposals/recipes";
 import { ScoredRecipe, scoreRecipes } from "@/lib/proposals/engine";
 import { Delivery, DeliveryPanel } from "../delivery";
 
@@ -24,7 +24,7 @@ export default function Proposals() {
   }, []);
 
   const scored: ScoredRecipe[] = useMemo(
-    () => (profile ? scoreRecipes(RECIPES, profile) : []),
+    () => (profile ? scoreRecipes(ALL_RECIPES, profile) : []),
     [profile]
   );
 

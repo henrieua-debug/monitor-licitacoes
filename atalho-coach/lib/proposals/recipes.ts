@@ -3,9 +3,39 @@
 
 import type { Locale } from "@/lib/i18n/dictionaries";
 import type { IRStep, ShortcutIR } from "@/lib/shortcuts/types";
-import type { Recipe } from "./engine";
+import type { Recipe, RecipeLevel } from "./engine";
+import autoRecipesData from "./auto-recipes.json";
 
 const A = "is.workflow.actions";
+
+// Receitas geradas automaticamente (fórum + gerador diário) — ver scripts/gerar-receita.ts.
+export interface StoredRecipe {
+  id: string;
+  emoji: string;
+  level: RecipeLevel;
+  title: Record<Locale, string>;
+  description: Record<Locale, string>;
+  goals?: string[];
+  apps?: string[];
+  routines?: string[];
+  ir: Record<Locale, ShortcutIR>;
+}
+
+export function storedToRecipe(stored: StoredRecipe): Recipe {
+  return {
+    id: stored.id,
+    emoji: stored.emoji,
+    level: stored.level,
+    title: stored.title,
+    description: stored.description,
+    goals: stored.goals ?? ["power", "productivity"],
+    apps: stored.apps,
+    routines: stored.routines,
+    build: (locale) => stored.ir[locale] ?? stored.ir.pt,
+  };
+}
+
+export const AUTO_RECIPES: StoredRecipe[] = autoRecipesData as unknown as StoredRecipe[];
 
 const t = (pt: string, en: string, es: string): Record<Locale, string> => ({ pt, en, es });
 
@@ -477,6 +507,9 @@ export const RECIPES: Recipe[] = [
   },
 ];
 
+// Catálogo completo: curadas + geradas automaticamente (mais novas primeiro).
+export const ALL_RECIPES: Recipe[] = [...AUTO_RECIPES.map(storedToRecipe).reverse(), ...RECIPES];
+
 export function getRecipe(id: string): Recipe | undefined {
-  return RECIPES.find((r) => r.id === id);
+  return ALL_RECIPES.find((r) => r.id === id);
 }

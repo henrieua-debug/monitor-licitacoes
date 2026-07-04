@@ -81,6 +81,22 @@ const pt = {
     "Privacidade: seu perfil fica no localStorage do navegador. Nenhum dado do quiz vai para servidores.",
   footerDisclaimer:
     "Atalho Coach não é afiliado à Apple. \"Atalhos\"/\"Shortcuts\" é marca da Apple Inc.",
+
+  navForum: "Fórum",
+  forumTitle: "Fórum de ideias",
+  forumSubtitle:
+    "Sugira automações e vote nas ideias dos outros. As mais votadas viram atalhos oficiais do catálogo — gerados automaticamente.",
+  forumFormTitle: "Sugerir uma automação",
+  forumTitlePlaceholder: "Ex.: avisar minha família quando eu sair do trabalho",
+  forumDescPlaceholder: "Detalhes (opcional): quando deve rodar, quais apps envolve…",
+  forumSend: "Enviar sugestão",
+  forumSent: "Sugestão enviada! Ela já aparece na lista para receber votos.",
+  forumVote: "Votar",
+  forumVoted: "Votado",
+  forumEmpty: "Ainda não há sugestões — seja a primeira pessoa a sugerir!",
+  forumDisabled: "O fórum ainda não foi configurado neste servidor (falta o Supabase).",
+  forumStatusCreated: "✅ virou atalho",
+  forumError: "Não deu certo agora — tente de novo em instantes.",
 };
 
 const en: typeof pt = {
@@ -158,6 +174,22 @@ const en: typeof pt = {
     "Privacy: your profile lives in the browser's localStorage. No quiz data ever reaches our servers.",
   footerDisclaimer:
     "Atalho Coach is not affiliated with Apple. \"Shortcuts\" is a trademark of Apple Inc.",
+
+  navForum: "Forum",
+  forumTitle: "Idea forum",
+  forumSubtitle:
+    "Suggest automations and vote on other people's ideas. The most voted become official catalog shortcuts — generated automatically.",
+  forumFormTitle: "Suggest an automation",
+  forumTitlePlaceholder: "E.g.: text my family when I leave work",
+  forumDescPlaceholder: "Details (optional): when it should run, which apps it involves…",
+  forumSend: "Send suggestion",
+  forumSent: "Suggestion sent! It's now on the list collecting votes.",
+  forumVote: "Vote",
+  forumVoted: "Voted",
+  forumEmpty: "No suggestions yet — be the first!",
+  forumDisabled: "The forum isn't configured on this server yet (Supabase missing).",
+  forumStatusCreated: "✅ became a shortcut",
+  forumError: "Something went wrong — try again in a moment.",
 };
 
 const es: typeof pt = {
@@ -235,6 +267,22 @@ const es: typeof pt = {
     "Privacidad: tu perfil vive en el localStorage del navegador. Ningún dato del quiz llega a nuestros servidores.",
   footerDisclaimer:
     "Atalho Coach no está afiliado a Apple. \"Atajos\"/\"Shortcuts\" es una marca de Apple Inc.",
+
+  navForum: "Foro",
+  forumTitle: "Foro de ideas",
+  forumSubtitle:
+    "Sugiere automatizaciones y vota las ideas de otros. Las más votadas se convierten en atajos oficiales del catálogo — generados automáticamente.",
+  forumFormTitle: "Sugerir una automatización",
+  forumTitlePlaceholder: "Ej.: avisar a mi familia cuando salga del trabajo",
+  forumDescPlaceholder: "Detalles (opcional): cuándo debe ejecutarse, qué apps usa…",
+  forumSend: "Enviar sugerencia",
+  forumSent: "¡Sugerencia enviada! Ya aparece en la lista para recibir votos.",
+  forumVote: "Votar",
+  forumVoted: "Votado",
+  forumEmpty: "Aún no hay sugerencias — ¡sé la primera persona en sugerir!",
+  forumDisabled: "El foro aún no está configurado en este servidor (falta Supabase).",
+  forumStatusCreated: "✅ se convirtió en atajo",
+  forumError: "Algo falló — inténtalo de nuevo en un momento.",
 };
 
 export const dictionaries: Record<Locale, typeof pt> = { pt, en, es };

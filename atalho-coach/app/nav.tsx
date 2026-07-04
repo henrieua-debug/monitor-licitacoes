@@ -12,6 +12,7 @@ export function Nav() {
   const links = [
     { href: "/propostas", label: t.navProposals },
     { href: "/construtor", label: t.navBuilder },
+    { href: "/forum", label: t.navForum },
     { href: "/onboarding", label: t.navOnboarding },
   ];
 
