@@ -336,5 +336,269 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260705",
+  "emoji": "🎯",
+  "level": "medium",
+  "title": {
+   "pt": "Validar Fechamento do Notebook",
+   "en": "Validate Laptop Close",
+   "es": "Validar Cierre de la Laptop"
+  },
+  "description": {
+   "pt": "Este atalho ajuda a validar o fechamento do seu notebook de forma segura.",
+   "en": "This shortcut helps validate the closure of your laptop securely.",
+   "es": "Este atajo te ayuda a validar el cierre de tu laptop de forma segura."
+  },
+  "ir": {
+   "pt": {
+    "name": "Validar Fechamento do Notebook",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho registra o estado atual do notebook (data e bateria) em um arquivo de log no iCloud Drive antes de você fechar a tampa, servindo como teste de validação."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "bateria"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Medium",
+       "WFTimeFormatStyle": "Short"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "Notebook fechado em: ",
+         {
+          "ref": "data_formatada"
+         },
+         " | Bateria: ",
+         {
+          "ref": "bateria"
+         },
+         "%"
+        ]
+       }
+      },
+      "ref": "texto_log"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "log_notebook.txt",
+       "WFInput": {
+        "text": [
+         {
+          "ref": "texto_log"
+         }
+        ]
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Pronto para fechar!",
+       "WFNotificationActionBody": "O log foi salvo com sucesso no iCloud Drive. Pode fechar o notebook."
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Validate Laptop Close",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut records the current state of the laptop (date and battery) in a log file in iCloud Drive before you close the lid, serving as a validation test."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "battery"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Medium",
+       "WFTimeFormatStyle": "Short"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "Laptop closed at: ",
+         {
+          "ref": "formatted_date"
+         },
+         " | Battery: ",
+         {
+          "ref": "battery"
+         },
+         "%"
+        ]
+       }
+      },
+      "ref": "log_text"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "laptop_log.txt",
+       "WFInput": {
+        "text": [
+         {
+          "ref": "log_text"
+         }
+        ]
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": {
+        "text": [
+         "Ready to close!"
+        ]
+       },
+       "WFNotificationActionBody": {
+        "text": [
+         "The log was successfully saved to iCloud Drive. You can now close your laptop."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Validar Cierre de la Laptop",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo registra el estado actual de la laptop (fecha y batería) en un archivo de registro en iCloud Drive antes de cerrar la tapa, sirviendo como prueba de validación."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "bateria"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "fecha_actual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "fecha_actual"
+       },
+       "WFDateFormatStyle": "Medium",
+       "WFTimeFormatStyle": "Short"
+      },
+      "ref": "fecha_formateada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "Laptop cerrada el: ",
+         {
+          "ref": "fecha_formateada"
+         },
+         " | Batería: ",
+         {
+          "ref": "bateria"
+         },
+         "%"
+        ]
+       }
+      },
+      "ref": "texto_log"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "log_laptop.txt",
+       "WFInput": {
+        "ref": "texto_log"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "¡Listo para cerrar!",
+       "WFNotificationActionBody": "El registro se guardó correctamente en iCloud Drive. Ya puedes cerrar la laptop."
+      }
+     }
+    ]
+   }
+  }
  }
 ]
