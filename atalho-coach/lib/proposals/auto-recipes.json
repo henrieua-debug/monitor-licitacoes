@@ -600,5 +600,259 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260706",
+  "emoji": "🫧",
+  "level": "medium",
+  "title": {
+   "pt": "Estacionei Aqui",
+   "en": "I Parked Here",
+   "es": "Estacioné Aquí"
+  },
+  "description": {
+   "pt": "Obtém a data e hora atual do sistema.",
+   "en": "Gets the current date and time of the system.",
+   "es": "Obtiene la fecha y hora actuales del sistema."
+  },
+  "ir": {
+   "pt": {
+    "name": "Estacionei Aqui",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho ajuda você a nunca mais esquecer onde estacionou o carro. Ele obtém sua localização atual e cria um lembrete com o endereço e a hora exata."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "HH:mm"
+      },
+      "ref": "hora_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getcurrentlocation",
+      "params": {},
+      "ref": "localizacao"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.addnewreminder",
+      "params": {
+       "WFCalendarItemTitle": "Buscar o carro",
+       "WFCalendarItemNotes": {
+        "text": [
+         "Estacionado às ",
+         {
+          "ref": "hora_formatada"
+         },
+         "\nLocalização: ",
+         {
+          "ref": "localizacao"
+         }
+        ]
+       }
+      },
+      "ref": "novo_lembrete"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.vibrate",
+      "params": {}
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Estacionei Aqui!",
+       "WFNotificationActionBody": {
+        "text": [
+         "Local salvo às ",
+         {
+          "ref": "hora_formatada"
+         },
+         " no app Lembretes."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "I Parked Here",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut helps you never forget where you parked your car. It gets your current location and creates a reminder with the address and the exact time."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "HH:mm"
+      },
+      "ref": "formatted_time"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getcurrentlocation",
+      "params": {},
+      "ref": "location"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.addnewreminder",
+      "params": {
+       "WFCalendarItemTitle": "Find the car",
+       "WFCalendarItemNotes": {
+        "text": [
+         "Parked at ",
+         {
+          "ref": "formatted_time"
+         },
+         "\nLocation: ",
+         {
+          "ref": "location"
+         }
+        ]
+       }
+      },
+      "ref": "new_reminder"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.vibrate",
+      "params": {}
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Parked Here!",
+       "WFNotificationActionBody": {
+        "text": [
+         "Location saved at ",
+         {
+          "ref": "formatted_time"
+         },
+         " in the Reminders app."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Estacioné Aquí",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo te ayuda a no olvidar nunca más dónde estacionaste el coche. Obtiene tu ubicación actual y crea un recordatorio con la dirección y la hora exacta."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "fecha_actual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "fecha_actual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "HH:mm"
+      },
+      "ref": "hora_formateada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getcurrentlocation",
+      "params": {},
+      "ref": "ubicacion"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.addnewreminder",
+      "params": {
+       "WFCalendarItemTitle": "Buscar el coche",
+       "WFCalendarItemNotes": {
+        "text": [
+         "Estacionado a las ",
+         {
+          "ref": "hora_formateada"
+         },
+         "\nUbicación: ",
+         {
+          "ref": "ubicacion"
+         }
+        ]
+       }
+      },
+      "ref": "nuevo_recordatorio"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.vibrate",
+      "params": {}
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "¡Estacioné Aquí!",
+       "WFNotificationActionBody": {
+        "text": [
+         "Ubicación guardada a las ",
+         {
+          "ref": "hora_formateada"
+         },
+         " en la app Recordatorios."
+        ]
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
