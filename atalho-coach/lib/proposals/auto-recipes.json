@@ -854,5 +854,331 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260709",
+  "emoji": "🎁",
+  "level": "medium",
+  "title": {
+   "pt": "Rastreador de Gastos Rápido",
+   "en": "Quick Expense Tracker",
+   "es": "Rastreador de Gastos Rápido"
+  },
+  "description": {
+   "pt": "Este atalho ajuda a controlar suas finanças pessoais de forma instantânea.",
+   "en": "This shortcut helps you track your personal finances instantly.",
+   "es": "Este atajo te ayuda a controlar tus finanzas personales de forma instantánea."
+  },
+  "ir": {
+   "pt": {
+    "name": "Rastreador de Gastos Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Registra rapidamente um gasto com valor e categoria em um arquivo de texto no iCloud Drive para fácil controle financeiro posterior."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual o valor do gasto?",
+       "WFInputType": "Number"
+      },
+      "ref": "valor_gasto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "O que você comprou?",
+       "WFInputType": "Text"
+      },
+      "ref": "categoria_gasto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "data_formatada"
+         },
+         " | R$ ",
+         {
+          "ref": "valor_gasto"
+         },
+         " | ",
+         {
+          "ref": "categoria_gasto"
+         }
+        ]
+       }
+      },
+      "ref": "linha_log"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "gastos.txt",
+       "WFInput": {
+        "ref": "linha_log"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Gasto Registrado!",
+       "WFNotificationActionBody": {
+        "text": [
+         "R$ ",
+         {
+          "ref": "valor_gasto"
+         },
+         " para '",
+         {
+          "ref": "categoria_gasto"
+         },
+         "' salvo em gastos.txt."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Quick Expense Tracker",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Quickly records an expense with amount and category into a text file in iCloud Drive for easy financial tracking later."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What is the expense amount?",
+       "WFInputType": "Number"
+      },
+      "ref": "expense_amount"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What did you buy?",
+       "WFInputType": "Text"
+      },
+      "ref": "expense_category"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "MM/dd/yyyy HH:mm"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "formatted_date"
+         },
+         " | $",
+         {
+          "ref": "expense_amount"
+         },
+         " | ",
+         {
+          "ref": "expense_category"
+         }
+        ]
+       }
+      },
+      "ref": "log_line"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "expenses.txt",
+       "WFInput": {
+        "ref": "log_line"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Expense Recorded!",
+       "WFNotificationActionBody": {
+        "text": [
+         "$",
+         {
+          "ref": "expense_amount"
+         },
+         " for '",
+         {
+          "ref": "expense_category"
+         },
+         "' saved to expenses.txt."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Rastreador de Gastos Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Registra rápidamente un gasto con monto y categoría en un archivo de texto en iCloud Drive para un fácil control financiero posterior."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Cuál es el monto del gasto?",
+       "WFInputType": "Number"
+      },
+      "ref": "valor_gasto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Qué compraste?",
+       "WFInputType": "Text"
+      },
+      "ref": "categoria_gasto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "data_formatada"
+         },
+         " | $ ",
+         {
+          "ref": "valor_gasto"
+         },
+         " | ",
+         {
+          "ref": "categoria_gasto"
+         }
+        ]
+       }
+      },
+      "ref": "linha_log"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "gastos.txt",
+       "WFInput": {
+        "ref": "linha_log"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "¡Gasto Registrado!",
+       "WFNotificationActionBody": {
+        "text": [
+         "$ ",
+         {
+          "ref": "valor_gasto"
+         },
+         " en '",
+         {
+          "ref": "categoria_gasto"
+         },
+         "' guardado en gastos.txt."
+        ]
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
