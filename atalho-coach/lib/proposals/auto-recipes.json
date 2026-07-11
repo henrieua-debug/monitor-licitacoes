@@ -1180,5 +1180,222 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260711",
+  "emoji": "🪄",
+  "level": "medium",
+  "title": {
+   "pt": "Tradutor de Placas Instantâneo",
+   "en": "Instant Sign Translator",
+   "es": "Traductor de Carteles Instantáneo"
+  },
+  "description": {
+   "pt": "Abre a câmera para tirar uma foto de um texto físico, placa ou menu.",
+   "en": "Opens the camera to take a photo of physical text, a sign, or a menu.",
+   "es": "Abre la cámara para tomar una foto de un texto físico, letrero o menú."
+  },
+  "ir": {
+   "pt": {
+    "name": "Tradutor de Placas Instantâneo",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Tire uma foto de qualquer placa, menu ou documento em outro idioma. O atalho irá extrair o texto, traduzi-lo para o português e copiá-lo para a sua área de transferência automaticamente."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.takephoto",
+      "params": {
+       "WFCameraCaptureShowPreview": true
+      },
+      "ref": "foto_tirada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.extracttextfromimage",
+      "params": {
+       "WFImage": {
+        "ref": "foto_tirada"
+       }
+      },
+      "ref": "texto_da_imagem"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.text.translate",
+      "params": {
+       "WFInputText": {
+        "text": [
+         {
+          "ref": "texto_da_imagem"
+         }
+        ]
+       },
+       "WFSelectedLanguage": "pt_BR"
+      },
+      "ref": "texto_traduzido"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         "Tradução obtida:\n\n",
+         {
+          "ref": "texto_traduzido"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setclipboard",
+      "params": {
+       "WFInput": {
+        "ref": "texto_traduzido"
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Instant Sign Translator",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Take a photo of any sign, menu, or document in another language. The shortcut will extract the text, translate it to English, and copy it to your clipboard automatically."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.takephoto",
+      "params": {
+       "WFCameraCaptureShowPreview": true
+      },
+      "ref": "captured_photo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.extracttextfromimage",
+      "params": {
+       "WFImage": {
+        "ref": "captured_photo"
+       }
+      },
+      "ref": "extracted_text"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.text.translate",
+      "params": {
+       "WFInputText": {
+        "ref": "extracted_text"
+       },
+       "WFSelectedLanguage": "en_US"
+      },
+      "ref": "translated_text"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         "Translation:\n\n",
+         {
+          "ref": "translated_text"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setclipboard",
+      "params": {
+       "WFInput": {
+        "ref": "translated_text"
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Traductor de Carteles Instantáneo",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Toma una foto de cualquier cartel, menú o documento en otro idioma. El atajo extraerá el texto, lo traducirá al español y lo copiará a tu portapapeles automáticamente."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.takephoto",
+      "params": {
+       "WFCameraCaptureShowPreview": true
+      },
+      "ref": "foto_tomada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.extracttextfromimage",
+      "params": {
+       "WFImage": {
+        "ref": "foto_tomada"
+       }
+      },
+      "ref": "texto_de_la_imagen"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.text.translate",
+      "params": {
+       "WFInputText": {
+        "text": [
+         {
+          "ref": "texto_de_la_imagen"
+         }
+        ]
+       },
+       "WFSelectedLanguage": "es_ES"
+      },
+      "ref": "texto_traducido"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         "Traducción obtenida:\n\n",
+         {
+          "ref": "texto_traducido"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setclipboard",
+      "params": {
+       "WFInput": {
+        "ref": "texto_traducido"
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
