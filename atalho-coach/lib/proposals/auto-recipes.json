@@ -1397,5 +1397,256 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260712",
+  "emoji": "⚡",
+  "level": "medium",
+  "title": {
+   "pt": "Relatório Diário em PDF",
+   "en": "Daily PDF Report",
+   "es": "Informe Diario en PDF"
+  },
+  "description": {
+   "pt": "Este atalho compila informações essenciais do seu dia em um único documento.",
+   "en": "This shortcut compiles essential information from your day into a single document.",
+   "es": "Este atajo recopila información esencial de tu día en un único documento."
+  },
+  "ir": {
+   "pt": {
+    "name": "Relatório Diário em PDF",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Cria um relatório diário em PDF contendo o clima atual, nível da bateria e seus próximos 3 compromissos do calendário, abrindo a tela de compartilhamento ao final."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.weather.currentconditions",
+      "params": {},
+      "ref": "clima"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "bateria"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getupcomingevents",
+      "params": {
+       "WFGetUpcomingItemCount": 3
+      },
+      "ref": "eventos"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "# Relatório Diário\nData: ",
+         {
+          "special": "CurrentDate"
+         },
+         "\n\n## 🌤️ Clima Atual\n",
+         {
+          "ref": "clima"
+         },
+         "\n\n## 🔋 Status do Dispositivo\nBateria: ",
+         {
+          "ref": "bateria"
+         },
+         "%\n\n## 📅 Próximos Compromissos\n",
+         {
+          "ref": "eventos"
+         }
+        ]
+       }
+      },
+      "ref": "texto_relatorio"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.makepdf",
+      "params": {
+       "WFInput": {
+        "ref": "texto_relatorio"
+       }
+      },
+      "ref": "pdf_relatorio"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.share",
+      "params": {
+       "WFInput": {
+        "ref": "pdf_relatorio"
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Daily PDF Report",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Creates a daily PDF report containing the current weather, battery level, and your next 3 calendar events, opening the share sheet at the end."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.weather.currentconditions",
+      "params": {},
+      "ref": "weather"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "battery"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getupcomingevents",
+      "params": {
+       "WFGetUpcomingItemCount": 3
+      },
+      "ref": "events"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "# Daily Report\nDate: ",
+         {
+          "special": "CurrentDate"
+         },
+         "\n\n## 🌤️ Current Weather\n",
+         {
+          "ref": "weather"
+         },
+         "\n\n## 🔋 Device Status\nBattery: ",
+         {
+          "ref": "battery"
+         },
+         "%\n\n## 📅 Upcoming Events\n",
+         {
+          "ref": "events"
+         }
+        ]
+       }
+      },
+      "ref": "report_text"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.makepdf",
+      "params": {
+       "WFInput": {
+        "ref": "report_text"
+       }
+      },
+      "ref": "pdf_report"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.share",
+      "params": {
+       "WFInput": {
+        "ref": "pdf_report"
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Informe Diario en PDF",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Crea un informe diario en PDF que contiene el clima actual, el nivel de batería y tus próximos 3 eventos del calendario, abriendo la pantalla de compartir al final."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.weather.currentconditions",
+      "params": {},
+      "ref": "clima"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "bateria"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getupcomingevents",
+      "params": {
+       "WFGetUpcomingItemCount": 3
+      },
+      "ref": "eventos"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "# Informe Diario\nFecha: ",
+         {
+          "special": "CurrentDate"
+         },
+         "\n\n## 🌤️ Clima Actual\n",
+         {
+          "ref": "clima"
+         },
+         "\n\n## 🔋 Estado del Dispositivo\nBatería: ",
+         {
+          "ref": "bateria"
+         },
+         "%\n\n## 📅 Próximos Eventos\n",
+         {
+          "ref": "eventos"
+         }
+        ]
+       }
+      },
+      "ref": "texto_relatorio"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.makepdf",
+      "params": {
+       "WFInput": {
+        "ref": "texto_relatorio"
+       }
+      },
+      "ref": "pdf_relatorio"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.share",
+      "params": {
+       "WFInput": {
+        "ref": "pdf_relatorio"
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
