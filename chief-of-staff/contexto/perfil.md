@@ -4,12 +4,11 @@
 > Quanto mais preciso aqui, mais útil fica o briefing. Última revisão: 2026-07-13.
 
 ## Quem sou eu
-- **Nome:** Henrique (henrieua@gmail.com) — ajuste se estiver errado.
-- **Papel:** Administração / oversight de um portfólio de empresas de software do
-  **Volaris Group** (braço da Constellation Software que adquire e opera software
-  de mercado vertical) no Brasil.
-- **E-mail de trabalho:** Microsoft 365 / Outlook (conta corporativa). É aqui que
-  chegam os reportes e a correspondência que importa.
+- **Nome:** Henrique Barreto
+- **Cargo:** **Group Leader, Brazil** — Volaris Group (grupo Bacchus).
+- **E-mail de trabalho:** henrique.barreto@volarisgroup.com (Microsoft 365 / Outlook).
+  É aqui que chegam os reportes e a correspondência que importa.
+- **E-mail pessoal:** henrieua@gmail.com.
 
 ## Empresas do portfólio que eu acompanho
 - **Governança Brasil** (govtech / gestão pública)
@@ -29,10 +28,23 @@
 | Useall             | _(preencher)_     | _(preencher)_       | _(preencher)_  |
 
 ## VIPs — quem nunca pode passar batido
-- **Puneet Soni** (Volaris) — prioridade máxima. Qualquer e-mail dele ou pergunta
-  em aberto para ele é a coisa mais importante do dia.
-- Líderes das 4 empresas do portfólio _(adicionar nomes/e-mails)_.
-- _(adicionar outros: pares no Volaris, board, jurídico, M&A, etc.)_
+- **Puneet Soni** (puneet.soni@volarisgroup.com) — Volaris, acima de mim.
+  Prioridade máxima. Qualquer e-mail dele ou pergunta em aberto para ele é a coisa
+  mais importante do dia.
+- Líderes das 4 empresas do portfólio _(confirmar quem é o VIP em cada uma)_.
+- _(adicionar outros: board, jurídico, M&A, etc.)_
+
+## Diretório de contatos (descobertos no Outlook — confirmar papéis)
+- **Volaris / LATAM GLs:** Pedro Cruz, Ricardo Bastos de Pinho (pares na reunião "R"),
+  Tauhir Khan (portfolio AI / Bacchus).
+- **Governança Brasil:** Rafael Denardi (conduz os alinhamentos QSR2),
+  Flavio Freitas, Marcelo Lima, Miguel Junior, Tiago Serpa, Ivan Caliari,
+  Roseane Blaffert (G&A / jurídico trabalhista), Livia Sá, Thiago Nogueira,
+  Ivan Filagrana, Rodrigo Braga.
+- **Equiplano:** João Luiz, Marcio Pereira, Higo da Silva, Gustavo Z. Cruz.
+- **IDS / Useall:** _(sem contatos identificados ainda)_.
+
+> ⚠️ Papéis acima são inferidos de e-mails — ajuste/confirme quem é quem.
 
 ## Minha missão nº 1 (o que o briefing existe para garantir)
 **Garantir que as principais respostas/retornos tenham acontecido.** Ou seja, um
