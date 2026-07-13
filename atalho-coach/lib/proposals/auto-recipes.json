@@ -1648,5 +1648,202 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260713",
+  "emoji": "🧭",
+  "level": "medium",
+  "title": {
+   "pt": "Decididor Rápido",
+   "en": "Quick Decider",
+   "es": "Decisor Rápido"
+  },
+  "description": {
+   "pt": "Solicita ao usuário que digite opções separadas por vírgula.",
+   "en": "Asks the user to enter options separated by commas.",
+   "es": "Solicita al usuario que ingrese opciones separadas por comas."
+  },
+  "ir": {
+   "pt": {
+    "name": "Decididor Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho ajuda você a tomar decisões rapidamente de forma imparcial. Digite suas opções separadas por vírgulas e ele escolherá uma para você."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Digite suas opções separadas por vírgula (ex: Pizza, Sushi, Hambúrguer):",
+       "WFInputType": "Text"
+      },
+      "ref": "opcoes"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.text.split",
+      "params": {
+       "text": {
+        "ref": "opcoes"
+       },
+       "WFTextSeparator": "Custom",
+       "WFTextCustomSeparator": ","
+      },
+      "ref": "lista_opcoes"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getitemfromlist",
+      "params": {
+       "WFInput": {
+        "ref": "lista_opcoes"
+       },
+       "WFItemSpecifier": "Random Item"
+      },
+      "ref": "opcao_sorteada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "Decisão Tomada!",
+       "WFAlertActionMessage": {
+        "text": [
+         "O destino escolheu:\n\n",
+         {
+          "ref": "opcao_sorteada"
+         }
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Quick Decider",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut helps you make unbiased decisions quickly. Enter your options separated by commas and it will choose one for you."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Enter your options separated by commas (e.g., Pizza, Sushi, Burger):",
+       "WFInputType": "Text"
+      },
+      "ref": "options"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.text.split",
+      "params": {
+       "text": {
+        "ref": "options"
+       },
+       "WFTextSeparator": "Custom",
+       "WFTextCustomSeparator": ","
+      },
+      "ref": "options_list"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getitemfromlist",
+      "params": {
+       "WFInput": {
+        "ref": "options_list"
+       },
+       "WFItemSpecifier": "Random Item"
+      },
+      "ref": "chosen_option"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "Decision Made!",
+       "WFAlertActionMessage": {
+        "text": [
+         "Fate has chosen:\n\n",
+         {
+          "ref": "chosen_option"
+         }
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Decisor Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo te ayuda a tomar decisiones rápidamente de forma imparcial. Escribe tus opciones separadas por comas y elegirá una para ti."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Escribe tus opciones separadas por comas (ej. Pizza, Sushi, Hamburguesa):",
+       "WFInputType": "Text"
+      },
+      "ref": "opciones"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.text.split",
+      "params": {
+       "text": {
+        "ref": "opciones"
+       },
+       "WFTextSeparator": "Custom",
+       "WFTextCustomSeparator": ","
+      },
+      "ref": "lista_opciones"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getitemfromlist",
+      "params": {
+       "WFInput": {
+        "ref": "lista_opciones"
+       },
+       "WFItemSpecifier": "Random Item"
+      },
+      "ref": "opcion_sorteada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "¡Decisión Tomada!",
+       "WFAlertActionMessage": {
+        "text": [
+         "El destino ha elegido:\n\n",
+         {
+          "ref": "opcion_sorteada"
+         }
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     }
+    ]
+   }
+  }
  }
 ]
