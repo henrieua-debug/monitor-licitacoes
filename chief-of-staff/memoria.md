@@ -5,38 +5,42 @@
 > Cada item deve ter data. Quando um item se resolve, mova para "Resolvidos
 > recentes" com a data de fechamento (e limpe os antigos depois de ~2 semanas).
 
-_Última atualização: 2026-07-13 (primeira rodada — dados a confirmar)_
+_Última atualização: 2026-07-13 (revisado com o Henrique)_
 
 ## 🔴 Compromissos ativos (o que eu prometi / o que me prometeram)
-- **2026-07-09** — Enviei ao Puneet a oferta oficial de **LTIP** (participantes e
-  valores). Aguardando confirmação formal dele (só reagiu à mensagem em 09/07).
+_(nada em aberto)_
 
 ## 👀 Threads em observação (esperando desfecho)
-- **2026-07-08→10** — QSR2-2026 **Equiplano**: draft enviado pelo Flavio Freitas
-  para minha validação. Respondi 09/07; Flavio voltou 10/07. Confirmar se minha
-  aprovação final ainda está pendente.
-- **2026-07-13** — Ação Trabalhista GovBR (Roseane Blaffert): falta assinar a
-  **carta de preposto** para audiência presencial de **20/07**.
+_(nada em aberto)_
 
 ## ⏳ VIPs devendo resposta / a quem eu devo resposta
-- **Puneet** → me deve confirmação formal do LTIP (ou já basta a reação?).
-- **Flavio Freitas (GovBR)** → provável que eu deva a validação final do QSR2 Equiplano.
+_(nada em aberto)_
 
-## 📊 Reportes das empresas — status (ciclo QSR2-2026)
-- **Governança Brasil:** QSR2 aprovado pelo Puneet p/ upload (08/07). 3º alinhamento 13/07.
-- **Equiplano:** QSR2 em validação comigo (08–10/07). 3º alinhamento 13/07. Gargalo = minha aprovação.
-- **IDS:** sem sinal. Confirmar se entra no QSR2-2026.
-- **Useall:** sem sinal. Confirmar se entra no QSR2-2026.
+## 🔁 Cadências a garantir (touch bases recorrentes)
+- **Touch base semanal com as empresas do portfólio.** Meta: reunião/contato toda
+  semana com cada empresa. O briefing deve avisar quando uma empresa passar da
+  semana sem touch base.
+  - **IDS/Useall — Kleber:** última reunião **2026-07-13**. Próxima esperada até **~2026-07-20**.
+  - GovBR e Equiplano: em contato constante via QSR2 (ok por ora).
+
+## 📊 Reportes das empresas — status
+- **Governança Brasil:** QSR2-2026 aprovado pelo Puneet p/ upload (08/07). Contato constante.
+- **Equiplano:** QSR2-2026 validado (fechado 13/07). Contato constante via QSR2.
+- **IDS:** touch base com Kleber em 13/07. Instituir cadência semanal.
+- **Useall:** touch base com Kleber em 13/07. Instituir cadência semanal.
+  _(confirmar se Kleber cobre IDS, Useall ou ambas)_
 
 ## 📈 Sinais de risco ou aceleração
-- **2026-07-11 a 16** — Estou de férias em Itapema, mas com agenda de trabalho
-  cheia (QSR2 + reunião com Puneet). Risco de a semana de descanso virar semana de trabalho.
+- **2026-07-11 a 16** — Henrique de férias em Itapema, com agenda de trabalho cheia.
 
 ## 🧠 Padrões observados
 - Inbox tem MUITO ruído automático: Viva Engage (notifications_ourvolaris),
-  d4sign/D4Sign (assinaturas), CRM GovBR (crm2@ "Acompanhamento de Negociações"),
+  d4sign (assinaturas), CRM GovBR (crm2@ "Acompanhamento de Negociações"),
   Ouvidor Digital, intranet Volaris. Tudo isso deve ser filtrado do briefing.
 - QSR = Quarterly Strategy Review (ciclo trimestral); QSR2 = 2º trimestre.
 
 ## ✅ Resolvidos recentes
+- **2026-07-13** — QSR2 Equiplano: validação **não** estava mais comigo; thread fechada.
+- **2026-07-13** — LTIP (Puneet): a reação do Puneet basta como confirmação. Fechado.
+- **2026-07-13** — Carta de preposto (ação trabalhista GovBR): **assinada**. Audiência 20/07 segue.
 - **2026-07-08** — QSR2 GovBR: Puneet deu "go ahead and upload".

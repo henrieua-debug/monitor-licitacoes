@@ -41,6 +41,9 @@ Compare o que chegou hoje com `memoria.md`:
 - Alguma pendência de ontem **foi resolvida**? (resposta chegou, reporte entrou) → marque como resolvida.
 - Alguma pendência **envelheceu** mais um dia? → aumente a urgência no texto.
 - Surgiu algo **novo** que precisa virar item de acompanhamento?
+- **Cadências (touch base semanal):** para cada empresa do portfólio, veja a data
+  do último contato na seção "Cadências a garantir". Se passou ~7 dias sem touch
+  base, **sinalize** que está na hora de marcar. (Ex.: Kleber = IDS/Useall.)
 
 ## 3. Escreva o briefing
 Salve em `chief-of-staff/briefings/AAAA-MM-DD.md` (data de hoje, fuso Brasília).
@@ -65,6 +68,10 @@ Tabela markdown: Horário | Compromisso | Com quem | Preciso preparar algo?
 
 ## 📊 Reportes das empresas
 Status linha a linha das 4 empresas: recebido (qual período) / pendente / em atraso.
+
+## 🔁 Cadências (touch base semanal)
+Para cada empresa: dias desde o último contato. Marque em vermelho quem passou da
+semana. Só liste se houver algo a cobrar; senão, "Todas em dia."
 
 ## ✅ Deve ser feito hoje
 Lista curta e priorizada de ações concretas (verbo + objeto + pessoa).

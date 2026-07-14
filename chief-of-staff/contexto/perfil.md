@@ -31,8 +31,10 @@
 - **Puneet Soni** (puneet.soni@volarisgroup.com) — Volaris, acima de mim.
   Prioridade máxima. Qualquer e-mail dele ou pergunta em aberto para ele é a coisa
   mais importante do dia.
-- Líderes das 4 empresas do portfólio _(confirmar quem é o VIP em cada uma)_.
-- _(adicionar outros: board, jurídico, M&A, etc.)_
+- **Rick (Bacchus)** — liderança do grupo Bacchus. _(confirmar sobrenome/e-mail)_
+- **Kleber** — empresa(s) do portfólio (IDS/Useall). Touch base semanal. _(confirmar e-mail)_
+- **Antônio** — _(confirmar empresa/papel/e-mail)_
+- _(adicionar outros conforme necessário: board, jurídico, M&A, etc.)_
 
 ## Diretório de contatos (descobertos no Outlook — confirmar papéis)
 - **Volaris / LATAM GLs:** Pedro Cruz, Ricardo Bastos de Pinho (pares na reunião "R"),
@@ -56,6 +58,10 @@ controle de pendências em duas direções:
 
 Nada pode morrer no silêncio. Se uma resposta importante está atrasada, o briefing
 tem que me cutucar todo dia até fechar.
+
+3. **Garantir as cadências** — eu quero **touch base semanal** com cada empresa do
+   portfólio. Se uma empresa passar da semana sem contato, o briefing me avisa.
+   (Kleber = IDS/Useall, última reunião 13/07.)
 
 ## Como eu gosto de trabalhar
 - Tom: **direto, seco, analítico.** Sem "espero que esteja bem", sem enrolação.
