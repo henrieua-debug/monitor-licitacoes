@@ -1845,5 +1845,292 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260715",
+  "emoji": "🎯",
+  "level": "medium",
+  "title": {
+   "pt": "Compartilhar Contato via QR",
+   "en": "Share Contact via QR",
+   "es": "Compartir Contacto vía QR"
+  },
+  "description": {
+   "pt": "Solicita seu nome, telefone e e-mail.",
+   "en": "Asks for your full name, phone number, and email address.",
+   "es": "Solicita tu nombre, teléfono y correo electrónico."
+  },
+  "ir": {
+   "pt": {
+    "name": "Compartilhar Contato via QR",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Gera um QR Code de contato (vCard) instantâneo para que outra pessoa escaneie sua tela e salve seus dados de forma rápida."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual o seu nome completo?",
+       "WFInputType": "Text"
+      },
+      "ref": "nome"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual o seu telefone com DDD (apenas números)?",
+       "WFInputType": "Text"
+      },
+      "ref": "telefone"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual o seu e-mail?",
+       "WFInputType": "Text"
+      },
+      "ref": "email"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "BEGIN:VCARD\nVERSION:3.0\nFN:",
+         {
+          "ref": "nome"
+         },
+         "\nTEL;CELL:",
+         {
+          "ref": "telefone"
+         },
+         "\nEMAIL:",
+         {
+          "ref": "email"
+         },
+         "\nEND:VCARD"
+        ]
+       }
+      },
+      "ref": "vcard"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.generatebarcode",
+      "params": {
+       "WFText": {
+        "text": [
+         {
+          "ref": "vcard"
+         }
+        ]
+       }
+      },
+      "ref": "qrcode"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         {
+          "ref": "qrcode"
+         }
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Share Contact via QR",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Generates an instant contact QR Code (vCard) so someone else can scan your screen and quickly save your details."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What is your full name?",
+       "WFInputType": "Text"
+      },
+      "ref": "name"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What is your phone number?",
+       "WFInputType": "Text"
+      },
+      "ref": "phone"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What is your email address?",
+       "WFInputType": "Text"
+      },
+      "ref": "email"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "BEGIN:VCARD\nVERSION:3.0\nFN:",
+         {
+          "ref": "name"
+         },
+         "\nTEL;CELL:",
+         {
+          "ref": "phone"
+         },
+         "\nEMAIL:",
+         {
+          "ref": "email"
+         },
+         "\nEND:VCARD"
+        ]
+       }
+      },
+      "ref": "vcard"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.generatebarcode",
+      "params": {
+       "WFText": {
+        "text": [
+         {
+          "ref": "vcard"
+         }
+        ]
+       }
+      },
+      "ref": "qrcode"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         {
+          "ref": "qrcode"
+         }
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Compartir Contacto vía QR",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Genera un código QR de contacto (vCard) instantáneo para que otra persona escanee tu pantalla y guarde tus datos rápidamente."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Cuál es tu nombre completo?",
+       "WFInputType": "Text"
+      },
+      "ref": "nome"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Cuál es tu teléfono con código de área (solo números)?",
+       "WFInputType": "Text"
+      },
+      "ref": "telefone"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Cuál es tu correo electrónico?",
+       "WFInputType": "Text"
+      },
+      "ref": "email"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "BEGIN:VCARD\nVERSION:3.0\nFN:",
+         {
+          "ref": "nome"
+         },
+         "\nTEL;CELL:",
+         {
+          "ref": "telefone"
+         },
+         "\nEMAIL:",
+         {
+          "ref": "email"
+         },
+         "\nEND:VCARD"
+        ]
+       }
+      },
+      "ref": "vcard"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.generatebarcode",
+      "params": {
+       "WFText": {
+        "text": [
+         {
+          "ref": "vcard"
+         }
+        ]
+       }
+      },
+      "ref": "qrcode"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         {
+          "ref": "qrcode"
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
