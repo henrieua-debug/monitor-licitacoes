@@ -2132,5 +2132,355 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260716",
+  "emoji": "🫧",
+  "level": "medium",
+  "title": {
+   "pt": "Scanner de Recibo Expresso",
+   "en": "Express Receipt Scanner",
+   "es": "Escáner de Recibos Exprés"
+  },
+  "description": {
+   "pt": "Tira uma foto rápida de um recibo ou nota fiscal física.",
+   "en": "Takes a quick photo of a physical receipt or invoice.",
+   "es": "Toma una foto rápida de un recibo o factura física."
+  },
+  "ir": {
+   "pt": {
+    "name": "Scanner de Recibo Expresso",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Tira uma foto de um recibo, converte para PDF, gera um nome padronizado com a data atual, copia o nome para a área de transferência e abre o menu de compartilhamento para salvar."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.takephoto",
+      "params": {
+       "WFCameraCaptureShowPreview": true
+      },
+      "ref": "foto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.makepdf",
+      "params": {
+       "WFInput": {
+        "ref": "foto"
+       }
+      },
+      "ref": "pdf"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual o nome do estabelecimento ou despesa?",
+       "WFInputType": "Text"
+      },
+      "ref": "nome_recibo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "yyyy-MM-dd"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "data_formatada"
+         },
+         " - ",
+         {
+          "ref": "nome_recibo"
+         }
+        ]
+       }
+      },
+      "ref": "nome_final"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setclipboard",
+      "params": {
+       "WFInput": {
+        "ref": "nome_final"
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.share",
+      "params": {
+       "WFInput": {
+        "ref": "pdf"
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Recibo Digitalizado!",
+       "WFNotificationActionBody": {
+        "text": [
+         "O nome \"",
+         {
+          "ref": "nome_final"
+         },
+         "\" foi copiado. Cole-o ao salvar o arquivo."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Express Receipt Scanner",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Takes a photo of a receipt, converts it to PDF, generates a standardized name with the current date, copies the name to the clipboard, and opens the share sheet to save."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.takephoto",
+      "params": {
+       "WFCameraCaptureShowPreview": true
+      },
+      "ref": "photo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.makepdf",
+      "params": {
+       "WFInput": {
+        "ref": "photo"
+       }
+      },
+      "ref": "pdf"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What is the name of the establishment or expense?",
+       "WFInputType": "Text"
+      },
+      "ref": "receipt_name"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "yyyy-MM-dd"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "formatted_date"
+         },
+         " - ",
+         {
+          "ref": "receipt_name"
+         }
+        ]
+       }
+      },
+      "ref": "final_name"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setclipboard",
+      "params": {
+       "WFInput": {
+        "ref": "final_name"
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.share",
+      "params": {
+       "WFInput": {
+        "ref": "pdf"
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Receipt Scanned!",
+       "WFNotificationActionBody": {
+        "text": [
+         "The name \"",
+         {
+          "ref": "final_name"
+         },
+         "\" has been copied. Paste it when saving the file."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Escáner de Recibos Exprés",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Toma una foto de un recibo, la convierte a PDF, genera un nombre estandarizado con la fecha actual, copia el nombre al portapapeles y abre el menú de compartir para guardar."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.takephoto",
+      "params": {
+       "WFCameraCaptureShowPreview": true
+      },
+      "ref": "foto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.makepdf",
+      "params": {
+       "WFInput": {
+        "ref": "foto"
+       }
+      },
+      "ref": "pdf"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Cuál es el nombre del establecimiento o gasto?",
+       "WFInputType": "Text"
+      },
+      "ref": "nome_recibo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "yyyy-MM-dd"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "data_formatada"
+         },
+         " - ",
+         {
+          "ref": "nome_recibo"
+         }
+        ]
+       }
+      },
+      "ref": "nome_final"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setclipboard",
+      "params": {
+       "WFInput": {
+        "ref": "nome_final"
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.share",
+      "params": {
+       "WFInput": {
+        "ref": "pdf"
+       }
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "¡Recibo Escaneado!",
+       "WFNotificationActionBody": {
+        "text": [
+         "El nombre \"",
+         {
+          "ref": "nome_final"
+         },
+         "\" fue copiado. Pégalo al guardar el archivo."
+        ]
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
