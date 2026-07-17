@@ -2482,5 +2482,337 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260717",
+  "emoji": "🔔",
+  "level": "medium",
+  "title": {
+   "pt": "Onde Guardei Isso?",
+   "en": "Where Did I Put This?",
+   "es": "¿Dónde lo guardé?"
+  },
+  "description": {
+   "pt": "Pergunta ao usuário qual objeto ele está guardando.",
+   "en": "Asks the user what object they are putting away.",
+   "es": "Pregunta al usuario qué objeto está guardando."
+  },
+  "ir": {
+   "pt": {
+    "name": "Onde Guardei Isso?",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho ajuda você a registrar onde guardou objetos importantes (como chaves, passaporte ou ferramentas) em um arquivo de texto no iCloud Drive, para que você nunca mais se esqueça de onde os colocou."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual objeto você está guardando?",
+       "WFInputType": "Text"
+      },
+      "ref": "objeto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Onde você o guardou? (Ex: Segunda gaveta, caixa azul no armário)",
+       "WFInputType": "Text"
+      },
+      "ref": "local"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "- ",
+         {
+          "ref": "objeto"
+         },
+         ": ",
+         {
+          "ref": "local"
+         },
+         " (Registrado em ",
+         {
+          "ref": "data_formatada"
+         },
+         ")"
+        ]
+       }
+      },
+      "ref": "linha_registro"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "onde_guardei.txt",
+       "WFInput": {
+        "ref": "linha_registro"
+       },
+       "WFAppendFileWriteMode": "Append"
+      },
+      "ref": "arquivo_salvo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         "Salvo com sucesso!\n\n📦 Objeto: ",
+         {
+          "ref": "objeto"
+         },
+         "\n📍 Local: ",
+         {
+          "ref": "local"
+         },
+         "\n\nO registro foi adicionado ao arquivo 'onde_guardei.txt' no seu iCloud Drive."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Where Did I Put This?",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut helps you record where you stored important items (like keys, passports, or tools) in a text file in iCloud Drive, so you never forget where you put them."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What item are you storing?",
+       "WFInputType": "Text"
+      },
+      "ref": "item"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Where did you put it? (e.g., Second drawer, blue box in the closet)",
+       "WFInputType": "Text"
+      },
+      "ref": "location"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "MM/dd/yyyy HH:mm"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "- ",
+         {
+          "ref": "item"
+         },
+         ": ",
+         {
+          "ref": "location"
+         },
+         " (Recorded on ",
+         {
+          "ref": "formatted_date"
+         },
+         ")"
+        ]
+       }
+      },
+      "ref": "log_line"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "where_did_i_put_it.txt",
+       "WFInput": {
+        "ref": "log_line"
+       },
+       "WFAppendFileWriteMode": "Append"
+      },
+      "ref": "saved_file"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         "Saved successfully!\n\n📦 Item: ",
+         {
+          "ref": "item"
+         },
+         "\n📍 Location: ",
+         {
+          "ref": "location"
+         },
+         "\n\nThe record was added to 'where_did_i_put_it.txt' in your iCloud Drive."
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "¿Dónde lo guardé?",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo te ayuda a registrar dónde guardaste objetos importantes (como llaves, pasaporte o herramientas) en un archivo de texto en iCloud Drive, para que nunca olvides dónde los pusiste."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Qué objeto estás guardando?",
+       "WFInputType": "Text"
+      },
+      "ref": "objeto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Dónde lo guardaste? (Ej: Segundo cajón, caja azul en el armario)",
+       "WFInputType": "Text"
+      },
+      "ref": "local"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "- ",
+         {
+          "ref": "objeto"
+         },
+         ": ",
+         {
+          "ref": "local"
+         },
+         " (Registrado el ",
+         {
+          "ref": "data_formatada"
+         },
+         ")"
+        ]
+       }
+      },
+      "ref": "linha_registro"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "donde_lo_guarde.txt",
+       "WFInput": {
+        "ref": "linha_registro"
+       },
+       "WFAppendFileWriteMode": "Append"
+      },
+      "ref": "arquivo_salvo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.showresult",
+      "params": {
+       "Text": {
+        "text": [
+         "¡Guardado con éxito!\n\n📦 Objeto: ",
+         {
+          "ref": "objeto"
+         },
+         "\n📍 Lugar: ",
+         {
+          "ref": "local"
+         },
+         "\n\nEl registro se ha añadido al archivo 'donde_lo_guarde.txt' en tu iCloud Drive."
+        ]
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
