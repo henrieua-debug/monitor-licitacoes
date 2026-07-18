@@ -2814,5 +2814,283 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260718",
+  "emoji": "🧠",
+  "level": "medium",
+  "title": {
+   "pt": "Captura Rápida de Ideias",
+   "en": "Quick Idea Capture",
+   "es": "Captura Rápida de Ideas"
+  },
+  "description": {
+   "pt": "Inicia o ditado de voz imediatamente para capturar uma ideia passageira sem precisar digitar.",
+   "en": "Starts voice dictation immediately to capture a fleeting idea without typing.",
+   "es": "Inicia el dictado de voz de inmediato para capturar una idea fugaz sin tener que escribir."
+  },
+  "ir": {
+   "pt": {
+    "name": "Captura Rápida de Ideias",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho captura uma ideia por ditado de voz rapidamente, formata com a data e hora atuais, e a adiciona a um arquivo de texto no iCloud Drive."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dictatetext",
+      "params": {
+       "WFDictateTextStopListening": "After Pause"
+      },
+      "ref": "ditado"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "- [",
+         {
+          "ref": "data_formatada"
+         },
+         "]: ",
+         {
+          "ref": "ditado"
+         }
+        ]
+       }
+      },
+      "ref": "entrada_texto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "ideias.txt",
+       "WFInput": {
+        "ref": "entrada_texto"
+       },
+       "WFAppendFileWriteMode": "Append"
+      },
+      "ref": "arquivo_salvo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Ideia Registrada!",
+       "WFNotificationActionBody": {
+        "text": [
+         "Salvo: \"",
+         {
+          "ref": "ditado"
+         },
+         "\""
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Quick Idea Capture",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut quickly captures an idea via voice dictation, formats it with the current date and time, and appends it to a text file in iCloud Drive."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dictatetext",
+      "params": {
+       "WFDictateTextStopListening": "After Pause"
+      },
+      "ref": "dictated_text"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "yyyy-MM-dd HH:mm"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "- [",
+         {
+          "ref": "formatted_date"
+         },
+         "]: ",
+         {
+          "ref": "dictated_text"
+         }
+        ]
+       }
+      },
+      "ref": "entry_text"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "ideas.txt",
+       "WFInput": {
+        "ref": "entry_text"
+       },
+       "WFAppendFileWriteMode": "Append"
+      },
+      "ref": "saved_file"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Idea Saved!",
+       "WFNotificationActionBody": {
+        "text": [
+         "Saved: \"",
+         {
+          "ref": "dictated_text"
+         },
+         "\""
+        ]
+       }
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Captura Rápida de Ideas",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo captura una idea mediante dictado de voz rápidamente, la formatea con la fecha y hora actuales, y la añade a un archivo de texto en iCloud Drive."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dictatetext",
+      "params": {
+       "WFDictateTextStopListening": "After Pause"
+      },
+      "ref": "ditado"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "- [",
+         {
+          "ref": "data_formatada"
+         },
+         "]: ",
+         {
+          "ref": "ditado"
+         }
+        ]
+       }
+      },
+      "ref": "entrada_texto"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "ideas.txt",
+       "WFInput": {
+        "ref": "entrada_texto"
+       },
+       "WFAppendFileWriteMode": "Append"
+      },
+      "ref": "arquivo_salvo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "¡Idea Registrada!",
+       "WFNotificationActionBody": {
+        "text": [
+         "Guardado: \"",
+         {
+          "ref": "ditado"
+         },
+         "\""
+        ]
+       }
+      }
+     }
+    ]
+   }
+  }
  }
 ]
