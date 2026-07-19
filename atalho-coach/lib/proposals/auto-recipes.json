@@ -3092,5 +3092,307 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260719",
+  "emoji": "🎁",
+  "level": "medium",
+  "title": {
+   "pt": "Registro de Remédio Rápido",
+   "en": "Quick Medication Logger",
+   "es": "Registro de Medicamentos Rápido"
+  },
+  "description": {
+   "pt": "Pergunta qual medicamento ou suplemento você tomou.",
+   "en": "Asks which medication or supplement you took.",
+   "es": "Te pregunta qué medicamento o suplemento has tomado."
+  },
+  "ir": {
+   "pt": {
+    "name": "Registro de Remédio Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Registra rapidamente o medicamento ou suplemento que você tomou, salvando a data e hora exatas em um arquivo de texto no iCloud Drive para controle pessoal."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual remédio ou suplemento você tomou?",
+       "WFInputType": "Text",
+       "WFAskActionDefaultAnswer": "Vitamina"
+      },
+      "ref": "remedio"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "remedio"
+         },
+         " - ",
+         {
+          "ref": "data_formatada"
+         }
+        ]
+       }
+      },
+      "ref": "linha_log"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "historico_remedios.txt",
+       "WFInput": {
+        "text": [
+         {
+          "ref": "linha_log"
+         },
+         "\n"
+        ]
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionBody": {
+        "text": [
+         "Registrado: ",
+         {
+          "ref": "remedio"
+         },
+         " às ",
+         {
+          "ref": "data_formatada"
+         }
+        ]
+       },
+       "WFNotificationActionTitle": "Medicamento Registrado!"
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Quick Medication Logger",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Quickly logs the medication or supplement you took, saving the exact date and time to a text file in iCloud Drive for personal tracking."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Which medication or supplement did you take?",
+       "WFInputType": "Text",
+       "WFAskActionDefaultAnswer": "Vitamin"
+      },
+      "ref": "medication"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "MM/dd/yyyy HH:mm"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "medication"
+         },
+         " - ",
+         {
+          "ref": "formatted_date"
+         }
+        ]
+       }
+      },
+      "ref": "log_line"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "medication_history.txt",
+       "WFInput": {
+        "text": [
+         {
+          "ref": "log_line"
+         },
+         "\n"
+        ]
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionBody": {
+        "text": [
+         "Logged: ",
+         {
+          "ref": "medication"
+         },
+         " at ",
+         {
+          "ref": "formatted_date"
+         }
+        ]
+       },
+       "WFNotificationActionTitle": "Medication Logged!"
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Registro de Medicamentos Rápido",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Registra rápidamente el medicamento o suplemento que has tomado, guardando la fecha y hora exactas en un archivo de texto en iCloud Drive para control personal."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Qué medicamento o suplemento has tomado?",
+       "WFInputType": "Text",
+       "WFAskActionDefaultAnswer": "Vitamina"
+      },
+      "ref": "medicamento"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "fecha_actual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "fecha_actual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "fecha_formateada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         {
+          "ref": "medicamento"
+         },
+         " - ",
+         {
+          "ref": "fecha_formateada"
+         }
+        ]
+       }
+      },
+      "ref": "linea_registro"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "historial_medicamentos.txt",
+       "WFInput": {
+        "text": [
+         {
+          "ref": "linea_registro"
+         },
+         "\n"
+        ]
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionBody": {
+        "text": [
+         "Registrado: ",
+         {
+          "ref": "medicamento"
+         },
+         " a las ",
+         {
+          "ref": "fecha_formateada"
+         }
+        ]
+       },
+       "WFNotificationActionTitle": "¡Medicamento Registrado!"
+      }
+     }
+    ]
+   }
+  }
  }
 ]
