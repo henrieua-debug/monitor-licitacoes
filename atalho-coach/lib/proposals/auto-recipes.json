@@ -3394,5 +3394,298 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260720",
+  "emoji": "✨",
+  "level": "medium",
+  "title": {
+   "pt": "Registro de Conquistas",
+   "en": "Daily Achievements Log",
+   "es": "Registro de Logros"
+  },
+  "description": {
+   "pt": "Pergunta qual foi a sua principal conquista ou tarefa concluída do dia.",
+   "en": "Asks what your main achievement or completed task of the day was.",
+   "es": "Pregunta cuál fue tu principal logro o tarea completada del día."
+  },
+  "ir": {
+   "pt": {
+    "name": "Registro de Conquistas",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho ajuda você a registrar rapidamente suas conquistas diárias e nível de foco em um arquivo de texto no iCloud Drive, servindo como um diário de progresso pessoal simples e motivador."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Qual foi sua maior conquista ou tarefa concluída hoje?",
+       "WFInputType": "Text"
+      },
+      "ref": "conquista"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "De 1 a 5, qual foi seu nível de foco hoje?",
+       "WFInputType": "Number"
+      },
+      "ref": "foco"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "* [",
+         {
+          "ref": "data_formatada"
+         },
+         "] | Foco: ",
+         {
+          "ref": "foco"
+         },
+         "/5 | Conquista: ",
+         {
+          "ref": "conquista"
+         }
+        ]
+       }
+      },
+      "ref": "linha_log"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "conquistas_diarias.txt",
+       "WFInput": {
+        "ref": "linha_log"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionBody": "Sua conquista foi registrada com sucesso no iCloud Drive!",
+       "WFNotificationActionTitle": "Registro de Conquistas"
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Daily Achievements Log",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut helps you quickly log your daily achievements and focus level to a text file in iCloud Drive, serving as a simple and motivating personal progress journal."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "What was your biggest achievement or completed task today?",
+       "WFInputType": "Text"
+      },
+      "ref": "achievement"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "From 1 to 5, what was your focus level today?",
+       "WFInputType": "Number"
+      },
+      "ref": "focus"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "current_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "current_date"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "yyyy-MM-dd HH:mm"
+      },
+      "ref": "formatted_date"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "* [",
+         {
+          "ref": "formatted_date"
+         },
+         "] | Focus: ",
+         {
+          "ref": "focus"
+         },
+         "/5 | Achievement: ",
+         {
+          "ref": "achievement"
+         }
+        ]
+       }
+      },
+      "ref": "log_line"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "daily_achievements.txt",
+       "WFInput": {
+        "ref": "log_line"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionBody": "Your achievement was successfully recorded in iCloud Drive!",
+       "WFNotificationActionTitle": "Daily Achievements Log"
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Registro de Logros",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo te ayuda a registrar rápidamente tus logros diarios y nivel de enfoque en un archivo de texto en iCloud Drive, sirviendo como un diario de progreso personal simple y motivador."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "¿Cuál fue tu mayor logro o tarea completada hoy?",
+       "WFInputType": "Text"
+      },
+      "ref": "conquista"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Del 1 al 5, ¿cuál fue tu nivel de enfoque hoy?",
+       "WFInputType": "Number"
+      },
+      "ref": "foco"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.date",
+      "params": {
+       "WFDateActionMode": "Current Date"
+      },
+      "ref": "data_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.date",
+      "params": {
+       "WFDate": {
+        "ref": "data_atual"
+       },
+       "WFDateFormatStyle": "Custom",
+       "WFDateFormatString": "dd/MM/yyyy HH:mm"
+      },
+      "ref": "data_formatada"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.gettext",
+      "params": {
+       "WFTextActionText": {
+        "text": [
+         "* [",
+         {
+          "ref": "data_formatada"
+         },
+         "] | Enfoque: ",
+         {
+          "ref": "foco"
+         },
+         "/5 | Logro: ",
+         {
+          "ref": "conquista"
+         }
+        ]
+       }
+      },
+      "ref": "linha_log"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.file.append",
+      "params": {
+       "WFFilePath": "logros_diarios.txt",
+       "WFInput": {
+        "ref": "linha_log"
+       },
+       "WFAppendFileWriteMode": "Append"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionBody": "¡Tu logro se ha registrado con éxito en iCloud Drive!",
+       "WFNotificationActionTitle": "Registro de Logros"
+      }
+     }
+    ]
+   }
+  }
  }
 ]
