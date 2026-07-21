@@ -3687,5 +3687,214 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260721",
+  "emoji": "🪄",
+  "level": "medium",
+  "title": {
+   "pt": "Hora de Desconectar",
+   "en": "Time to Disconnect",
+   "es": "Hora de Desconectar"
+  },
+  "description": {
+   "pt": "Prepara seu dispositivo para uma noite de sono sem interrupções.",
+   "en": "Prepares your device for an uninterrupted night of sleep.",
+   "es": "Prepara tu dispositivo para una noche de sueño sin interrupciones."
+  },
+  "ir": {
+   "pt": {
+    "name": "Hora de Desconectar",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho desativa conexões, diminui o brilho, o volume e ativa o Não Perturbe para ajudar você a se desligar do celular antes de dormir."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "params": {
+       "OnValue": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.wifi.set",
+      "params": {
+       "OnValue": false
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.bluetooth.set",
+      "params": {
+       "OnValue": false
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setbrightness",
+      "params": {
+       "WFBrightness": 0.1
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setvolume",
+      "params": {
+       "WFVolume": 0.15
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dnd.set",
+      "params": {
+       "Enabled": 1,
+       "Operation": "Turn"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.speaktext",
+      "params": {
+       "WFText": "Celular configurado. Hora de desconectar da tela e relaxar. Tenha uma excelente noite de sono.",
+       "WFSpeakTextLanguage": "pt-BR",
+       "WFSpeakTextRate": 0.5
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Time to Disconnect",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut disables connections, lowers brightness and volume, and turns on Do Not Disturb to help you disconnect from your phone before bed."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "params": {
+       "OnValue": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.wifi.set",
+      "params": {
+       "OnValue": false
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.bluetooth.set",
+      "params": {
+       "OnValue": false
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setbrightness",
+      "params": {
+       "WFBrightness": 0.1
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setvolume",
+      "params": {
+       "WFVolume": 0.15
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dnd.set",
+      "params": {
+       "Enabled": 1,
+       "Operation": "Turn"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.speaktext",
+      "params": {
+       "WFText": "Phone configured. Time to disconnect from your screen and relax. Have an excellent night of sleep.",
+       "WFSpeakTextLanguage": "en-US",
+       "WFSpeakTextRate": 0.5
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Hora de Desconectar",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo desactiva conexiones, reduce el brillo, el volumen y activa el modo No molestar para ayudarte a desconectar del móvil antes de dormir."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "params": {
+       "OnValue": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.wifi.set",
+      "params": {
+       "OnValue": false
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.bluetooth.set",
+      "params": {
+       "OnValue": false
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setbrightness",
+      "params": {
+       "WFBrightness": 0.1
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setvolume",
+      "params": {
+       "WFVolume": 0.15
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.dnd.set",
+      "params": {
+       "Enabled": 1,
+       "Operation": "Turn"
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.speaktext",
+      "params": {
+       "WFText": "Teléfono configurado. Hora de desconectar de la pantalla y relajarse. Que tengas una excelente noche de sueño.",
+       "WFSpeakTextLanguage": "es-ES",
+       "WFSpeakTextRate": 0.5
+      }
+     }
+    ]
+   }
+  }
  }
 ]
