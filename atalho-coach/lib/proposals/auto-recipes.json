@@ -3896,5 +3896,217 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260722",
+  "emoji": "⚡",
+  "level": "medium",
+  "title": {
+   "pt": "Anjo da Guarda de Bateria",
+   "en": "Battery Guardian",
+   "es": "Ángel de la Guarda de Batería"
+  },
+  "description": {
+   "pt": "Obtém o nível de bateria atual do dispositivo.",
+   "en": "Gets the current battery level of the device.",
+   "es": "Obtiene el nivel de batería actual del dispositivo."
+  },
+  "ir": {
+   "pt": {
+    "name": "Anjo da Guarda de Bateria",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho ajuda em momentos de bateria crítica. Ele envia sua localização atual e nível de bateria para um contato de segurança, além de ativar o Modo de Pouca Energia e reduzir o brilho ao mínimo para salvar sua bateria."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "nivel_bateria"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getcurrentlocation",
+      "params": {},
+      "ref": "localizacao_atual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.sendmessage",
+      "params": {
+       "WFSendMessageContent": {
+        "text": [
+         "Oi! Minha bateria está em ",
+         {
+          "ref": "nivel_bateria"
+         },
+         "%. Meu celular pode desligar em breve. Minha localização atual é: ",
+         {
+          "ref": "localizacao_atual"
+         }
+        ]
+       },
+       "ShowWhenRun": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "params": {
+       "OnValue": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setbrightness",
+      "params": {
+       "WFBrightness": 0.1
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Modo de Emergência Ativado",
+       "WFNotificationActionBody": "Mensagem de socorro enviada, brilho reduzido e economia de energia ativada."
+      }
+     }
+    ]
+   },
+   "en": {
+    "name": "Battery Guardian",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut helps during critical battery situations. It sends your current location and battery level to a safety contact, enables Low Power Mode, and reduces screen brightness to a minimum to conserve battery."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "battery_level"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getcurrentlocation",
+      "params": {},
+      "ref": "current_location"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.sendmessage",
+      "params": {
+       "WFSendMessageContent": {
+        "text": [
+         "Hi! My battery is at ",
+         {
+          "ref": "battery_level"
+         },
+         "%. My phone might turn off soon. My current location is: ",
+         {
+          "ref": "current_location"
+         }
+        ]
+       },
+       "ShowWhenRun": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "params": {
+       "OnValue": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setbrightness",
+      "params": {
+       "WFBrightness": 0.1
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Emergency Mode Activated",
+       "WFNotificationActionBody": "Distress message sent, brightness reduced, and power saving activated."
+      }
+     }
+    ]
+   },
+   "es": {
+    "name": "Ángel de la Guarda de Batería",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo te ayuda en momentos de batería crítica. Envía tu ubicación actual y nivel de batería a un contacto de seguridad, además de activar el Modo de bajo consumo y reducir el brillo al mínimo para salvar tu batería."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getbatterylevel",
+      "params": {},
+      "ref": "nivel_bateria"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.getcurrentlocation",
+      "params": {},
+      "ref": "localizacion_actual"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.sendmessage",
+      "params": {
+       "WFSendMessageContent": {
+        "text": [
+         "¡Hola! Mi batería está al ",
+         {
+          "ref": "nivel_bateria"
+         },
+         "%. Es posible que mi teléfono se apague pronto. Mi ubicación actual es: ",
+         {
+          "ref": "localizacion_actual"
+         }
+        ]
+       },
+       "ShowWhenRun": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.lowpowermode.set",
+      "params": {
+       "OnValue": true
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.setbrightness",
+      "params": {
+       "WFBrightness": 0.1
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.notification",
+      "params": {
+       "WFNotificationActionTitle": "Modo de Emergencia Activado",
+       "WFNotificationActionBody": "Mensaje de auxilio enviado, brillo reducido y ahorro de energía activado."
+      }
+     }
+    ]
+   }
+  }
  }
 ]
