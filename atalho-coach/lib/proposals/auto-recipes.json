@@ -4108,5 +4108,331 @@
     ]
    }
   }
+ },
+ {
+  "id": "auto-20260723",
+  "emoji": "🧭",
+  "level": "medium",
+  "title": {
+   "pt": "Calculadora Flex Inteligente",
+   "en": "Smart Flex Fuel Calculator",
+   "es": "Calculadora Flex Inteligente"
+  },
+  "description": {
+   "pt": "Ajuda a decidir rapidamente entre abastecer com álcool (etanol) ou gasolina no posto de combustível.",
+   "en": "Helps you quickly decide between refueling with ethanol or gasoline at the gas station.",
+   "es": "Ayuda a decidir rápidamente si conviene cargar etanol o gasolina en la estación de servicio."
+  },
+  "ir": {
+   "pt": {
+    "name": "Calculadora Flex Inteligente",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atalho ajuda a decidir entre etanol ou gasolina no posto. Insira os preços e ele calculará a melhor opção de custo-benefício instantaneamente."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Preço da Gasolina (R$):",
+       "WFInputType": "Number"
+      },
+      "ref": "preco_gasolina"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Preço do Etanol (R$):",
+       "WFInputType": "Number"
+      },
+      "ref": "preco_etanol"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.math",
+      "params": {
+       "WFInput": {
+        "ref": "preco_etanol"
+       },
+       "WFMathOperation": "÷",
+       "WFMathOperand": {
+        "ref": "preco_gasolina"
+       }
+      },
+      "ref": "resultado_calculo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.number",
+      "params": {
+       "WFNumber": {
+        "ref": "resultado_calculo"
+       },
+       "WFNumberFormatDecimalPlaces": 2
+      },
+      "ref": "resultado_formatado"
+     },
+     {
+      "type": "if",
+      "input": {
+       "ref": "resultado_calculo"
+      },
+      "operator": "lessThan",
+      "value": 0.7
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "Abasteça com ETANOL! 🚗",
+       "WFAlertActionMessage": {
+        "text": [
+         "O etanol está custando ",
+         {
+          "ref": "resultado_formatado"
+         },
+         " do preço da gasolina.\nComo está abaixo de 0,70, vale mais a pena financeiramente!"
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     },
+     {
+      "type": "otherwise"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "Abasteça com GASOLINA! 🚗",
+       "WFAlertActionMessage": {
+        "text": [
+         "O etanol está custando ",
+         {
+          "ref": "resultado_formatado"
+         },
+         " do preço da gasolina.\nComo está acima ou igual a 0,70, a gasolina é mais vantajosa!"
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     },
+     {
+      "type": "endif"
+     }
+    ]
+   },
+   "en": {
+    "name": "Smart Flex Fuel Calculator",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "This shortcut helps you decide between ethanol and gasoline. Enter the prices and it will instantly calculate the best cost-benefit option."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Gasoline Price:",
+       "WFInputType": "Number"
+      },
+      "ref": "gas_price"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Ethanol Price:",
+       "WFInputType": "Number"
+      },
+      "ref": "ethanol_price"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.math",
+      "params": {
+       "WFInput": {
+        "ref": "ethanol_price"
+       },
+       "WFMathOperation": "÷",
+       "WFMathOperand": {
+        "ref": "gas_price"
+       }
+      },
+      "ref": "calculation_result"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.number",
+      "params": {
+       "WFNumber": {
+        "ref": "calculation_result"
+       },
+       "WFNumberFormatDecimalPlaces": 2
+      },
+      "ref": "formatted_result"
+     },
+     {
+      "type": "if",
+      "input": {
+       "ref": "calculation_result"
+      },
+      "operator": "lessThan",
+      "value": 0.7
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "Refuel with ETHANOL! 🚗",
+       "WFAlertActionMessage": {
+        "text": [
+         "Ethanol is costing ",
+         {
+          "ref": "formatted_result"
+         },
+         " of the price of gasoline.\nSince it is below 0.70, it is financially more worth it!"
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     },
+     {
+      "type": "otherwise"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "Refuel with GASOLINE! 🚗",
+       "WFAlertActionMessage": {
+        "text": [
+         "Ethanol is costing ",
+         {
+          "ref": "formatted_result"
+         },
+         " of the price of gasoline.\nSince it is equal to or above 0.70, gasoline is more advantageous!"
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     },
+     {
+      "type": "endif"
+     }
+    ]
+   },
+   "es": {
+    "name": "Calculadora Flex Inteligente",
+    "steps": [
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.comment",
+      "params": {
+       "WFCommentActionText": "Este atajo ayuda a decidir entre etanol o gasolina en la gasolinera. Introduce los precios y calculará la mejor opción de costo-beneficio al instante."
+      }
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Precio de la gasolina ($):",
+       "WFInputType": "Number"
+      },
+      "ref": "precio_gasolina"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.ask",
+      "params": {
+       "WFAskActionPrompt": "Precio del etanol ($):",
+       "WFInputType": "Number"
+      },
+      "ref": "precio_etanol"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.math",
+      "params": {
+       "WFInput": {
+        "ref": "precio_etanol"
+       },
+       "WFMathOperation": "÷",
+       "WFMathOperand": {
+        "ref": "precio_gasolina"
+       }
+      },
+      "ref": "resultado_calculo"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.format.number",
+      "params": {
+       "WFNumber": {
+        "ref": "resultado_calculo"
+       },
+       "WFNumberFormatDecimalPlaces": 2
+      },
+      "ref": "resultado_formateado"
+     },
+     {
+      "type": "if",
+      "input": {
+       "ref": "resultado_calculo"
+      },
+      "operator": "lessThan",
+      "value": 0.7
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "¡Carga ETANOL! 🚗",
+       "WFAlertActionMessage": {
+        "text": [
+         "El etanol cuesta un ",
+         {
+          "ref": "resultado_formateado"
+         },
+         " del precio de la gasolina.\n¡Como está por debajo de 0.70, conviene más económicamente!"
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     },
+     {
+      "type": "otherwise"
+     },
+     {
+      "type": "action",
+      "identifier": "is.workflow.actions.alert",
+      "params": {
+       "WFAlertActionTitle": "¡Carga GASOLINA! 🚗",
+       "WFAlertActionMessage": {
+        "text": [
+         "El etanol cuesta un ",
+         {
+          "ref": "resultado_formateado"
+         },
+         " del precio de la gasolina.\n¡Como es igual o mayor a 0.70, la gasolina es más ventajosa!"
+        ]
+       },
+       "WFAlertActionCancelButtonShown": false
+      }
+     },
+     {
+      "type": "endif"
+     }
+    ]
+   }
+  }
  }
 ]
